@@ -26,6 +26,7 @@ export interface StrokeTextProps {
   fillColor?: string;
   strokeWidth?: number;
   drawDuration?: number;
+  delay?: number;
   fillDelay?: number;
   stagger?: number;
   ease?: string;
@@ -45,6 +46,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
   fillColor = "var(--text-primary)",
   strokeWidth = 1.5,
   drawDuration = 1.4,
+  delay = 0,
   fillDelay = 0.15,
   stagger = 0.04,
   ease = "power2.out",
@@ -239,7 +241,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
           ease,
           stagger: staggerConfig,
         },
-        0,
+        delay,
       );
 
       if (useWipe && wipe) {
@@ -250,7 +252,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
             duration: fillDuration,
             ease: "power2.inOut",
           },
-          drawDuration + fillDelay,
+          delay + drawDuration + fillDelay,
         );
         // Cleanly hide outline strokes as the fill reaches completion
         tl.to(
@@ -260,7 +262,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
             duration: 0.3,
             ease: "power2.out",
           },
-          drawDuration + fillDelay + fillDuration * 0.6,
+          delay + drawDuration + fillDelay + fillDuration * 0.6,
         );
       } else if (fillEnabled) {
         tl.to(
@@ -271,7 +273,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
             ease: "power2.out",
             stagger: staggerConfig,
           },
-          drawDuration + fillDelay,
+          delay + drawDuration + fillDelay,
         );
         tl.to(
           strokes,
@@ -280,7 +282,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
             duration: 0.3,
             ease: "power2.out",
           },
-          drawDuration + fillDelay + fillDuration * 0.6,
+          delay + drawDuration + fillDelay + fillDuration * 0.6,
         );
       }
 
@@ -305,7 +307,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
       if (trigger === "scroll") {
         scrollTrigger = ScrollTrigger.create({
           trigger: root,
-          start: "top 82%",
+          start: "top 85%",
           once: true,
           onEnter: () => timeline?.play(0),
         });
@@ -323,6 +325,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
   }, [
     metrics,
     drawDuration,
+    delay,
     fillDelay,
     stagger,
     ease,

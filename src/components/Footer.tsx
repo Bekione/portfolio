@@ -9,6 +9,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { PERSONAL_INFO } from "../data/portfolioData";
+import { StrokeText } from "./StrokeText";
 
 export function Footer() {
   const scrollToTop = () => {
@@ -32,9 +33,36 @@ export function Footer() {
             </div>
 
             <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-(--text-primary) leading-[1.08]">
-              BUILT WITH CURIOSITY.
+              BUILT WITH{" "}
+              <StrokeText
+                text="CURIOSITY."
+                strokeColor="var(--accent)"
+                fillColor="var(--text-primary)"
+                strokeWidth={1.5}
+                drawDuration={1.2}
+                fillDelay={0.15}
+                stagger={0.035}
+                ease="power2.out"
+                trigger="scroll"
+                fillMode="wipe"
+              />
               <br />
-              <span className="text-vermilion">SHIPPED WITH INTENT.</span>
+              <span className="text-vermilion">
+                SHIPPED WITH{" "}
+                <StrokeText
+                  text="INTENT."
+                  strokeColor="var(--accent)"
+                  fillColor="currentColor"
+                  strokeWidth={1.5}
+                  delay={0.4}
+                  drawDuration={1.1}
+                  fillDelay={0.3}
+                  stagger={0.035}
+                  ease="power2.out"
+                  trigger="scroll"
+                  fillMode="wipe"
+                />
+              </span>
             </h2>
 
             <div className="space-y-2 pt-2 max-w-xl">
