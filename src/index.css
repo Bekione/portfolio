@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-vermilion: #C94B32;
+  --color-vermilion-hover: #b33f27;
+  --color-vermilion-light: #fbeee9;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #F3F0E8;
+    --bg-surface: #FAF8F3;
+    --bg-surface-alt: #EBE7DD;
+    --text-primary: #151515;
+    --text-secondary: #58554F;
+    --text-muted: #848077;
+    --border-subtle: #DDD8CD;
+    --border-strong: #BCB6A8;
+    --grid-line: rgba(21, 21, 21, 0.05);
+    --card-surface: #FAF8F4;
+    --accent: #C94B32;
+    --accent-dim: rgba(201, 75, 50, 0.12);
+  }
+
+  .dark {
+    --bg-primary: #121211;
+    --bg-surface: #181816;
+    --bg-surface-alt: #20201D;
+    --text-primary: #ECE8E0;
+    --text-secondary: #A6A299;
+    --text-muted: #6E6B63;
+    --border-subtle: #292825;
+    --border-strong: #3F3E3A;
+    --grid-line: rgba(236, 232, 224, 0.04);
+    --card-surface: #171715;
+    --accent: #E0583F;
+    --accent-dim: rgba(224, 88, 63, 0.16);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Subtle architectural grid pattern */
+.bg-drafting-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+}
+
+.bg-dot-grid {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

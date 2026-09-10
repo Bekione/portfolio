@@ -1,0 +1,48 @@
+.stroke-text {
+  display: inline-block;
+  position: relative;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
+.stroke-text--hover {
+  cursor: pointer;
+}
+
+.stroke-text__ghost {
+  display: inline-block;
+  visibility: hidden;
+  user-select: none;
+  pointer-events: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.stroke-text__baseline-marker {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: baseline;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.stroke-text__svg {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stroke-text__stroke,
+.stroke-text__fill {
+  user-select: none;
+  font-family: var(--font-display), "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  dominant-baseline: alphabetic;
+}
+
+
+

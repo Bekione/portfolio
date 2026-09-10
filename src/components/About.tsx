@@ -1,0 +1,153 @@
+import { CheckCircle2, Cpu, Layers, Zap } from "lucide-react";
+import { PERSONAL_INFO } from "../data/portfolioData";
+
+export function About() {
+  return (
+    <section
+      id="about"
+      className="py-24 border-b border-(--border-subtle) bg-(--bg-surface)"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs font-semibold text-vermilion">
+              02 //
+            </span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
+              WHO IS BEREKET?
+            </h2>
+          </div>
+          <span className="font-mono text-xs text-(--text-muted) tracking-wider">
+            EDITORIAL PERSPECTIVE & BACKGROUND
+          </span>
+        </div>
+
+        {/* Asymmetric Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-12 items-start">
+          {/* Main Narrative (7 cols) */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-4 text-base sm:text-lg text-(--text-secondary) leading-relaxed">
+              <p className="text-xl sm:text-2xl font-display font-medium text-(--text-primary) leading-snug">
+                &ldquo;I like working where product decisions, interfaces, and
+                engineering meet.&rdquo;
+              </p>
+
+              <p>
+                Over the last few years I've worked on everything from
+                multi-tenant marketplaces and large ERP systems to AI-powered
+                voice applications and mobile products.
+              </p>
+
+              <p>
+                I enjoy taking complicated requirements, understanding the
+                system underneath them, and turning them into software that
+                feels simple to use.
+              </p>
+            </div>
+
+            {/* Core Working Tenets */}
+            <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
+                <div className="flex items-center gap-2 pb-2 text-xs font-mono font-semibold text-(--text-primary)">
+                  <Layers className="w-4 h-4 text-vermilion" />
+                  <span>FRONTEND & SYSTEMS FIDELITY</span>
+                </div>
+                <p className="text-xs text-(--text-secondary) leading-normal">
+                  Belief that state flow, layout typography, keyboard
+                  ergonomics, and network caching must feel seamless together.
+                </p>
+              </div>
+
+              <div className="p-4 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
+                <div className="flex items-center gap-2 pb-2 text-xs font-mono font-semibold text-(--text-primary)">
+                  <Zap className="w-4 h-4 text-vermilion" />
+                  <span>MEASURED PERFORMANCE</span>
+                </div>
+                <p className="text-xs text-(--text-secondary) leading-normal">
+                  Treating latency as an interface flaw. From 100k+ row
+                  virtualization to sub-second streaming voice AI.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Dossier & Verified Metadata (5 cols) */}
+          <div className="lg:col-span-5 p-6 border border-(--border-subtle) bg-(--bg-primary) rounded-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-(--border-subtle) pb-3">
+              <span className="font-mono text-xs font-semibold text-(--text-primary) tracking-wider">
+                ENGINEER DOSSIER
+              </span>
+              <span className="font-mono text-[11px] text-vermilion">
+                STATUS: ACTIVE
+              </span>
+            </div>
+
+            <div className="space-y-4 font-mono text-xs">
+              <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
+                <span className="text-(--text-muted)">NAME</span>
+                <span className="font-medium text-(--text-primary)">
+                  Bereket Kinfe
+                </span>
+              </div>
+
+              <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
+                <span className="text-(--text-muted)">CURRENT LOCATION</span>
+                <span className="font-medium text-(--text-primary)">
+                  Addis Ababa, Ethiopia
+                </span>
+              </div>
+
+              <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
+                <span className="text-(--text-muted)">EXPERIENCE SPAN</span>
+                <span className="font-medium text-(--text-primary)">
+                  ~4 Years (2023–Present)
+                </span>
+              </div>
+
+              <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
+                <span className="text-(--text-muted)">CORE FOCUS</span>
+                <span className="font-medium text-(--text-primary)">
+                  Product & Full-Stack Eng
+                </span>
+              </div>
+
+              <div className="py-1">
+                <span className="block text-(--text-muted) pb-2">
+                  TECHNICAL CONVICTIONS
+                </span>
+                <div className="space-y-2 text-(--text-secondary) font-sans text-xs">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
+                    <span>
+                      Clarity of data contracts beats clever hacks every time.
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
+                    <span>
+                      The best developer experience translates into bulletproof
+                      user experience.
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
+                    <span>
+                      Respect production edge cases: latency, flaky connections,
+                      large data payloads.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-(--border-subtle) flex items-center justify-between text-[11px] font-mono text-(--text-muted)">
+              <span>TIMEZONE: UTC+3 (EAT)</span>
+              <span className="text-vermilion">OPEN FOR HIRE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

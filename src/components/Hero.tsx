@@ -1,0 +1,135 @@
+"use client";
+
+import { ArrowDown, Coffee, Mail, MapPin, Terminal } from "lucide-react";
+import { PERSONAL_INFO } from "../data/portfolioData";
+import { Theme } from "../hooks/useTheme";
+import { LiveCodingMonitor } from "./live-monitor/LiveCodingMonitor";
+import { StrokeText } from "./StrokeText";
+
+interface HeroProps {
+  theme?: Theme;
+  onOpenResume: () => void;
+}
+
+export function Hero({ onOpenResume }: HeroProps) {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const navOffset = 70;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <section
+      id="hero"
+      className="relative min-h-[92vh] flex flex-col justify-between pt-28 pb-12 border-b border-(--border-subtle) bg-drafting-grid"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto">
+        {/* Top Operational Status Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-8 border-b border-(--border-subtle)/80 text-[11px] font-mono tracking-wider text-(--text-secondary)">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-vermilion opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-vermilion"></span>
+            </span>
+            <span className="text-(--text-primary) font-medium">STATUS:</span>
+            <span>OPEN TO REMOTE COLLABORATION & CONTRACTS</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-(--text-muted)">
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-vermilion" />
+              <span>ADDIS ABABA, ETHIOPIA</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Asymmetric Hero Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center pt-10 pb-8">
+          {/* Main Typography Column (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col space-y-6">
+            <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-(--text-muted) uppercase">
+              <Terminal className="w-3.5 h-3.5 text-vermilion" />
+              <span>FULL-STACK & AI SYSTEMS ARCHITECTURE</span>
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.04] text-(--text-primary) tracking-tight">
+              I BUILD{" "}
+              <StrokeText
+                text="SYSTEMS,"
+                strokeColor="var(--accent)"
+                fillColor="var(--text-primary)"
+                strokeWidth={1.5}
+                drawDuration={1.4}
+                fillDelay={0.15}
+                stagger={0.04}
+                ease="power2.out"
+                trigger="mount"
+                fillMode="wipe"
+              />
+              <br />
+              <span className="text-vermilion">NOT JUST</span> INTERFACES.
+            </h1>
+
+            <p className="text-base sm:text-lg text-(--text-secondary) leading-relaxed max-w-2xl font-normal">
+              {PERSONAL_INFO.bioShort}
+            </p>
+
+            {/* Action Bar */}
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              <button
+                onClick={() => scrollToSection("work")}
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515] dark:bg-[#ECE8E0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs shadow-xs cursor-pointer"
+              >
+                <span>VIEW SELECTED WORK</span>
+                <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
+              </button>
+
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-(--border-strong) hover:border-vermilion hover:text-vermilion bg-(--bg-surface) text-(--text-primary) font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs cursor-pointer"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>GET IN TOUCH</span>
+              </button>
+
+              <button
+                onClick={onOpenResume}
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-3 text-(--text-muted) hover:text-vermilion font-mono text-xs tracking-wider transition-colors cursor-pointer"
+              >
+                <span>DOWNLOAD RESUME (PDF)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Live Coding Workstation (5 cols) */}
+          <div className="lg:col-span-5 relative flex items-center justify-center">
+            <div className="w-full max-w-[480px]">
+              <LiveCodingMonitor />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Technical Overview Strip */}
+        <div className="pt-8 border-t border-(--border-subtle)/80 grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {PERSONAL_INFO.verifiedFacts.map((fact, idx) => (
+            <div key={idx} className="space-y-1">
+              <span className="block font-mono text-[10px] tracking-widest text-(--text-muted) uppercase">
+                {fact.label}
+              </span>
+              <p className="font-mono text-xs sm:text-sm font-medium text-(--text-primary)">
+                {fact.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
