@@ -28,9 +28,14 @@ export function Hero({ onOpenResume }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-[92vh] flex flex-col justify-between pt-28 pb-12 border-b border-(--border-subtle) bg-drafting-grid"
+      className="relative min-h-[92vh] flex flex-col justify-between pt-28 pb-12 bg-drafting-grid overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto">
+      {/* Soft gradient wash at bottom edge to smoothly fade out the grid into the next section */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-(--bg-primary) via-(--bg-primary)/70 to-transparent"
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto relative z-10">
         {/* Top Operational Status Strip */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-8 border-b border-(--border-subtle)/80 text-[11px] font-mono tracking-wider text-(--text-secondary)">
           <div className="flex items-center gap-2">
@@ -117,7 +122,7 @@ export function Hero({ onOpenResume }: HeroProps) {
         </div>
 
         {/* Bottom Technical Overview Strip */}
-        <div className="pt-8 border-t border-(--border-subtle)/80 grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div className="mt-[3.75px]! pt-6 border-t border-(--border-subtle)/80 grid grid-cols-2 sm:grid-cols-4 gap-6">
           {PERSONAL_INFO.verifiedFacts.map((fact, idx) => (
             <div key={idx} className="space-y-1">
               <span className="block font-mono text-[10px] tracking-widest text-(--text-muted) uppercase">

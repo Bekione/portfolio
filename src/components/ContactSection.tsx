@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import {
   CheckCircle2,
   Clock,
@@ -14,12 +14,22 @@ import {
   AlertCircle,
   RefreshCw,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { ContactFormData } from "../types";
 import { useTheme } from "../hooks/useTheme";
 
 type FormErrors = Partial<Record<keyof ContactFormData | "token", string>>;
+
+const SUBJECT_PLACEHOLDERS = [
+  "Full-Stack Contract // Architecture Consultation",
+  "High-concurrency Next.js & TypeScript Project",
+  "Real-Time Voice AI Pipeline Architecture",
+  "Enterprise ERP / Dashboard Engineering",
+  "Database Query & Performance Optimization",
+  "Discussing a Remote Collaboration",
+];
 
 export function ContactSection() {
   const { theme } = useTheme();
@@ -42,6 +52,20 @@ export function ContactSection() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [localTime, setLocalTime] = useState<string>("");
+  const [subjectPlaceholderIndex, setSubjectPlaceholderIndex] = useState(0);
+
+  // Cycle through subject placeholder suggestions on a loop
+  useEffect(() => {
+    if (formData.subject) return;
+
+    const timer = setInterval(() => {
+      setSubjectPlaceholderIndex(
+        (prev) => (prev + 1) % SUBJECT_PLACEHOLDERS.length,
+      );
+    }, 3200);
+
+    return () => clearInterval(timer);
+  }, [formData.subject]);
 
   // Live Addis Ababa (UTC+3) Time Clock
   useEffect(() => {
@@ -437,21 +461,40 @@ export function ContactSection() {
                     <label className="block text-xs font-mono text-(--text-secondary)">
                       SUBJECT <span className="text-vermilion">*</span>
                     </label>
-                    <input
-                      type="text"
-                      value={formData.subject}
-                      onChange={(e) => {
-                        setFormData({ ...formData, subject: e.target.value });
-                        if (errors.subject)
-                          setErrors({ ...errors, subject: undefined });
-                      }}
-                      placeholder="e.g. Full-Stack Contract // Architecture Consultation"
-                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion transition-colors ${
-                        errors.subject
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-(--border-subtle)"
-                      }`}
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={formData.subject}
+                        onChange={(e) => {
+                          setFormData({ ...formData, subject: e.target.value });
+                          if (errors.subject)
+                            setErrors({ ...errors, subject: undefined });
+                        }}
+                        className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) focus:outline-hidden focus:ring-1 focus:ring-vermilion transition-colors ${
+                          errors.subject
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-(--border-subtle)"
+                        }`}
+                      />
+                      {/* Animated placeholder overlay */}
+                      {!formData.subject && (
+                        <div className="absolute inset-0 flex items-center px-3.5 pointer-events-none overflow-hidden">
+                          <span className="text-xs font-mono text-(--text-muted)">e.g.&nbsp;</span>
+                          <AnimatePresence mode="wait">
+                            <motion.span
+                              key={subjectPlaceholderIndex}
+                              initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
+                              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+                              transition={{ duration: 0.35, ease: "easeInOut" }}
+                              className="text-xs font-mono text-(--text-muted) whitespace-nowrap"
+                            >
+                              {SUBJECT_PLACEHOLDERS[subjectPlaceholderIndex]}
+                            </motion.span>
+                          </AnimatePresence>
+                        </div>
+                      )}
+                    </div>
                     {errors.subject && (
                       <p className="text-[10px] font-mono text-red-500">
                         {errors.subject}

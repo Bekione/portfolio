@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Sun, Moon, Menu, X, FileText, ArrowUpRight } from "lucide-react";
 import { Theme } from "../hooks/useTheme";
 
@@ -76,10 +77,10 @@ export function Navigation({
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-[background-color,border-color,backdrop-filter,padding,box-shadow] duration-200 ease-out ${
         scrolled
-          ? "bg-(--bg-primary)/90 backdrop-blur-md border-b border-(--border-subtle) shadow-xs py-3.5"
-          : "bg-transparent py-5"
+          ? "bg-(--bg-primary)/90 backdrop-blur-md border-(--border-subtle) shadow-xs py-3.5"
+          : "bg-transparent border-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -118,7 +119,11 @@ export function Navigation({
                 </span>
                 <span>{item.label}</span>
                 {isActive && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-vermilion" />
+                  <motion.span
+                    layoutId="activeNavIndicator"
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-vermilion"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
                 )}
               </button>
             );
@@ -169,38 +174,46 @@ export function Navigation({
       </div>
 
       {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-(--border-subtle) bg-(--bg-surface) px-6 py-6 transition-all">
-          <div className="flex flex-col gap-4 font-mono text-sm">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="flex items-center justify-between py-2 border-b border-(--border-subtle)/50 text-left text-(--text-primary) hover:text-vermilion transition-colors"
-              >
-                <span>{item.label}</span>
-                <span className="text-xs text-(--text-muted)">{item.num}</span>
-              </button>
-            ))}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="md:hidden border-b border-(--border-subtle) bg-(--bg-surface) px-6 py-6 overflow-hidden"
+          >
+            <div className="flex flex-col gap-4 font-mono text-sm">
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="flex items-center justify-between py-2 border-b border-(--border-subtle)/50 text-left text-(--text-primary) hover:text-vermilion transition-colors"
+                >
+                  <span>{item.label}</span>
+                  <span className="text-xs text-(--text-muted)">{item.num}</span>
+                </button>
+              ))}
 
-            <div className="pt-2 flex items-center justify-between">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenResume();
-                }}
-                className="flex items-center gap-2 px-4 py-2 border border-vermilion text-vermilion text-xs font-mono font-medium rounded-xs"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>VIEW RESUME</span>
-              </button>
-              <span className="text-xs text-(--text-muted) font-mono">
-                ADDIS ABABA // ET
-              </span>
+              <div className="pt-2 flex items-center justify-between">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenResume();
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 border border-vermilion text-vermilion text-xs font-mono font-medium rounded-xs"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>VIEW RESUME</span>
+                </button>
+                <span className="text-xs text-(--text-muted) font-mono">
+                  ADDIS ABABA // ET
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

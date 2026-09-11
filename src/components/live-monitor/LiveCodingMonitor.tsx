@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import {
   calculateHomographyMatrix3D,
@@ -139,6 +139,52 @@ export function LiveCodingMonitor() {
     };
   }, [corners]);
 
+  const currentProjIndex = MONITOR_PROJECTS.findIndex(
+    (p) => p.id === settings.activeProject,
+  );
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [isCooldown, setIsCooldown] = useState(false);
+  const hasPendingAdvanceRef = useRef(false);
+  const cooldownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const pauseOnManualInteraction = useCallback((cooldownMs = 12000) => {
+    setIsCooldown(true);
+    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    cooldownTimerRef.current = setTimeout(() => {
+      setIsCooldown(false);
+    }, cooldownMs);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    };
+  }, []);
+
+  const advanceToNextProject = useCallback(() => {
+    const nextIndex = (currentProjIndex + 1) % MONITOR_PROJECTS.length;
+    setSettings((s) => ({ ...s, activeProject: MONITOR_PROJECTS[nextIndex].id }));
+  }, [currentProjIndex]);
+
+  // Triggered when code completes typing (+1.8s hold time)
+  const handleCodeComplete = useCallback(() => {
+    if (isHovered || isCooldown) {
+      hasPendingAdvanceRef.current = true;
+      return;
+    }
+    hasPendingAdvanceRef.current = false;
+    advanceToNextProject();
+  }, [isHovered, isCooldown, advanceToNextProject]);
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (hasPendingAdvanceRef.current && !isCooldown) {
+      hasPendingAdvanceRef.current = false;
+      advanceToNextProject();
+    }
+  };
+
   const handlePlaySound = (type?: KeySoundType) => {
     if (settings.soundEnabled) {
       playKeySound(type || "key", 0.18);
@@ -146,7 +192,11 @@ export function LiveCodingMonitor() {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      className="flex flex-col w-full"
+    >
       {/* Top Floating Mini Controls Bar */}
       <div className="flex items-center justify-between pb-2 mb-1 px-1 text-[10px] font-mono text-(--text-secondary) border-b border-(--border-subtle)/70">
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
@@ -155,9 +205,10 @@ export function LiveCodingMonitor() {
             return (
               <button
                 key={proj.id}
-                onClick={() =>
-                  setSettings((s) => ({ ...s, activeProject: proj.id }))
-                }
+                onClick={() => {
+                  pauseOnManualInteraction(12000);
+                  setSettings((s) => ({ ...s, activeProject: proj.id }));
+                }}
                 className={`px-2 py-0.5 rounded-xs transition-colors cursor-pointer text-[9.5px] whitespace-nowrap border ${
                   isSelected
                     ? "border-vermilion bg-vermilion/10 text-vermilion font-semibold"
@@ -302,6 +353,7 @@ export function LiveCodingMonitor() {
               project={currentProject}
               settings={settings}
               onPlaySound={handlePlaySound}
+              onCodeComplete={handleCodeComplete}
               width={VIRTUAL_WIDTH}
               height={VIRTUAL_HEIGHT}
             />

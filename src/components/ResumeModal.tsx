@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Download, FileText, Printer, X, Mail, MapPin } from "lucide-react";
+import ScrollFade from "./ScrollFade";
 import {
   PERSONAL_INFO,
   WORK_EXPERIENCE,
@@ -66,8 +68,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const handleDownloadPDF = () => {
     const link = document.createElement("a");
     link.href = "/Bereket.Kinfe.Shiferaw-Resume.pdf";
@@ -82,20 +82,30 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   };
 
   return (
-    <div
-      ref={backdropRef}
-      onClick={onClose}
-      data-lenis-prevent="true"
-      className="resume-modal-backdrop fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 lg:p-8"
-      role="dialog"
-      aria-modal="true"
-    >
-      {/* Modal Dialog Container */}
-      <div
-        onClick={(e) => e.stopPropagation()}
-        data-lenis-prevent="true"
-        className="resume-modal-container relative w-full max-w-4xl bg-(--bg-primary) border border-(--border-strong) rounded-xs shadow-2xl overflow-hidden max-h-[92vh] flex flex-col"
-      >
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          ref={backdropRef}
+          onClick={onClose}
+          data-lenis-prevent="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="resume-modal-backdrop fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 lg:p-8"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Modal Dialog Container */}
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            data-lenis-prevent="true"
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="resume-modal-container relative w-full max-w-4xl bg-(--bg-primary) border border-(--border-strong) rounded-xs shadow-2xl overflow-hidden max-h-[92vh] flex flex-col"
+          >
         {/* Header Bar */}
         <div className="resume-modal-header p-3.5 sm:px-6 border-b border-(--border-subtle) bg-(--bg-surface) flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 truncate">
@@ -133,138 +143,146 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           </div>
         </div>
 
-        {/* Scrollable Printable Document View with overscroll-contain and min-h-0 for proper flex scroll */}
-        <div
-          data-lenis-prevent="true"
-          className="resume-document flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 sm:p-10 space-y-8 font-sans bg-(--bg-surface) text-(--text-primary) select-text"
+        {/* Scrollable Printable Document View with overscroll-contain, min-h-0 and dynamic ScrollFade */}
+        <ScrollFade
+          direction="vertical"
+          fadeSize={44}
+          className="flex-1 min-h-0 flex flex-col"
         >
-          {/* Resume Header */}
-          <div className="border-b-2 border-(--text-primary) pb-6 space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-(--text-primary)">
-                Bereket Kinfe
-              </h1>
-              <span className="font-mono text-xs text-vermilion font-semibold">
-                SOFTWARE ENGINEER / FULL-STACK
-              </span>
+          <div
+            data-lenis-prevent="true"
+            className="resume-document flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 sm:p-10 space-y-8 font-sans bg-(--bg-surface) text-(--text-primary) select-text"
+          >
+            {/* Resume Header */}
+            <div className="border-b-2 border-(--text-primary) pb-6 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-(--text-primary)">
+                  Bereket Kinfe
+                </h1>
+                <span className="font-mono text-xs text-vermilion font-semibold">
+                  SOFTWARE ENGINEER / FULL-STACK
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-4 text-xs font-mono text-(--text-secondary)">
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-vermilion" />
+                  Addis Ababa, Ethiopia
+                </span>
+                <span className="flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5 text-vermilion" />
+                  {PERSONAL_INFO.email}
+                </span>
+                <span>github.com/Bekione</span>
+                <span>linkedin.com/in/bereket-k</span>
+              </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 text-xs font-mono text-(--text-secondary)">
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-vermilion" />
-                Addis Ababa, Ethiopia
-              </span>
-              <span className="flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-vermilion" />
-                {PERSONAL_INFO.email}
-              </span>
-              <span>github.com/Bekione</span>
-              <span>linkedin.com/in/bereket-k</span>
+            {/* Professional Summary */}
+            <div className="space-y-2 resume-item">
+              <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
+                Professional Summary
+              </h2>
+              <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed">
+                Software engineer with ~4 years of hands-on industry experience
+                building high-concurrency web and mobile systems. Specializes in
+                frontend architecture, real-time voice streaming architectures,
+                database performance optimization, and enterprise ERP systems.
+                Proven track record reducing 10+ second legacy query bottlenecks
+                to sub-50ms responses and engineering perfect 100/100 Lighthouse
+                web applications.
+              </p>
             </div>
-          </div>
 
-          {/* Professional Summary */}
-          <div className="space-y-2 resume-item">
-            <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
-              Professional Summary
-            </h2>
-            <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed">
-              Software engineer with ~4 years of hands-on industry experience
-              building high-concurrency web and mobile systems. Specializes in
-              frontend architecture, real-time voice streaming architectures,
-              database performance optimization, and enterprise ERP systems.
-              Proven track record reducing 10+ second legacy query bottlenecks
-              to sub-50ms responses and engineering perfect 100/100 Lighthouse
-              web applications.
-            </p>
-          </div>
+            {/* Work History */}
+            <div className="space-y-4">
+              <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
+                Work Experience
+              </h2>
 
-          {/* Work History */}
-          <div className="space-y-4">
-            <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
-              Work Experience
-            </h2>
+              <div className="space-y-6">
+                {WORK_EXPERIENCE.map((exp, idx) => (
+                  <div key={idx} className="resume-item space-y-1.5 text-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
+                      <span className="font-bold text-sm text-(--text-primary)">
+                        {exp.role} —{" "}
+                        <span className="text-vermilion">{exp.company}</span>
+                      </span>
+                      <span className="font-mono text-[11px] text-(--text-muted)">
+                        {exp.period} | {exp.location}
+                      </span>
+                    </div>
 
-            <div className="space-y-6">
-              {WORK_EXPERIENCE.map((exp, idx) => (
-                <div key={idx} className="resume-item space-y-1.5 text-xs">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
-                    <span className="font-bold text-sm text-(--text-primary)">
-                      {exp.role} —{" "}
-                      <span className="text-vermilion">{exp.company}</span>
-                    </span>
-                    <span className="font-mono text-[11px] text-(--text-muted)">
-                      {exp.period} | {exp.location}
-                    </span>
+                    <p className="text-(--text-secondary)">{exp.description}</p>
+
+                    <ul className="list-disc pl-4 space-y-1 text-(--text-secondary)">
+                      {exp.keyResponsibilities.map((resp, rIdx) => (
+                        <li key={rIdx}>{resp}</li>
+                      ))}
+                    </ul>
                   </div>
-
-                  <p className="text-(--text-secondary)">{exp.description}</p>
-
-                  <ul className="list-disc pl-4 space-y-1 text-(--text-secondary)">
-                    {exp.keyResponsibilities.map((resp, rIdx) => (
-                      <li key={rIdx}>{resp}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Selected Technical Projects */}
-          <div className="space-y-4">
-            <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
-              Key Engineering Projects
-            </h2>
+            {/* Selected Technical Projects */}
+            <div className="space-y-4">
+              <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
+                Key Engineering Projects
+              </h2>
 
-            <div className="space-y-4 text-xs">
-              {FEATURED_PROJECTS.map((proj) => (
-                <div
-                  key={proj.id}
-                  className="resume-project-card p-3 border border-(--border-subtle) rounded-xs space-y-1 bg-(--bg-primary)"
-                >
-                  <div className="flex justify-between font-mono">
-                    <span className="font-bold text-(--text-primary)">
-                      {proj.title}
-                    </span>
-                    <span className="text-(--text-muted) text-[11px]">
-                      {proj.year}
-                    </span>
+              <div className="space-y-4 text-xs">
+                {FEATURED_PROJECTS.map((proj) => (
+                  <div
+                    key={proj.id}
+                    className="resume-project-card p-3 border border-(--border-subtle) rounded-xs space-y-1 bg-(--bg-primary)"
+                  >
+                    <div className="flex justify-between font-mono">
+                      <span className="font-bold text-(--text-primary)">
+                        {proj.title}
+                      </span>
+                      <span className="text-(--text-muted) text-[11px]">
+                        {proj.year}
+                      </span>
+                    </div>
+                    <p className="text-(--text-secondary)">
+                      {proj.shortDescription}
+                    </p>
+                    <p className="text-[11px] font-mono text-(--text-muted) pt-1">
+                      Tech: {proj.technologies.join(", ")}
+                    </p>
                   </div>
-                  <p className="text-(--text-secondary)">
-                    {proj.shortDescription}
-                  </p>
-                  <p className="text-[11px] font-mono text-(--text-muted) pt-1">
-                    Tech: {proj.technologies.join(", ")}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Technical Skills */}
+            <div className="space-y-3 resume-item">
+              <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
+                Technical Capabilities
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                {TECH_STACK.map((group) => (
+                  <div
+                    key={group.number}
+                    className="resume-project-card p-3 border border-(--border-subtle) rounded-xs bg-(--bg-primary)"
+                  >
+                    <span className="font-mono font-bold text-[11px] text-vermilion block mb-1">
+                      {group.title}
+                    </span>
+                    <p className="text-(--text-secondary) text-[11px] leading-relaxed">
+                      {group.skills.map((s) => s.name).join(" • ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-
-          {/* Technical Skills */}
-          <div className="space-y-3 resume-item">
-            <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
-              Technical Capabilities
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              {TECH_STACK.map((group) => (
-                <div
-                  key={group.number}
-                  className="resume-project-card p-3 border border-(--border-subtle) rounded-xs bg-(--bg-primary)"
-                >
-                  <span className="font-mono font-bold text-[11px] text-vermilion block mb-1">
-                    {group.title}
-                  </span>
-                  <p className="text-(--text-secondary) text-[11px] leading-relaxed">
-                    {group.skills.map((s) => s.name).join(" • ")}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        </ScrollFade>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

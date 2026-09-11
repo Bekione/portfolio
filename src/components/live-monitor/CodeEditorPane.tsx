@@ -10,6 +10,7 @@ interface CodeEditorPaneProps {
   typingSpeed: number;
   onCodeChange?: () => void;
   onPlaySound?: (type?: 'key' | 'space' | 'enter') => void;
+  onComplete?: () => void;
 }
 
 export function CodeEditorPane({
@@ -18,12 +19,14 @@ export function CodeEditorPane({
   typingSpeed,
   onCodeChange,
   onPlaySound,
+  onComplete,
 }: CodeEditorPaneProps) {
   const [activeFileIndex, setActiveFileIndex] = useState(0);
   const [displayedCode, setDisplayedCode] = useState('');
   const [charIndex, setCharIndex] = useState(0);
   const [isSaved, setIsSaved] = useState(true);
   const codeContainerRef = useRef<HTMLDivElement>(null);
+  const hasCalledCompleteRef = useRef(false);
 
   const currentFile = project.files[activeFileIndex] || project.files[0];
   const fullCode = currentFile.code;
@@ -33,6 +36,7 @@ export function CodeEditorPane({
     setDisplayedCode('');
     setCharIndex(0);
     setIsSaved(true);
+    hasCalledCompleteRef.current = false;
   }, [project.id, activeFileIndex]);
 
   // Live typewriter simulation
@@ -40,11 +44,16 @@ export function CodeEditorPane({
     if (!isAutoTyping) return;
 
     if (charIndex >= fullCode.length) {
-      const restartTimeout = setTimeout(() => {
-        setIsSaved(true);
-        onCodeChange?.();
-      }, 3000);
-      return () => clearTimeout(restartTimeout);
+      setIsSaved(true);
+      if (!hasCalledCompleteRef.current) {
+        hasCalledCompleteRef.current = true;
+        const completionTimer = setTimeout(() => {
+          onCodeChange?.();
+          onComplete?.();
+        }, 1800);
+        return () => clearTimeout(completionTimer);
+      }
+      return;
     }
 
     const nextChar = fullCode[charIndex];

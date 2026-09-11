@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowUpRight,
   Beaker,
@@ -7,6 +8,7 @@ import {
   GitBranch,
 } from "lucide-react";
 import { LAB_EXPERIMENTS } from "../data/portfolioData";
+import { useAutoAdvance } from "../hooks/useAutoAdvance";
 
 export function LabExperiments() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
@@ -19,6 +21,21 @@ export function LabExperiments() {
     "AI / Bot",
   ];
 
+  const currentFilterIndex = categories.indexOf(selectedFilter);
+
+  const {
+    containerRef: autoAdvanceRef,
+    containerProps,
+    pauseOnManualInteraction,
+  } = useAutoAdvance({
+    items: categories,
+    currentIndex: Math.max(0, currentFilterIndex),
+    onAdvance: (_, nextCategory) => {
+      setSelectedFilter(nextCategory);
+    },
+    interval: 6500,
+  });
+
   const filteredExperiments =
     selectedFilter === "All"
       ? LAB_EXPERIMENTS
@@ -27,6 +44,8 @@ export function LabExperiments() {
   return (
     <section
       id="lab"
+      ref={autoAdvanceRef}
+      {...containerProps}
       className="py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,11 +69,14 @@ export function LabExperiments() {
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedFilter(cat)}
-              className={`px-3.5 py-1.5 text-xs font-mono rounded-xs transition-colors border ${
+              onClick={() => {
+                pauseOnManualInteraction(10000);
+                setSelectedFilter(cat);
+              }}
+              className={`px-3.5 py-1.5 text-xs font-mono rounded-xs transition-all border cursor-pointer relative ${
                 selectedFilter === cat
-                  ? "border-vermilion bg-(--bg-surface) text-vermilion font-semibold"
-                  : "border-(--border-subtle) text-(--text-secondary) hover:text-(--text-primary)"
+                  ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
+                  : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
               }`}
             >
               {cat}
@@ -64,60 +86,67 @@ export function LabExperiments() {
 
         {/* Experiments Grid */}
         <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredExperiments.map((exp) => (
-            <div
-              key={exp.id}
-              className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between space-y-5 hover:border-(--border-strong) transition-all group"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase px-2 py-0.5 border border-(--border-subtle) rounded-xs text-(--text-muted)">
-                    {exp.category}
-                  </span>
-                  <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400">
-                    ● {exp.status}
-                  </span>
-                </div>
-
-                <h3 className="font-display text-xl font-bold text-(--text-primary) group-hover:text-vermilion transition-colors">
-                  {exp.title}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed font-sans">
-                  {exp.description}
-                </p>
-
-                {exp.notes && (
-                  <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-muted)">
-                    <em>Note:</em> {exp.notes}
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-4 border-t border-(--border-subtle) space-y-4">
-                <div className="flex flex-wrap gap-1.5">
-                  {exp.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-0.5 text-[10px] font-mono border border-(--border-subtle) bg-(--bg-primary) text-(--text-secondary) rounded-xs"
-                    >
-                      {tech}
+          <AnimatePresence mode="popLayout">
+            {filteredExperiments.map((exp) => (
+              <motion.div
+                key={exp.id}
+                layout={true}
+                initial={{ opacity: 0, scale: 0.95, filter: "blur(6px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.95, filter: "blur(6px)" }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between space-y-5 hover:border-(--border-strong) transition-colors group"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] uppercase px-2 py-0.5 border border-(--border-subtle) rounded-xs text-(--text-muted)">
+                      {exp.category}
                     </span>
-                  ))}
+                    <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400">
+                      ● {exp.status}
+                    </span>
+                  </div>
+
+                  <h3 className="font-display text-xl font-bold text-(--text-primary) group-hover:text-vermilion transition-colors">
+                    {exp.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed font-sans">
+                    {exp.description}
+                  </p>
+
+                  {exp.notes && (
+                    <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-muted)">
+                      <em>Note:</em> {exp.notes}
+                    </div>
+                  )}
                 </div>
 
-                <a
-                  href={exp.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono text-vermilion hover:underline font-medium"
-                >
-                  <span>VIEW REPOSITORY</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-          ))}
+                <div className="pt-4 border-t border-(--border-subtle) space-y-4">
+                  <div className="flex flex-wrap gap-1.5">
+                    {exp.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 text-[10px] font-mono border border-(--border-subtle) bg-(--bg-primary) text-(--text-secondary) rounded-xs"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <a
+                    href={exp.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono text-vermilion hover:underline font-medium"
+                  >
+                    <span>VIEW REPOSITORY</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </section>

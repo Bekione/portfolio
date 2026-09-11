@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowUpRight,
   Check,
@@ -19,15 +20,35 @@ import {
 } from "lucide-react";
 import { FEATURED_PROJECTS } from "../data/portfolioData";
 import { Project } from "../types";
+import { useAutoAdvance } from "../hooks/useAutoAdvance";
 
 export function SelectedWork() {
   const [activeProjectTab, setActiveProjectTab] = useState<string>(
     FEATURED_PROJECTS[0].id,
   );
 
+  const currentProjIndex = FEATURED_PROJECTS.findIndex(
+    (p) => p.id === activeProjectTab,
+  );
+
+  const {
+    containerRef: autoAdvanceRef,
+    containerProps,
+    pauseOnManualInteraction,
+  } = useAutoAdvance({
+    items: FEATURED_PROJECTS,
+    currentIndex: Math.max(0, currentProjIndex),
+    onAdvance: (_, nextProject) => {
+      setActiveProjectTab(nextProject.id);
+    },
+    interval: 8000,
+  });
+
   return (
     <section
       id="work"
+      ref={autoAdvanceRef}
+      {...containerProps}
       className="py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,10 +76,13 @@ export function SelectedWork() {
             return (
               <button
                 key={project.id}
-                onClick={() => setActiveProjectTab(project.id)}
-                className={`px-4 py-2.5 text-xs font-mono rounded-xs transition-all flex items-center gap-2 border ${
+                onClick={() => {
+                  pauseOnManualInteraction(12000);
+                  setActiveProjectTab(project.id);
+                }}
+                className={`px-4 py-2.5 text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative ${
                   isSelected
-                    ? "border-vermilion bg-(--bg-surface) text-vermilion font-semibold shadow-xs"
+                    ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
@@ -70,12 +94,25 @@ export function SelectedWork() {
         </div>
 
         {/* Active Project In-Depth Showcase */}
-        {(() => {
-          const activeProject =
-            FEATURED_PROJECTS.find((p) => p.id === activeProjectTab) ||
-            FEATURED_PROJECTS[0];
-          return <ProjectCaseStudy project={activeProject} />;
-        })()}
+        <AnimatePresence mode="wait">
+          {(() => {
+            const activeProject =
+              FEATURED_PROJECTS.find((p) => p.id === activeProjectTab) ||
+              FEATURED_PROJECTS[0];
+            return (
+              <motion.div
+                key={activeProject.id}
+                layout={true}
+                initial={{ opacity: 0, scale: 0.97, filter: "blur(6px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.97, filter: "blur(6px)" }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                <ProjectCaseStudy project={activeProject} />
+              </motion.div>
+            );
+          })()}
+        </AnimatePresence>
       </div>
     </section>
   );

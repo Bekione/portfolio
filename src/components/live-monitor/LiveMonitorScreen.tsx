@@ -10,6 +10,7 @@ interface LiveMonitorScreenProps {
   project: ProjectConfig;
   settings: ScreenSettings;
   onPlaySound?: (type?: 'key' | 'space' | 'enter') => void;
+  onCodeComplete?: () => void;
   width?: number;
   height?: number;
 }
@@ -18,6 +19,7 @@ export function LiveMonitorScreen({
   project,
   settings,
   onPlaySound,
+  onCodeComplete,
   width = 960,
   height = 600,
 }: LiveMonitorScreenProps) {
@@ -58,45 +60,47 @@ export function LiveMonitorScreen({
           <>
             {/* Left Half: VS Code Editor */}
             <div className="w-1/2 h-full flex flex-col">
-              <div className="flex-1 overflow-hidden">
-                <CodeEditorPane
-                  project={project}
-                  isAutoTyping={settings.isAutoTyping}
-                  typingSpeed={settings.typingSpeed}
-                  onCodeChange={handleCodeChange}
-                  onPlaySound={onPlaySound}
-                />
-              </div>
-              {/* Mini Terminal Strip at bottom of code editor */}
-              <div className="h-28 border-t border-slate-800">
-                <TerminalPane
-                  project={project}
-                  lastCodeChangeTime={lastCodeChangeTime}
-                />
-              </div>
-            </div>
+               <div className="flex-1 overflow-hidden">
+                 <CodeEditorPane
+                   project={project}
+                   isAutoTyping={settings.isAutoTyping}
+                   typingSpeed={settings.typingSpeed}
+                   onCodeChange={handleCodeChange}
+                   onPlaySound={onPlaySound}
+                   onComplete={onCodeComplete}
+                 />
+               </div>
+               {/* Mini Terminal Strip at bottom of code editor */}
+               <div className="h-28 border-t border-slate-800">
+                 <TerminalPane
+                   project={project}
+                   lastCodeChangeTime={lastCodeChangeTime}
+                 />
+               </div>
+             </div>
 
-            {/* Right Half: Live Web Browser Preview */}
-            <div className="w-1/2 h-full border-l border-slate-800">
-              <LiveWebPreviewPane
-                project={project}
-                lastCodeChangeTime={lastCodeChangeTime}
-              />
-            </div>
-          </>
-        )}
+             {/* Right Half: Live Web Browser Preview */}
+             <div className="w-1/2 h-full border-l border-slate-800">
+               <LiveWebPreviewPane
+                 project={project}
+                 lastCodeChangeTime={lastCodeChangeTime}
+               />
+             </div>
+           </>
+         )}
 
-        {settings.viewMode === 'code' && (
-          <div className="w-full h-full">
-            <CodeEditorPane
-              project={project}
-              isAutoTyping={settings.isAutoTyping}
-              typingSpeed={settings.typingSpeed}
-              onCodeChange={handleCodeChange}
-              onPlaySound={onPlaySound}
-            />
-          </div>
-        )}
+         {settings.viewMode === 'code' && (
+           <div className="w-full h-full">
+             <CodeEditorPane
+               project={project}
+               isAutoTyping={settings.isAutoTyping}
+               typingSpeed={settings.typingSpeed}
+               onCodeChange={handleCodeChange}
+               onPlaySound={onPlaySound}
+               onComplete={onCodeComplete}
+             />
+           </div>
+         )}
 
         {settings.viewMode === 'preview' && (
           <div className="w-full h-full">
