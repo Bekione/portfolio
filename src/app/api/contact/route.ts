@@ -163,7 +163,7 @@ export async function POST(req: Request) {
       subject,
     });
 
-    await Promise.all([
+    const [adminResult, visitorResult] = await Promise.all([
       resend.emails.send({
         from: `Bereket Kinfe Contact Terminal <${verifiedSender}>`,
         to: receiverEmail,
@@ -178,6 +178,17 @@ export async function POST(req: Request) {
         html: visitorHtml,
       }),
     ]);
+
+    if (adminResult.error) {
+      console.error("[Resend Admin Email Error]:", adminResult.error);
+    }
+
+    if (visitorResult.error) {
+      console.warn(
+        `[Resend Visitor Auto-Reply Warning]: ${visitorResult.error.message}. ` +
+          `(Note: 'onboarding@resend.dev' can only deliver to your own account email. Verify a custom domain at resend.com/domains to send auto-replies to all visitors.)`,
+      );
+    }
 
     return NextResponse.json(
       { message: "Message sent successfully!" },

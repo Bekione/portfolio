@@ -266,7 +266,7 @@ export function LiveCodingMonitor() {
         {/* Zoomable Stage Container — centers the monitor screen and zooms into the code */}
         <div
           ref={containerRef}
-          className="relative w-full h-full transition-transform duration-500 ease-out"
+          className="relative w-full h-full grayscale transition-transform duration-500 ease-out"
           style={{
             willChange: "transform",
             transformOrigin: "0 0",
