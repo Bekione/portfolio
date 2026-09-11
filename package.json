@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
+    "@marsidev/react-turnstile": "^1.6.1",
     "@tailwindcss/postcss": "^4.3.3",
     "canvas-confetti": "^1.9.4",
     "dotenv": "^17.2.3",
@@ -22,7 +23,10 @@
     "next": "^16.3.4",
     "postcss": "^8.5.28",
     "react": "^19.0.1",
-    "react-dom": "^19.0.1"
+    "react-dom": "^19.0.1",
+    "react-email": "^6.9.5",
+    "resend": "^6.27.0",
+    "zod": "^4.6.2"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",

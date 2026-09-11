@@ -11,11 +11,19 @@ import {
   MapPin,
   Send,
   Briefcase,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { ContactFormData } from "../types";
+import { useTheme } from "../hooks/useTheme";
+
+type FormErrors = Partial<Record<keyof ContactFormData | "token", string>>;
 
 export function ContactSection() {
+  const { theme } = useTheme();
+
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -23,12 +31,15 @@ export function ContactSection() {
     message: "",
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof ContactFormData, string>>
-  >({});
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
+
+  const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [localTime, setLocalTime] = useState<string>("");
 
@@ -36,7 +47,6 @@ export function ContactSection() {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      // Addis Ababa is East Africa Time (UTC+3)
       const options: Intl.DateTimeFormatOptions = {
         timeZone: "Africa/Addis_Ababa",
         hour: "2-digit",
@@ -53,29 +63,65 @@ export function ContactSection() {
   }, []);
 
   const validate = (): boolean => {
-    const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
+    const newErrors: FormErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Please provide your name";
-    } else if (formData.name.trim().length < 2) {
+    // Name validation
+    const trimmedName = formData.name.trim();
+    const nameRegex = /^[a-zA-Z\s.'\-\u00C0-\u024F\u1200-\u137F]+$/;
+    if (!trimmedName) {
+      newErrors.name = "Please provide your full name or company identity";
+    } else if (trimmedName.length < 2) {
       newErrors.name = "Name must be at least 2 characters";
+    } else if (trimmedName.length > 100) {
+      newErrors.name = "Name cannot exceed 100 characters";
+    } else if (!nameRegex.test(trimmedName)) {
+      newErrors.name = "Please enter a valid full name (letters only)";
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
+    // Email validation
+    const trimmedEmail = formData.email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!trimmedEmail) {
       newErrors.email = "Please provide your email address";
-    } else if (!emailRegex.test(formData.email.trim())) {
-      newErrors.email = "Please enter a valid email address";
+    } else if (!emailRegex.test(trimmedEmail)) {
+      newErrors.email = "Please enter a valid email address (e.g. name@company.com)";
+    } else if (trimmedEmail.length > 255) {
+      newErrors.email = "Email address is too long";
     }
 
-    if (!formData.subject.trim()) {
-      newErrors.subject = "Please specify a subject";
+    // Subject validation
+    const trimmedSubject = formData.subject.trim();
+    if (!trimmedSubject) {
+      newErrors.subject = "Please specify a subject for your inquiry";
+    } else if (trimmedSubject.length < 3) {
+      newErrors.subject = "Subject must be at least 3 characters";
+    } else if (trimmedSubject.length > 150) {
+      newErrors.subject = "Subject cannot exceed 150 characters";
     }
 
-    if (!formData.message.trim()) {
-      newErrors.message = "Please provide a message";
-    } else if (formData.message.trim().length < 15) {
-      newErrors.message = "Message must be at least 15 characters";
+    // Message validation
+    const trimmedMessage = formData.message.trim();
+    if (!trimmedMessage) {
+      newErrors.message = "Please provide details about your project or inquiry";
+    } else if (trimmedMessage.length < 15) {
+      newErrors.message = "Message must be at least 15 characters to provide adequate context";
+    } else if (trimmedMessage.length > 3000) {
+      newErrors.message = "Message cannot exceed 3000 characters";
+    } else {
+      // Guard against nonsensical single-character repeat spam (e.g. "aaaaaaaaaaaaaaa")
+      const uniqueChars = new Set(
+        trimmedMessage.toLowerCase().replace(/\s/g, ""),
+      ).size;
+      if (uniqueChars < 4 && trimmedMessage.length > 10) {
+        newErrors.message = "Please enter a meaningful, descriptive message";
+      }
+    }
+
+    // Turnstile validation (if active site key is configured or default testing key)
+    const turnstileSiteKey =
+      process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
+    if (turnstileSiteKey && !turnstileToken) {
+      newErrors.token = "Please complete the security verification below";
     }
 
     setErrors(newErrors);
@@ -87,19 +133,41 @@ export function ContactSection() {
     if (!validate()) return;
 
     setStatus("submitting");
+    setErrorMessage(null);
 
     try {
-      // Production ready form dispatch:
-      // Can be connected to Resend, Formspree, or custom webhook.
-      // We simulate real network latency with reliable resolution.
-      await new Promise((resolve) => setTimeout(resolve, 1100));
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+          token: turnstileToken || "",
+          honeypot,
+        }),
+      });
 
-      // Optional mailto fallback fallback preparation:
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to transmit message. Please try again.");
+      }
+
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
       setErrors({});
-    } catch {
+      setHoneypot("");
+      setTurnstileToken(null);
+      setTurnstileKey((prev) => prev + 1);
+    } catch (err) {
       setStatus("error");
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Transmission failed. Please try again or reach out directly via email.",
+      );
     }
   };
 
@@ -108,6 +176,9 @@ export function ContactSection() {
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2500);
   };
+
+  const turnstileSiteKey =
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 
   return (
     <section
@@ -166,7 +237,7 @@ export function ContactSection() {
 
                 <button
                   onClick={copyEmailToClipboard}
-                  className="p-1.5 hover:text-vermilion transition-colors text-(--text-muted)"
+                  className="p-1.5 hover:text-vermilion transition-colors text-(--text-muted) cursor-pointer"
                   title="Copy email to clipboard"
                   aria-label="Copy email address"
                 >
@@ -248,7 +319,7 @@ export function ContactSection() {
                   DISPATCH INQUIRY
                 </span>
                 <span className="font-mono text-[10px] text-(--text-muted)">
-                  FORM VERIFICATION ACTIVE
+                  RESEND &amp; CLOUDFLARE ACTIVE
                 </span>
               </div>
 
@@ -261,18 +332,51 @@ export function ContactSection() {
                     Message Dispatched Successfully
                   </h4>
                   <p className="text-xs sm:text-sm text-(--text-secondary) max-w-md mx-auto leading-relaxed">
-                    Thank you for reaching out. Your inquiry has been queued. I
-                    typically respond within 24 hours.
+                    Thank you for reaching out. Your transmission has been queued and an acknowledgment was sent to your email. I typically respond within 24 hours.
                   </p>
                   <button
-                    onClick={() => setStatus("idle")}
-                    className="mt-4 px-4 py-2 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) rounded-xs transition-colors"
+                    type="button"
+                    onClick={() => {
+                      setStatus("idle");
+                      setErrorMessage(null);
+                    }}
+                    className="mt-4 px-4 py-2 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion rounded-xs transition-colors cursor-pointer"
                   >
                     SEND ANOTHER MESSAGE
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  {/* Invisible Honeypot Spam Trap */}
+                  <input
+                    type="text"
+                    name="company_url_check"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden pointer-events-none opacity-0 absolute -z-10"
+                  />
+
+                  {/* Server Error Alert */}
+                  {status === "error" && errorMessage && (
+                    <div className="p-3.5 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-mono rounded-xs flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>{errorMessage}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setErrorMessage(null)}
+                        className="text-red-500 hover:text-red-600 font-bold cursor-pointer"
+                        aria-label="Dismiss error"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
                   {/* Name and Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
@@ -288,9 +392,9 @@ export function ContactSection() {
                             setErrors({ ...errors, name: undefined });
                         }}
                         placeholder="e.g. David Miller"
-                        className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion ${
+                        className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion transition-colors ${
                           errors.name
-                            ? "border-red-500"
+                            ? "border-red-500 focus:ring-red-500"
                             : "border-(--border-subtle)"
                         }`}
                       />
@@ -314,9 +418,9 @@ export function ContactSection() {
                             setErrors({ ...errors, email: undefined });
                         }}
                         placeholder="name@company.com"
-                        className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion ${
+                        className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion transition-colors ${
                           errors.email
-                            ? "border-red-500"
+                            ? "border-red-500 focus:ring-red-500"
                             : "border-(--border-subtle)"
                         }`}
                       />
@@ -341,10 +445,10 @@ export function ContactSection() {
                         if (errors.subject)
                           setErrors({ ...errors, subject: undefined });
                       }}
-                      placeholder="e.g. Full-Stack Contract / Architecture Consultation"
-                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion ${
+                      placeholder="e.g. Full-Stack Contract // Architecture Consultation"
+                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion transition-colors ${
                         errors.subject
-                          ? "border-red-500"
+                          ? "border-red-500 focus:ring-red-500"
                           : "border-(--border-subtle)"
                       }`}
                     />
@@ -357,9 +461,14 @@ export function ContactSection() {
 
                   {/* Message */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-mono text-(--text-secondary)">
-                      MESSAGE <span className="text-vermilion">*</span>
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-mono text-(--text-secondary)">
+                        MESSAGE <span className="text-vermilion">*</span>
+                      </label>
+                      <span className="text-[10px] font-mono text-(--text-muted)">
+                        {formData.message.length} / 3000
+                      </span>
+                    </div>
                     <textarea
                       rows={5}
                       value={formData.message}
@@ -368,10 +477,10 @@ export function ContactSection() {
                         if (errors.message)
                           setErrors({ ...errors, message: undefined });
                       }}
-                      placeholder="Describe the system, timeline, requirements, or role..."
-                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y ${
+                      placeholder="Describe the system, timeline, specifications, or engineering challenge..."
+                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y transition-colors ${
                         errors.message
-                          ? "border-red-500"
+                          ? "border-red-500 focus:ring-red-500"
                           : "border-(--border-subtle)"
                       }`}
                     />
@@ -382,19 +491,60 @@ export function ContactSection() {
                     )}
                   </div>
 
+                  {/* Cloudflare Turnstile Security Verification */}
+                  <div className="pt-1">
+                    <div className="p-3 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono text-[10px] text-(--text-muted) uppercase tracking-wider">
+                          SECURITY VERIFICATION
+                        </span>
+                        {turnstileToken && (
+                          <span className="font-mono text-[10px] text-green-600 dark:text-green-400 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> VERIFIED
+                          </span>
+                        )}
+                      </div>
+
+                      <Turnstile
+                        key={turnstileKey}
+                        siteKey={turnstileSiteKey}
+                        onSuccess={(token) => {
+                          setTurnstileToken(token);
+                          if (errors.token) {
+                            setErrors((prev) => ({ ...prev, token: undefined }));
+                          }
+                        }}
+                        onError={() => setTurnstileToken(null)}
+                        onExpire={() => setTurnstileToken(null)}
+                        options={{
+                          theme: theme === "dark" ? "dark" : "light",
+                          size: "flexible",
+                        }}
+                      />
+                    </div>
+                    {errors.token && (
+                      <p className="text-[10px] font-mono text-red-500 pt-1.5">
+                        {errors.token}
+                      </p>
+                    )}
+                  </div>
+
                   {/* Submit Button */}
-                  <div className="pt-2 flex items-center justify-between">
+                  <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-(--border-subtle)">
                     <span className="text-[10px] font-mono text-(--text-muted)">
-                      RELIABLE TRANSMISSION
+                      AES / TLS ENCRYPTED DISPATCH
                     </span>
 
                     <button
                       type="submit"
                       disabled={status === "submitting"}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-[#151515] dark:bg-[#ECE8E0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-colors rounded-xs disabled:opacity-60"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515] dark:bg-[#ECE8E0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-colors rounded-xs disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
                     >
                       {status === "submitting" ? (
-                        <span>TRANSMITTING...</span>
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>TRANSMITTING...</span>
+                        </>
                       ) : (
                         <>
                           <span>SEND INQUIRY</span>
