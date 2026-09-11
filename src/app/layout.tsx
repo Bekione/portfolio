@@ -28,9 +28,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "https://bereketkinfe.com"),
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "https://bereketkinfe.pro.et"),
   ),
   title: "Bereket Kinfe — Software Engineer",
   description:
@@ -53,13 +55,22 @@ export const metadata: Metadata = {
       "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
     type: "website",
     locale: "en_US",
-    url: "https://github.com/Bekione",
+    url: "https://bereketkinfe.pro.et",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Bereket Kinfe — Software Engineer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Bereket Kinfe — Software Engineer",
     description:
       "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
+    images: ["/og.png"],
   },
   icons: {
     icon: [
