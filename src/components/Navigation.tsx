@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sun, Moon, Menu, X, FileText, ArrowUpRight } from "lucide-react";
 import { Theme } from "../hooks/useTheme";
+import { Noise } from "./Noise";
 
 interface NavigationProps {
   theme: Theme;
@@ -135,12 +136,13 @@ export function Navigation({
           {/* Resume Trigger */}
           <button
             onClick={onOpenResume}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary)"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
             title="View & Download Resume"
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>RESUME</span>
-            <ArrowUpRight className="w-3 h-3 opacity-60" />
+            <Noise />
+            <FileText className="w-3.5 h-3.5 relative z-10" />
+            <span className="relative z-10">RESUME</span>
+            <ArrowUpRight className="w-3 h-3 opacity-60 relative z-10" />
           </button>
 
           {/* Theme Toggle Button */}
@@ -148,12 +150,13 @@ export function Navigation({
             onClick={onToggleTheme}
             aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
             suppressHydrationWarning
-            className="p-2 border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface)"
+            className="p-2 border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden"
           >
+            <Noise />
             {theme === "light" ? (
-              <Moon className="w-4 h-4 text-(--text-primary)" />
+              <Moon className="w-4 h-4 text-(--text-primary) relative z-10" />
             ) : (
-              <Sun className="w-4 h-4 text-[#E0583F]" />
+              <Sun className="w-4 h-4 text-[#E0583F] relative z-10" />
             )}
           </button>
 

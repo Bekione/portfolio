@@ -19,6 +19,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { ContactFormData } from "../types";
 import { useTheme } from "../hooks/useTheme";
+import { Noise } from "./Noise";
 
 type FormErrors = Partial<Record<keyof ContactFormData | "token", string>>;
 
@@ -145,7 +146,7 @@ export function ContactSection() {
     const turnstileSiteKey =
       process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
     if (turnstileSiteKey && !turnstileToken) {
-      newErrors.token = "Please complete the security verification below";
+      newErrors.token = "Please complete the security verification above";
     }
 
     setErrors(newErrors);
@@ -297,20 +298,22 @@ export function ContactSection() {
                   href={PERSONAL_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
-                  <Github className="w-3.5 h-3.5 text-vermilion" />
-                  <span>GITHUB</span>
+                  <Noise />
+                  <Github className="w-3.5 h-3.5 text-vermilion relative z-10" />
+                  <span className="relative z-10">GITHUB</span>
                 </a>
 
                 <a
                   href={PERSONAL_INFO.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
-                  <Linkedin className="w-3.5 h-3.5 text-vermilion" />
-                  <span>LINKEDIN</span>
+                  <Noise />
+                  <Linkedin className="w-3.5 h-3.5 text-vermilion relative z-10" />
+                  <span className="relative z-10">LINKEDIN</span>
                 </a>
 
                 {PERSONAL_INFO.upwork && (
@@ -318,10 +321,11 @@ export function ContactSection() {
                     href={PERSONAL_INFO.upwork}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
+                    className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
                   >
-                    <Briefcase className="w-3.5 h-3.5 text-[#14a800]" />
-                    <span>UPWORK</span>
+                    <Noise />
+                    <Briefcase className="w-3.5 h-3.5 text-[#14a800] relative z-10" />
+                    <span className="relative z-10">UPWORK</span>
                   </a>
                 )}
               </div>
@@ -581,17 +585,18 @@ export function ContactSection() {
                     <button
                       type="submit"
                       disabled={status === "submitting"}
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515] dark:bg-[#ECE8E0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-colors rounded-xs disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
+                      className="relative overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515b9] dark:bg-[#ece8e0b9] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-colors rounded-xs disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
                     >
+                      <Noise />
                       {status === "submitting" ? (
                         <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>TRANSMITTING...</span>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin relative z-10" />
+                          <span className="relative z-10">TRANSMITTING...</span>
                         </>
                       ) : (
                         <>
-                          <span>SEND INQUIRY</span>
-                          <Send className="w-3.5 h-3.5" />
+                          <span className="relative z-10">SEND INQUIRY</span>
+                          <Send className="w-3.5 h-3.5 relative z-10" />
                         </>
                       )}
                     </button>

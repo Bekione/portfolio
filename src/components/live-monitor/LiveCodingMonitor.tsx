@@ -20,6 +20,7 @@ import {
   Layers,
   Laptop,
 } from "lucide-react";
+import { Noise } from "../Noise";
 
 export function LiveCodingMonitor() {
   // Active settings
@@ -60,12 +61,13 @@ export function LiveCodingMonitor() {
 
   // Dynamic image container dimensions
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMeasured, setIsMeasured] = useState(false);
   const [dimensions, setDimensions] = useState<{
     width: number;
     height: number;
   }>({
-    width: 600,
-    height: 600,
+    width: 0,
+    height: 0,
   });
 
   // Measure container dimensions with ResizeObserver
@@ -77,6 +79,7 @@ export function LiveCodingMonitor() {
       const rect = el.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         setDimensions({ width: rect.width, height: rect.height });
+        setIsMeasured(true);
       }
     };
 
@@ -87,6 +90,7 @@ export function LiveCodingMonitor() {
         const { width, height } = entry.contentRect;
         if (width > 0 && height > 0) {
           setDimensions({ width, height });
+          setIsMeasured(true);
         }
       }
     });
@@ -209,12 +213,13 @@ export function LiveCodingMonitor() {
                   pauseOnManualInteraction(12000);
                   setSettings((s) => ({ ...s, activeProject: proj.id }));
                 }}
-                className={`px-2 py-0.5 rounded-xs transition-colors cursor-pointer text-[9.5px] whitespace-nowrap border ${
+                className={`px-2 py-0.5 rounded-xs transition-colors cursor-pointer text-[9.5px] whitespace-nowrap border relative overflow-hidden ${
                   isSelected
                     ? "border-vermilion bg-vermilion/10 text-vermilion font-semibold"
                     : "border-(--border-subtle) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
+                <Noise />
                 {proj.id === "ai-visa-interview"
                   ? "VOICE AI"
                   : proj.id === "spare-parts-erp"
@@ -239,9 +244,10 @@ export function LiveCodingMonitor() {
                       : "split",
               }))
             }
-            className="p-1 rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer"
+            className="p-1 rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer relative overflow-hidden"
             title={`View: ${settings.viewMode.toUpperCase()}`}
           >
+            <Noise />
             {settings.viewMode === "split" ? (
               <Layers className="w-3 h-3" />
             ) : settings.viewMode === "code" ? (
@@ -256,7 +262,7 @@ export function LiveCodingMonitor() {
             onClick={() =>
               setSettings((s) => ({ ...s, soundEnabled: !s.soundEnabled }))
             }
-            className={`p-1 rounded-xs border transition-colors cursor-pointer ${
+            className={`p-1 rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               settings.soundEnabled
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"
@@ -267,6 +273,7 @@ export function LiveCodingMonitor() {
                 : "Enable mechanical keyboard sounds"
             }
           >
+            <Noise />
             {settings.soundEnabled ? (
               <Volume2 className="w-3 h-3" />
             ) : (
@@ -277,13 +284,14 @@ export function LiveCodingMonitor() {
           {/* Zoom toggle */}
           <button
             onClick={() => setIsZoomed(!isZoomed)}
-            className={`p-1 rounded-xs border transition-colors cursor-pointer ${
+            className={`p-1 rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               isZoomed
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"
             }`}
             title={isZoomed ? "Reset zoom" : "Zoom into live monitor screen"}
           >
+            <Noise />
             {isZoomed ? (
               <Minimize2 className="w-3 h-3" />
             ) : (
@@ -327,7 +335,7 @@ export function LiveCodingMonitor() {
           {/* Base Avatar Image */}
           <div className="absolute inset-0 w-full h-full pointer-events-none select-none">
             <Image
-              src="/assets/hero-avatar.png"
+              src="/assets/hero-image.png"
               alt="Bereket Kinfe engineering software at his workstation"
               fill
               sizes="(max-width: 768px) 100vw, 460px"
@@ -338,7 +346,9 @@ export function LiveCodingMonitor() {
 
           {/* Perspective-Mapped 3D Live Coding Monitor */}
           <div
-            className="absolute top-0 left-0 pointer-events-auto"
+            className={`absolute top-0 left-0 pointer-events-auto transition-opacity duration-300 ${
+              isMeasured ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
             style={{
               width: `${VIRTUAL_WIDTH}px`,
               height: `${VIRTUAL_HEIGHT}px`,

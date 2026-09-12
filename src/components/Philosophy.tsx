@@ -1,4 +1,5 @@
 import { PHILOSOPHY_PRINCIPLES } from "../data/portfolioData";
+import { Noise } from "./Noise";
 
 export function Philosophy() {
   return (
@@ -47,7 +48,8 @@ export function Philosophy() {
           ))}
 
           {/* Workshop Manifesto Card */}
-          <div className="p-6 border border-dashed border-vermilion/40 bg-vermilion/5 rounded-xs flex flex-col justify-between space-y-4">
+          <div className="p-6 border border-dashed border-vermilion/40 bg-vermilion/5 rounded-xs flex flex-col justify-between space-y-4 relative overflow-hidden">
+            <Noise className="animate-none!" />
             <div className="space-y-2">
               <span className="font-mono text-xs font-bold text-vermilion">
                 SUMMATION //

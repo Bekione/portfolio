@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { TECH_STACK } from "../data/portfolioData";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
+import { Noise } from "./Noise";
 
 export function TechStack() {
   const [activeCategory, setActiveCategory] = useState<string>("01");
@@ -62,13 +63,15 @@ export function TechStack() {
                   pauseOnManualInteraction(10000);
                   setActiveCategory(cat.number);
                 }}
-                className={`px-4 py-2 text-xs font-mono rounded-xs transition-all border cursor-pointer relative ${
+                className={`px-4 py-2 text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
                   isSelected
                     ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
-                <span className="opacity-60">{cat.number}.</span> {cat.title}
+                <Noise />
+                <span className="opacity-60 relative z-10">{cat.number}.</span>{" "}
+                <span className="relative z-10">{cat.title}</span>
               </button>
             );
           })}

@@ -21,6 +21,7 @@ import {
 import { FEATURED_PROJECTS } from "../data/portfolioData";
 import { Project } from "../types";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
+import { Noise } from "./Noise";
 
 export function SelectedWork() {
   const [activeProjectTab, setActiveProjectTab] = useState<string>(
@@ -80,14 +81,15 @@ export function SelectedWork() {
                   pauseOnManualInteraction(12000);
                   setActiveProjectTab(project.id);
                 }}
-                className={`px-4 py-2.5 text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative ${
+                className={`px-4 py-2.5 text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative overflow-hidden ${
                   isSelected
                     ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
-                <span className="opacity-70">{project.number}.</span>
-                <span>{project.title.toUpperCase()}</span>
+                <Noise />
+                <span className="opacity-70 relative z-10">{project.number}.</span>
+                <span className="relative z-10">{project.title.toUpperCase()}</span>
               </button>
             );
           })}

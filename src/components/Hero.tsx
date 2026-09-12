@@ -5,6 +5,7 @@ import { PERSONAL_INFO } from "../data/portfolioData";
 import { Theme } from "../hooks/useTheme";
 import { LiveCodingMonitor } from "./live-monitor/LiveCodingMonitor";
 import { StrokeText } from "./StrokeText";
+import { Noise } from "./Noise";
 
 interface HeroProps {
   theme?: Theme;
@@ -90,18 +91,20 @@ export function Hero({ onOpenResume }: HeroProps) {
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <button
                 onClick={() => scrollToSection("work")}
-                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515] dark:bg-[#ECE8E0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs shadow-xs cursor-pointer"
+                className="overflow-hidden relative group inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#151515b9] dark:bg-[#ece8e0b9] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs shadow-xs cursor-pointer"
               >
-                <span>VIEW SELECTED WORK</span>
-                <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
+                <Noise />
+                <span className="relative z-10">VIEW SELECTED WORK</span>
+                <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform relative z-10" />
               </button>
 
               <button
                 onClick={() => scrollToSection("contact")}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-(--border-strong) hover:border-vermilion hover:text-vermilion bg-(--bg-surface) text-(--text-primary) font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs cursor-pointer"
+                className="relative overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3 border border-(--border-strong) hover:border-vermilion hover:text-vermilion bg-(--bg-surface) text-(--text-primary) font-mono text-xs font-medium tracking-wider transition-all duration-150 rounded-xs cursor-pointer"
               >
-                <Mail className="w-3.5 h-3.5" />
-                <span>GET IN TOUCH</span>
+                <Noise />
+                <Mail className="w-3.5 h-3.5 relative z-10" />
+                <span className="relative z-10">GET IN TOUCH</span>
               </button>
 
               <button

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { LAB_EXPERIMENTS } from "../data/portfolioData";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
+import { Noise } from "./Noise";
 
 export function LabExperiments() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
@@ -73,13 +74,14 @@ export function LabExperiments() {
                 pauseOnManualInteraction(10000);
                 setSelectedFilter(cat);
               }}
-              className={`px-3.5 py-1.5 text-xs font-mono rounded-xs transition-all border cursor-pointer relative ${
+              className={`px-3.5 py-1.5 text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
                 selectedFilter === cat
                   ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                   : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
               }`}
             >
-              {cat}
+              <Noise />
+              <span className="relative z-10">{cat}</span>
             </button>
           ))}
         </div>

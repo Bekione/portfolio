@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { StrokeText } from "./StrokeText";
+import { Noise } from "./Noise";
 
 export function Footer() {
   const scrollToTop = () => {
@@ -88,8 +89,9 @@ export function Footer() {
               </span>
               <button
                 onClick={scrollToTop}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion rounded-xs transition-colors cursor-pointer group"
+                className="relative overflow-hidden inline-flex items-center gap-2 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion rounded-xs transition-colors cursor-pointer group"
               >
+                <Noise />
                 <span>BACK TO TOP</span>
                 <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
               </button>
