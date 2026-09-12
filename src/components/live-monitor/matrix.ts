@@ -100,7 +100,7 @@ export function cornersToPixels(
 }
 
 /**
- * Calibrated screen corner coordinates for `public/assets/hero-avatar.png`
+ * Calibrated screen corner coordinates for `public/assets/hero-image.png`
  * Modify these coordinates to adjust the screen fit.
  */
 export const HERO_AVATAR_CORNERS: ScreenCorners = {
