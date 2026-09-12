@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import {
   Instrument_Sans,
   Plus_Jakarta_Sans,
@@ -119,7 +118,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`scroll-smooth ${instrumentSans.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
+      className={`dark scroll-smooth ${instrumentSans.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -137,10 +136,8 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Synchronous blocking script to prevent theme flash (FOUC) on refresh */}
-        <Script
-          id="theme-initializer"
-          strategy="beforeInteractive"
+        {/* Truly blocking inline script — runs before first paint to prevent FOUC */}
+        <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('bk_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}else if(t==='light'){document.documentElement.classList.remove('dark');}}catch(e){}})();`,
           }}
