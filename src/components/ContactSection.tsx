@@ -20,6 +20,7 @@ import { PERSONAL_INFO } from "../data/portfolioData";
 import { ContactFormData } from "../types";
 import { useTheme } from "../hooks/useTheme";
 import { Noise } from "./Noise";
+import { contactSchema } from "@/lib/contactValidation";
 
 type FormErrors = Partial<Record<keyof ContactFormData | "token", string>>;
 
@@ -90,55 +91,21 @@ export function ContactSection() {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Name validation
-    const trimmedName = formData.name.trim();
-    const nameRegex = /^[a-zA-Z\s.'\-\u00C0-\u024F\u1200-\u137F]+$/;
-    if (!trimmedName) {
-      newErrors.name = "Please provide your full name or company identity";
-    } else if (trimmedName.length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    } else if (trimmedName.length > 100) {
-      newErrors.name = "Name cannot exceed 100 characters";
-    } else if (!nameRegex.test(trimmedName)) {
-      newErrors.name = "Please enter a valid full name (letters only)";
-    }
+    const parsed = contactSchema.safeParse({
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      token: turnstileToken || undefined,
+      honeypot,
+    });
 
-    // Email validation
-    const trimmedEmail = formData.email.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (!trimmedEmail) {
-      newErrors.email = "Please provide your email address";
-    } else if (!emailRegex.test(trimmedEmail)) {
-      newErrors.email = "Please enter a valid email address (e.g. name@company.com)";
-    } else if (trimmedEmail.length > 255) {
-      newErrors.email = "Email address is too long";
-    }
-
-    // Subject validation
-    const trimmedSubject = formData.subject.trim();
-    if (!trimmedSubject) {
-      newErrors.subject = "Please specify a subject for your inquiry";
-    } else if (trimmedSubject.length < 3) {
-      newErrors.subject = "Subject must be at least 3 characters";
-    } else if (trimmedSubject.length > 150) {
-      newErrors.subject = "Subject cannot exceed 150 characters";
-    }
-
-    // Message validation
-    const trimmedMessage = formData.message.trim();
-    if (!trimmedMessage) {
-      newErrors.message = "Please provide details about your project or inquiry";
-    } else if (trimmedMessage.length < 15) {
-      newErrors.message = "Message must be at least 15 characters to provide adequate context";
-    } else if (trimmedMessage.length > 3000) {
-      newErrors.message = "Message cannot exceed 3000 characters";
-    } else {
-      // Guard against nonsensical single-character repeat spam (e.g. "aaaaaaaaaaaaaaa")
-      const uniqueChars = new Set(
-        trimmedMessage.toLowerCase().replace(/\s/g, ""),
-      ).size;
-      if (uniqueChars < 4 && trimmedMessage.length > 10) {
-        newErrors.message = "Please enter a meaningful, descriptive message";
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        const field = issue.path[0] as keyof ContactFormData;
+        if (field && !newErrors[field]) {
+          newErrors[field] = issue.message;
+        }
       }
     }
 
@@ -375,17 +342,30 @@ export function ContactSection() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-5">
-                  {/* Invisible Honeypot Spam Trap */}
-                  <input
-                    type="text"
-                    name="company_url_check"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                    tabIndex={-1}
-                    autoComplete="off"
+                  {/* Honeypot Spam Trap & Hidden Bot Protection */}
+                  <div
                     aria-hidden="true"
-                    className="hidden pointer-events-none opacity-0 absolute -z-10"
-                  />
+                    className="opacity-0 absolute -left-[9999px] top-0 pointer-events-none select-none -z-50 h-0 w-0 overflow-hidden"
+                  >
+                    <label htmlFor="company_url_check">
+                      Leave this field empty to confirm you are human
+                    </label>
+                    <input
+                      id="company_url_check"
+                      type="text"
+                      name="company_url_check"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="new-password"
+                    />
+                    {/* Hidden input to protect honeypot and verify form integrity */}
+                    <input
+                      type="hidden"
+                      name="_hp_verification"
+                      value="secure_anti_spam_guard"
+                    />
+                  </div>
 
                   {/* Server Error Alert */}
                   {status === "error" && errorMessage && (
@@ -525,7 +505,7 @@ export function ContactSection() {
                           setErrors({ ...errors, message: undefined });
                       }}
                       placeholder="Describe the system, timeline, specifications, or engineering challenge..."
-                      className={`w-full px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y transition-colors ${
+                      className={`w-full min-h-[120px] max-h-[260px] px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y transition-colors ${
                         errors.message
                           ? "border-red-500 focus:ring-red-500"
                           : "border-(--border-subtle)"

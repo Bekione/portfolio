@@ -1,37 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { z } from "zod";
 import { ContactEmailTemplate } from "@/components/email-templates/ContactFormEmail";
 import { ContactFormAdminEmailTemplate } from "@/components/email-templates/ContactFormAdminNotification";
+import { contactSchema } from "@/lib/contactValidation";
 
-const contactSchema = z.object({
-  name: z
-    .string({ error: "Name is required" })
-    .trim()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name cannot exceed 100 characters")
-    .regex(
-      /^[a-zA-Z\s.'\-\u00C0-\u024F\u1200-\u137F]+$/,
-      "Please enter a valid name",
-    ),
-  email: z
-    .string({ error: "Email is required" })
-    .trim()
-    .email("Please provide a valid email address")
-    .max(255, "Email address is too long"),
-  subject: z
-    .string({ error: "Subject is required" })
-    .trim()
-    .min(3, "Subject must be at least 3 characters")
-    .max(150, "Subject cannot exceed 150 characters"),
-  message: z
-    .string({ error: "Message is required" })
-    .trim()
-    .min(15, "Message must be at least 15 characters to provide context")
-    .max(3000, "Message cannot exceed 3000 characters"),
-  token: z.string().optional(),
-  honeypot: z.string().optional().default(""),
-});
 
 // In-memory IP rate limiter: max 3 transmissions per 10 minutes per IP
 const rateLimitMap = new Map<string, number[]>();

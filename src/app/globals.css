@@ -26,6 +26,7 @@
 
 @layer base {
   :root {
+    color-scheme: light;
     --bg-primary: #F3F0E8;
     --bg-surface: #FAF8F3;
     --bg-surface-alt: #EBE7DD;
@@ -41,6 +42,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --bg-primary: #121211;
     --bg-surface: #181816;
     --bg-surface-alt: #20201D;
@@ -95,6 +97,12 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-resizer {
+  background: transparent;
 }
 
 /* Print styles */
