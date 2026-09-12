@@ -15,11 +15,11 @@ export function ExperienceTimeline() {
               03 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
-              EXPERIENCE & CAREER LOG
+              WHERE I'VE WORKED
             </h2>
           </div>
           <span className="font-mono text-xs text-(--text-muted) tracking-wider">
-            CHRONOLOGICAL VERIFIED LOG // 2023–2026
+            ROLES & TEAMS // 2023–PRESENT
           </span>
         </div>
 

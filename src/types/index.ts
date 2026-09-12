@@ -19,6 +19,8 @@ export interface Project {
   githubUrl?: string;
   liveUrl?: string;
   isPrivate?: boolean;
+  image: string;
+  imageAlt?: string;
   featuredAspect: 'architecture' | 'performance' | 'ai-voice' | 'design-system' | 'optimization';
 }
 

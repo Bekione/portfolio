@@ -9,14 +9,14 @@ export function Philosophy() {
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs font-semibold text-vermilion">
-              NOTE //
+              05 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
-              ENGINEERING NOTES: HOW I WORK
+              THINGS I TEND TO CARE ABOUT
             </h2>
           </div>
           <span className="font-mono text-xs text-(--text-muted) tracking-wider">
-            FIRST PRINCIPLES & WORKING PHILOSOPHY
+            HOW I THINK ABOUT BUILDING SOFTWARE
           </span>
         </div>
 
@@ -58,12 +58,13 @@ export function Philosophy() {
                 QUIET CRAFT OVER NOISE.
               </h3>
               <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed">
-                The objective isn't to look like a generic developer template.
-                It's to build systems that people can rely on day after day.
+                I'm not interested in building software just to chase buzzwords.
+                I like making things that feel snappy, solve real problems, and
+                hold up under everyday use.
               </p>
             </div>
             <div className="pt-4 border-t border-vermilion/20 font-mono text-[10px] text-(--text-muted)">
-              ADDIS ABABA // EST. 2023
+              ADDIS ABABA // BEREKET KINFE
             </div>
           </div>
         </div>

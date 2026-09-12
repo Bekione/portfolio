@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Sun, Moon, Menu, X, FileText, ArrowUpRight } from "lucide-react";
 import { Theme } from "../hooks/useTheme";
@@ -88,8 +89,9 @@ export function Navigation({
         {/* Brand & Technical Identity */}
         <button
           onClick={() => scrollToSection("hero")}
-          className="group text-left flex items-baseline gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-vermilion"
+          className="group text-left flex items-center gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-vermilion"
         >
+          <Image src="/android-chrome-512x512.png" alt="Logo" width={24} height={24} className="" />
           <span className="font-display font-bold tracking-tight text-base sm:text-lg text-(--text-primary) group-hover:text-vermilion transition-colors">
             BEREKET KINFE
           </span>

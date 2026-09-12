@@ -45,7 +45,7 @@ export function Hero({ onOpenResume }: HeroProps) {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-vermilion"></span>
             </span>
             <span className="text-(--text-primary) font-medium">STATUS:</span>
-            <span>OPEN TO REMOTE COLLABORATION & CONTRACTS</span>
+            <span>OPEN TO REMOTE & FULL-TIME ROLES</span>
           </div>
 
           <div className="flex items-center gap-4 text-(--text-muted)">
@@ -62,7 +62,7 @@ export function Hero({ onOpenResume }: HeroProps) {
           <div className="lg:col-span-7 flex flex-col space-y-6">
             <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-(--text-muted) uppercase">
               <Terminal className="w-3.5 h-3.5 text-vermilion" />
-              <span>FULL-STACK & AI SYSTEMS ARCHITECTURE</span>
+              <span>SOFTWARE ENGINEER</span>
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.04] text-(--text-primary) tracking-tight">

@@ -44,11 +44,11 @@ export function TechStack() {
               04 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
-              ENGINEERING STACK
+              TOOLS & TECHNOLOGIES
             </h2>
           </div>
           <span className="font-mono text-xs text-(--text-muted) tracking-wider">
-            PRIMARY TECHNOLOGIES & CORE TOOLS
+            WHAT I USE TO BUILD PRODUCTS
           </span>
         </div>
 

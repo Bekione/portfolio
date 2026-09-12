@@ -160,7 +160,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   Bereket Kinfe
                 </h1>
                 <span className="font-mono text-xs text-vermilion font-semibold">
-                  SOFTWARE ENGINEER / FULL-STACK
+                  SOFTWARE ENGINEER
                 </span>
               </div>
 
@@ -185,12 +185,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </h2>
               <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed">
                 Software engineer with ~4 years of hands-on industry experience
-                building high-concurrency web and mobile systems. Specializes in
-                frontend architecture, real-time voice streaming architectures,
-                database performance optimization, and enterprise ERP systems.
-                Proven track record reducing 10+ second legacy query bottlenecks
-                to sub-50ms responses and engineering perfect 100/100 Lighthouse
-                web applications.
+                building thoughtful web, mobile, and AI-powered products. Experienced
+                across frontend architecture, real-time voice streaming systems,
+                database performance optimization, and enterprise ERP tools. Focused on
+                delivering reliable software that feels snappy and solves real problems.
               </p>
             </div>
 

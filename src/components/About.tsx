@@ -15,11 +15,11 @@ export function About() {
               02 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
-              WHO IS BEREKET?
+              ABOUT ME
             </h2>
           </div>
           <span className="font-mono text-xs text-(--text-muted) tracking-wider">
-            EDITORIAL PERSPECTIVE & BACKGROUND
+            BACKGROUND & APPROACH
           </span>
         </div>
 
@@ -51,22 +51,22 @@ export function About() {
               <div className="p-4 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
                 <div className="flex items-center gap-2 pb-2 text-xs font-mono font-semibold text-(--text-primary)">
                   <Layers className="w-4 h-4 text-vermilion" />
-                  <span>FRONTEND & SYSTEMS FIDELITY</span>
+                  <span>INTERFACES & DETAIL</span>
                 </div>
                 <p className="text-xs text-(--text-secondary) leading-normal">
-                  Belief that state flow, layout typography, keyboard
-                  ergonomics, and network caching must feel seamless together.
+                  I care about how software feels to use — clean typography, clear
+                  hierarchy, keyboard shortcuts, and interactions that feel snappy.
                 </p>
               </div>
 
               <div className="p-4 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
                 <div className="flex items-center gap-2 pb-2 text-xs font-mono font-semibold text-(--text-primary)">
                   <Zap className="w-4 h-4 text-vermilion" />
-                  <span>MEASURED PERFORMANCE</span>
+                  <span>PERFORMANCE & SPEED</span>
                 </div>
                 <p className="text-xs text-(--text-secondary) leading-normal">
-                  Treating latency as an interface flaw. From 100k+ row
-                  virtualization to sub-second streaming voice AI.
+                  Slow software is frustrating. I treat latency as a bug, whether
+                  that means virtualizing 100k-row tables or cutting voice delays.
                 </p>
               </div>
             </div>
@@ -76,10 +76,10 @@ export function About() {
           <div className="lg:col-span-5 p-6 border border-(--border-subtle) bg-(--bg-primary) rounded-xs space-y-6">
             <div className="flex items-center justify-between border-b border-(--border-subtle) pb-3">
               <span className="font-mono text-xs font-semibold text-(--text-primary) tracking-wider">
-                ENGINEER DOSSIER
+                AT A GLANCE
               </span>
               <span className="font-mono text-[11px] text-vermilion">
-                STATUS: ACTIVE
+                STATUS: AVAILABLE
               </span>
             </div>
 
@@ -99,22 +99,22 @@ export function About() {
               </div>
 
               <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
-                <span className="text-(--text-muted)">EXPERIENCE SPAN</span>
+                <span className="text-(--text-muted)">EXPERIENCE</span>
                 <span className="font-medium text-(--text-primary)">
-                  ~4 Years (2023–Present)
+                  ~4 Years Building Software
                 </span>
               </div>
 
               <div className="flex justify-between items-baseline py-1 border-b border-(--border-subtle)/60">
                 <span className="text-(--text-muted)">CORE FOCUS</span>
                 <span className="font-medium text-(--text-primary)">
-                  Product & Full-Stack Eng
+                  Product & Systems Engineering
                 </span>
               </div>
 
               <div className="py-1">
                 <span className="block text-(--text-muted) pb-2">
-                  TECHNICAL CONVICTIONS
+                  WHAT MATTERS TO ME
                 </span>
                 <div className="space-y-2 text-(--text-secondary) font-sans text-xs">
                   <div className="flex items-start gap-2">
@@ -140,7 +140,7 @@ export function About() {
                 </div>
               </div>
             </div>
-
+ 
             <div className="pt-2 border-t border-(--border-subtle) flex items-center justify-between text-[11px] font-mono text-(--text-muted)">
               <span>TIMEZONE: UTC+3 (EAT)</span>
               <span className="text-vermilion">OPEN FOR HIRE</span>
