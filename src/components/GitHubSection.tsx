@@ -1,8 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowUpRight, Github, GitCommit, Calendar, Flame } from "lucide-react";
+import { motion, useMotionValue, useTransform, animate, useInView } from "motion/react";
 import { PERSONAL_INFO } from "../data/portfolioData";
+import { Noise } from "./Noise";
+
+function AnimatedCounter({
+  value,
+  duration = 1.6,
+}: {
+  value: number;
+  duration?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const rounded = useTransform(motionVal, (latest) =>
+    Math.round(latest).toLocaleString(),
+  );
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (isInView) {
+      const controls = animate(motionVal, value, {
+        duration,
+        ease: [0.16, 1, 0.3, 1],
+      });
+      return () => controls.stop();
+    }
+  }, [isInView, value, duration, motionVal]);
+
+  return <motion.span ref={ref}>{rounded}</motion.span>;
+}
 
 interface ContributionDay {
   date: string;
@@ -131,23 +160,25 @@ export function GitHubSection() {
               href={PERSONAL_INFO.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion transition-colors rounded-xs self-start sm:self-auto cursor-pointer"
+              className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion transition-colors rounded-xs self-start sm:self-auto cursor-pointer"
             >
-              <span>GITHUB PROFILE</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <Noise />
+              <span className="relative z-10">GITHUB PROFILE</span>
+              <ArrowUpRight className="w-3.5 h-3.5 relative z-10" />
             </a>
           </div>
 
           {/* Real Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
-            <div className="p-3.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs space-y-1">
+            <div className="relative overflow-hidden p-3.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs space-y-1">
               <div className="flex items-center justify-between text-[10px] text-(--text-muted)">
-                <span>YEARLY CONTRIBUTIONS</span>
-                <Flame className="w-3 h-3 text-vermilion" />
+                <Noise />
+                <span className="relative z-10">YEARLY CONTRIBUTIONS</span>
+                <Flame className="w-3 h-3 text-vermilion relative z-10" />
               </div>
-              <div className="flex items-baseline gap-1.5">
+              <div className="flex items-baseline gap-1.5 relative z-10">
                 <span className="text-xl font-bold text-(--text-primary)">
-                  {totalYear.toLocaleString()}
+                  <AnimatedCounter value={totalYear} />
                 </span>
                 <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
                   ACTIVE
@@ -223,13 +254,21 @@ export function GitHubSection() {
                   Array.from({ length: DAYS_PER_WEEK }).map((_, d) => {
                     const day = getDayAt(w, d);
                     return (
-                      <div
+                      <motion.div
                         key={`${w}-${d}`}
+                        initial={{ opacity: 0, scale: 0.4 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          duration: 0.25,
+                          delay: Math.min(w * 0.012 + d * 0.006, 0.8),
+                          ease: "easeOut",
+                        }}
                         onMouseEnter={() =>
                           setActiveCell({ date: day.date, count: day.count })
                         }
                         onMouseLeave={() => setActiveCell(null)}
-                        className={`w-2.5 h-2.5 rounded-xs transition-all hover:scale-125 cursor-pointer ${getColorClass(
+                        className={`w-2.5 h-2.5 rounded-xs transition-transform hover:scale-125 cursor-pointer ${getColorClass(
                           day.level,
                         )}`}
                         title={`${day.date}: ${day.count} contributions`}
