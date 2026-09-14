@@ -24,7 +24,10 @@ export function ExperienceTimeline() {
     update();
     let lastW = window.innerWidth;
     const onResize = () => {
-      if (window.innerWidth !== lastW) { lastW = window.innerWidth; update(); }
+      if (window.innerWidth !== lastW) {
+        lastW = window.innerWidth;
+        update();
+      }
     };
     window.addEventListener("resize", onResize, { passive: true });
     return () => window.removeEventListener("resize", onResize);
@@ -33,6 +36,7 @@ export function ExperienceTimeline() {
   const scrollPerStep = isMobile ? 260 : 340;
   const totalScroll = TRANSITIONS * scrollPerStep + END_BUFFER;
 
+  // Direct DOM transforms for smooth card stacking animation
   const applyCardTransforms = useCallback((currentStep: number) => {
     for (let idx = 0; idx < CARD_COUNT; idx++) {
       const card = cardRefs.current[idx];
@@ -53,10 +57,8 @@ export function ExperienceTimeline() {
       if (!wrapperRef.current) return;
       const mobile = window.innerWidth < 768;
       const stepDist = mobile ? 260 : 340;
-      const stickyTop = mobile ? 56 : 64;
+      const stickyTop = 64; // top-16 (4rem = 64px) on both mobile and desktop
 
-      // getBoundingClientRect().top is viewport-relative.
-      // scrolled = how many px the wrapper's top has passed the sticky threshold.
       const rect = wrapperRef.current.getBoundingClientRect();
       const scrolled = stickyTop - rect.top;
 
@@ -100,18 +102,10 @@ export function ExperienceTimeline() {
         ref={wrapperRef}
         className="relative"
         style={{
-          height: `calc(${isMobile ? "100svh - 3.5rem" : "100vh - 4rem"} + ${totalScroll}px)`,
+          height: `calc(100svh - 4rem + ${totalScroll}px)`,
         }}
       >
-        {/*
-          NO transform on this sticky element.
-          Applying any CSS transform to position:sticky breaks Chrome/Safari's compositor:
-          the element gets painted on the CPU thread instead of the GPU layer, causing
-          visible position jitter against its sticky threshold on every scroll frame.
-        */}
-        <div
-          className="sticky top-16 md:top-16 bg-(--bg-surface) w-full overflow-hidden border-b border-(--border-subtle) h-[calc(100svh-3.5rem)] md:h-[calc(100vh-4rem)] flex flex-col justify-between"
-        >
+        <div className="sticky top-16 bg-(--bg-surface) w-full overflow-hidden border-b border-(--border-subtle) h-[calc(100svh-4rem)] md:h-[calc(100vh-4rem)] flex flex-col justify-between">
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-8 md:py-10 flex flex-col flex-1 justify-between min-h-0">
             {/* Section Header */}
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4 pb-2.5 sm:pb-5 md:pb-6 border-b border-(--border-subtle) shrink-0">
@@ -128,15 +122,17 @@ export function ExperienceTimeline() {
               </span>
             </div>
 
-            {/* Experience Stage with Pure Hardware-Accelerated Layout */}
+            {/* Experience Stage */}
             <div className="flex-1 flex flex-col justify-center py-2 sm:py-4 min-h-0">
-              <div className="relative w-full h-[370px] sm:h-[400px] md:h-[360px] lg:h-[340px] overflow-hidden">
+              <div className="relative w-full h-[390px] sm:h-[400px] md:h-[360px] lg:h-[340px] overflow-hidden">
                 <div className="relative w-full h-full overflow-hidden">
                   {WORK_EXPERIENCE.map((exp, idx) => (
                     <div
                       key={idx}
-                      ref={(el) => { cardRefs.current[idx] = el; }}
-                      className="absolute inset-0 bg-(--bg-surface) overflow-y-auto scrollbar-none border-t border-(--border-subtle)"
+                      ref={(el) => {
+                        cardRefs.current[idx] = el;
+                      }}
+                      className="absolute inset-0 bg-(--bg-surface) overflow-hidden border-t border-(--border-subtle)"
                       style={{
                         transform: `translate3d(0, ${idx === 0 ? 0 : 100}%, 0)`,
                         zIndex: idx + 1,
@@ -175,7 +171,10 @@ export function ExperienceTimeline() {
                           </p>
                           <div className="space-y-1.5 sm:space-y-2">
                             {exp.keyResponsibilities.map((resp, rIdx) => (
-                              <div key={rIdx} className="flex items-start gap-2 text-[11px] sm:text-xs text-(--text-secondary)">
+                              <div
+                                key={rIdx}
+                                className="flex items-start gap-2 text-[11px] sm:text-xs text-(--text-secondary)"
+                              >
                                 <ChevronRight className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
                                 <span>{resp}</span>
                               </div>
@@ -195,7 +194,7 @@ export function ExperienceTimeline() {
                       </div>
                     </div>
                   ))}
-                  {/* Elegant bottom fade */}
+                  {/* Bottom fade for elegant visual transition */}
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-gradient-to-t from-(--bg-surface) to-transparent z-20"
@@ -211,7 +210,9 @@ export function ExperienceTimeline() {
                   <span
                     key={i}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      discreteStep === i ? "w-6 bg-vermilion" : "w-1.5 bg-(--border-strong)"
+                      discreteStep === i
+                        ? "w-6 bg-vermilion"
+                        : "w-1.5 bg-(--border-strong)"
                     }`}
                     aria-hidden="true"
                   />
