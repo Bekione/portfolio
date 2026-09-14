@@ -94,7 +94,7 @@ export function ExperienceTimeline() {
   return (
     <section
       id="experience"
-      className="relative bg-(--bg-surface) border-b border-(--border-subtle)"
+      className="relative pt-18 sm:pt-24 bg-(--bg-surface) border-b border-(--border-subtle)"
     >
       <div
         ref={wrapperRef}
@@ -110,7 +110,7 @@ export function ExperienceTimeline() {
           visible position jitter against its sticky threshold on every scroll frame.
         */}
         <div
-          className="sticky top-14 md:top-16 bg-(--bg-surface) w-full overflow-hidden border-b border-(--border-subtle) h-[calc(100svh-3.5rem)] md:h-[calc(100vh-4rem)] flex flex-col justify-between"
+          className="sticky top-16 md:top-16 bg-(--bg-surface) w-full overflow-hidden border-b border-(--border-subtle) h-[calc(100svh-3.5rem)] md:h-[calc(100vh-4rem)] flex flex-col justify-between"
         >
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-8 md:py-10 flex flex-col flex-1 justify-between min-h-0">
             {/* Section Header */}
@@ -205,7 +205,7 @@ export function ExperienceTimeline() {
             </div>
 
             {/* Step Pills & Role Counter */}
-            <div className="pt-2.5 sm:pt-4 border-t border-(--border-subtle)/60 flex items-center justify-between shrink-0">
+            <div className="py-2.5 sm:py-4 border-t border-(--border-subtle)/60 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-1.5">
                 {WORK_EXPERIENCE.map((_, i) => (
                   <span
