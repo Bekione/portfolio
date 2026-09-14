@@ -1,3 +1,5 @@
+   <img width="50" height="50" alt="bereket avatar" src="./public/android-chrome-512x512.png" />
+
 # Bereket Kinfe - Personal Portfolio
 
 My personal website. Built to show who I am, what I've worked on, and how to reach me.

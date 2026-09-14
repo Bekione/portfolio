@@ -47,13 +47,13 @@ export function LabExperiments() {
       id="lab"
       ref={autoAdvanceRef}
       {...containerProps}
-      className="py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
+      className="py-18 sm:py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-semibold text-vermilion">
+            <span className="font-mono text-xs font-semibold text-vermilion shrink-0 whitespace-nowrap">
               05 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
@@ -87,7 +87,7 @@ export function LabExperiments() {
         </div>
 
         {/* Experiments Grid */}
-        <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           <AnimatePresence mode="popLayout">
             {filteredExperiments.map((exp) => (
               <motion.div
@@ -97,34 +97,44 @@ export function LabExperiments() {
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 0.95, filter: "blur(6px)" }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between space-y-5 hover:border-(--border-strong) transition-colors group"
+                className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between hover:border-(--border-strong) transition-colors group h-full min-h-[370px]"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase px-2 py-0.5 border border-(--border-subtle) rounded-xs text-(--text-muted)">
-                      {exp.category}
-                    </span>
-                    <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400">
-                      ● {exp.status}
-                    </span>
+                {/* Upper Content Area */}
+                <div className="flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] uppercase px-2 py-0.5 border border-(--border-subtle) rounded-xs text-(--text-muted)">
+                        {exp.category}
+                      </span>
+                      <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400">
+                        ● {exp.status}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display text-xl font-bold text-(--text-primary) group-hover:text-vermilion transition-colors">
+                      {exp.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed font-sans">
+                      {exp.description}
+                    </p>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-(--text-primary) group-hover:text-vermilion transition-colors">
-                    {exp.title}
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed font-sans">
-                    {exp.description}
-                  </p>
-
+                  {/* Aligned Note Section */}
                   {exp.notes && (
-                    <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-muted)">
-                      <em>Note:</em> {exp.notes}
+                    <div className="mt-auto pt-3">
+                      <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-muted) min-h-[50px] flex items-center">
+                        <div>
+                          <span className="text-vermilion/80 italic font-semibold">Note:</span>{" "}
+                          <span>{exp.notes}</span>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-(--border-subtle) space-y-4">
+                {/* Footer Section */}
+                <div className="mt-5 pt-4 border-t border-(--border-subtle) space-y-4">
                   <div className="flex flex-wrap gap-1.5">
                     {exp.technologies.map((tech) => (
                       <span

@@ -20,8 +20,8 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-20 bg-(--bg-surface) border-t border-(--border-subtle) text-(--text-secondary)">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="py-10 sm:py-20 bg-(--bg-surface) border-t border-(--border-subtle) text-(--text-secondary)">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Creative Vertical Split: Left (Closing & Identity) | Right (Channels & Colophon) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column (7 cols): Slogan & Professional Identity */}

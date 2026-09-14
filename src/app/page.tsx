@@ -30,7 +30,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary) relative selection:bg-vermilion selection:text-white transition-colors duration-200">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-(--bg-primary) text-(--text-primary) relative selection:bg-vermilion selection:text-white transition-colors duration-200">
       {/* Editorial Top Navigation */}
       <Navigation
         theme={theme}
@@ -39,7 +39,7 @@ export default function HomePage() {
       />
 
       {/* Main Structural Flow */}
-      <main id="main-content" className="relative">
+      <main id="main-content" className="relative w-full max-w-full">
         {/* 00: Hero & Workshop Assembly */}
         <Hero theme={theme} onOpenResume={() => setIsResumeOpen(true)} />
 

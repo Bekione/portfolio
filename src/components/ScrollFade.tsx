@@ -10,6 +10,8 @@ interface ScrollFadeProps {
   alwaysShowFade?: boolean;
   animateFade?: boolean;
   className?: string;
+  fadeStart?: boolean;
+  fadeEnd?: boolean;
 }
 
 const ScrollFade: React.FC<ScrollFadeProps> = ({
@@ -20,12 +22,18 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
   alwaysShowFade = false,
   animateFade = true,
   className = "",
+  fadeStart = true,
+  fadeEnd = true,
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const scrollElRef = useRef<HTMLElement | null>(null);
 
-  const [startFade, setStartFade] = useState(0);
-  const [endFade, setEndFade] = useState(0);
+  const [startFade, setStartFade] = useState(
+    alwaysShowFade && fadeStart ? fadeSize : 0
+  );
+  const [endFade, setEndFade] = useState(
+    alwaysShowFade && fadeEnd ? fadeSize : 0
+  );
 
   const isHorizontal = direction === "horizontal";
 
@@ -41,8 +49,8 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
 
     if (fadeMode === "scroll") {
       // Dynamic fade based on proximity to edges
-      const start = Math.min(scrollPos, fadeSize);
-      const end = Math.min(maxScroll - scrollPos, fadeSize);
+      const start = fadeStart ? Math.min(scrollPos, fadeSize) : 0;
+      const end = fadeEnd ? Math.min(maxScroll - scrollPos, fadeSize) : 0;
 
       setStartFade((prev) => (prev === start ? prev : start));
       setEndFade((prev) => (prev === end ? prev : end));
@@ -51,12 +59,12 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
       const canStart = scrollPos > 0;
       const canEnd = scrollPos < maxScroll - 1;
 
-      const start = alwaysShowFade ? fadeSize : canStart ? fadeSize : 0;
-      const end = alwaysShowFade ? fadeSize : canEnd ? fadeSize : 0;
+      const start = fadeStart ? (alwaysShowFade ? fadeSize : canStart ? fadeSize : 0) : 0;
+      const end = fadeEnd ? (alwaysShowFade ? fadeSize : canEnd ? fadeSize : 0) : 0;
       setStartFade((prev) => (prev === start ? prev : start));
       setEndFade((prev) => (prev === end ? prev : end));
     }
-  }, [isHorizontal, fadeMode, fadeSize, alwaysShowFade]);
+  }, [isHorizontal, fadeMode, fadeSize, alwaysShowFade, fadeStart, fadeEnd]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;

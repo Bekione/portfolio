@@ -5,6 +5,7 @@ import { ArrowUpRight, Github, GitCommit, Calendar, Flame } from "lucide-react";
 import { motion, useMotionValue, useTransform, animate, useInView } from "motion/react";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { Noise } from "./Noise";
+import { ScrollFade } from "./ScrollFade";
 
 function AnimatedCounter({
   value,
@@ -140,7 +141,7 @@ export function GitHubSection() {
 
   return (
     <section className="py-20 border-b border-(--border-subtle) bg-(--bg-surface)">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="p-6 sm:p-8 border border-(--border-subtle) bg-(--bg-primary) rounded-xs space-y-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-(--border-subtle) pb-5">
@@ -222,22 +223,17 @@ export function GitHubSection() {
 
           {/* Live Heatmap Grid */}
           <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between text-[10px] font-mono text-(--text-muted) min-h-[28px]">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] font-mono text-(--text-muted) min-h-[28px]">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span className="shrink-0">ACTIVITY CADENCE // GITHUB DATA</span>
-                <span
-                  className={`text-(--text-primary) font-semibold bg-(--bg-surface) px-2 py-0.5 border border-(--border-subtle) rounded-xs transition-opacity duration-150 text-[10px] ${
-                    activeCell ? "opacity-100" : "opacity-0 pointer-events-none"
-                  }`}
-                  aria-hidden={!activeCell}
-                >
-                  {activeCell
-                    ? `${activeCell.date}: ${activeCell.count} contribution${activeCell.count === 1 ? "" : "s"}`
-                    : "No selection"}
-                </span>
+                {activeCell && (
+                  <span className="text-(--text-primary) font-semibold bg-(--bg-surface) px-2 py-0.5 border border-(--border-subtle) rounded-xs text-[10px]">
+                    {activeCell.date}: {activeCell.count} contribution{activeCell.count === 1 ? "" : "s"}
+                  </span>
+                )}
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto">
                 <span>Less</span>
                 <span className="w-2.5 h-2.5 rounded-xs bg-(--border-subtle)/50" />
                 <span className="w-2.5 h-2.5 rounded-xs bg-vermilion/30" />
@@ -248,36 +244,44 @@ export function GitHubSection() {
               </div>
             </div>
 
-            <div className="overflow-x-auto pb-2 scrollbar-none">
-              <div className="inline-grid grid-rows-7 grid-flow-col gap-1 p-1">
-                {Array.from({ length: WEEKS_COUNT }).map((_, w) =>
-                  Array.from({ length: DAYS_PER_WEEK }).map((_, d) => {
-                    const day = getDayAt(w, d);
-                    return (
-                      <motion.div
-                        key={`${w}-${d}`}
-                        initial={{ opacity: 0, scale: 0.4 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{
-                          duration: 0.25,
-                          delay: Math.min(w * 0.012 + d * 0.006, 0.8),
-                          ease: "easeOut",
-                        }}
-                        onMouseEnter={() =>
-                          setActiveCell({ date: day.date, count: day.count })
-                        }
-                        onMouseLeave={() => setActiveCell(null)}
-                        className={`w-2.5 h-2.5 rounded-xs transition-transform hover:scale-125 cursor-pointer ${getColorClass(
-                          day.level,
-                        )}`}
-                        title={`${day.date}: ${day.count} contributions`}
-                      />
-                    );
-                  }),
-                )}
+            <ScrollFade
+              fadeSize={32}
+              direction="horizontal"
+              fadeMode="scroll"
+              alwaysShowFade={false}
+              className="w-full"
+            >
+              <div className="overflow-x-auto pb-2 scrollbar-none">
+                <div className="inline-grid grid-rows-7 grid-flow-col gap-1 p-1 min-w-max">
+                  {Array.from({ length: WEEKS_COUNT }).map((_, w) =>
+                    Array.from({ length: DAYS_PER_WEEK }).map((_, d) => {
+                      const day = getDayAt(w, d);
+                      return (
+                        <motion.div
+                          key={`${w}-${d}`}
+                          initial={{ opacity: 0, scale: 0.4 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{
+                            duration: 0.25,
+                            delay: Math.min(w * 0.012 + d * 0.006, 0.8),
+                            ease: "easeOut",
+                          }}
+                          onMouseEnter={() =>
+                            setActiveCell({ date: day.date, count: day.count })
+                          }
+                          onMouseLeave={() => setActiveCell(null)}
+                          className={`w-2.5 h-2.5 rounded-xs transition-transform hover:scale-125 cursor-pointer ${getColorClass(
+                            day.level,
+                          )}`}
+                          title={`${day.date}: ${day.count} contributions`}
+                        />
+                      );
+                    }),
+                  )}
+                </div>
               </div>
-            </div>
+            </ScrollFade>
           </div>
         </div>
       </div>

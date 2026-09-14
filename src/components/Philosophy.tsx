@@ -3,12 +3,12 @@ import { Noise } from "./Noise";
 
 export function Philosophy() {
   return (
-    <section className="py-24 border-b border-(--border-subtle) bg-(--bg-surface)">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-18 sm:py-24 border-b border-(--border-subtle) bg-(--bg-surface)">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-semibold text-vermilion">
+            <span className="font-mono text-xs font-semibold text-vermilion shrink-0 whitespace-nowrap">
               05 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">

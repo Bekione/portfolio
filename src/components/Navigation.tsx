@@ -65,16 +65,24 @@ export function Navigation({
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      const navOffset = 70;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (!element) return;
+
+      const win = typeof window !== "undefined" ? (window as any) : {};
+      if (win.lenis) {
+        win.lenis.scrollTo(element, { offset: -70, duration: 1.2 });
+      } else {
+        const navOffset = 70;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - navOffset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }, 60);
   };
 
   return (
@@ -85,7 +93,7 @@ export function Navigation({
           : "bg-transparent border-transparent py-5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand & Technical Identity */}
         <button
           onClick={() => scrollToSection("hero")}
@@ -186,7 +194,7 @@ export function Navigation({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="md:hidden border-b border-(--border-subtle) bg-(--bg-surface) px-6 py-6 overflow-hidden"
+            className="md:hidden border-b border-(--border-subtle) bg-(--bg-surface) px-6 py-6  mt-2! overflow-hidden"
           >
             <div className="flex flex-col gap-4 font-mono text-sm">
               {NAV_ITEMS.map((item) => (

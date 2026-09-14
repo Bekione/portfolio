@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -43,14 +44,14 @@ export function SelectedWork() {
       id="work"
       ref={autoAdvanceRef}
       {...containerProps}
-      className="py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
+      className="py-18 sm:py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono text-vermilion mb-1">
-              <span>01 //</span>
+              <span className="shrink-0 whitespace-nowrap">01 //</span>
               <span>SELECTED WORK</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-(--text-primary)">
@@ -231,6 +232,69 @@ function ProjectCaseStudy({ project }: { project: Project }) {
 
 function ProjectScreenshotCard({ project }: { project: Project }) {
   const [isZoomed, setIsZoomed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isZoomed) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isZoomed]);
+
+  const modalContent = (
+    <AnimatePresence>
+      {isZoomed && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsZoomed(false)}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs p-4 sm:p-8 flex items-center justify-center cursor-zoom-out w-screen h-[100dvh]"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="relative max-w-5xl w-full bg-(--bg-surface) border border-(--border-strong) rounded-xs overflow-hidden shadow-2xl my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-(--bg-primary) border-b border-(--border-subtle)">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-vermilion" />
+                <span className="font-mono text-xs text-(--text-primary) font-semibold">
+                  {project.title} — Interface Screenshot
+                </span>
+              </div>
+              <button
+                onClick={() => setIsZoomed(false)}
+                className="p-1 hover:text-vermilion text-(--text-muted) transition-colors cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="relative aspect-16/10 w-full max-h-[75vh] bg-black/50">
+              <Image
+                src={project.image}
+                alt={project.imageAlt || `${project.title} preview`}
+                fill
+                className="object-contain"
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div className="space-y-4">
@@ -252,9 +316,7 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
                 {project.liveUrl.replace(/^https?:\/\//, "")}
               </span>
             ) : (
-              <span className="truncate">
-                {project.id}.preview // internal
-              </span>
+              <span className="truncate">{project.id}.preview // internal</span>
             )}
           </div>
 
@@ -335,51 +397,8 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
         )}
       </div>
 
-      {/* Lightbox Modal when Zoomed */}
-      <AnimatePresence>
-        {isZoomed && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsZoomed(false)}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs p-4 sm:p-8 flex items-center justify-center cursor-zoom-out"
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative max-w-5xl w-full bg-(--bg-surface) border border-(--border-strong) rounded-xs overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between px-4 py-3 bg-(--bg-primary) border-b border-(--border-subtle)">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-vermilion" />
-                  <span className="font-mono text-xs text-(--text-primary) font-semibold">
-                    {project.title} — Interface Screenshot
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsZoomed(false)}
-                  className="p-1 hover:text-vermilion text-(--text-muted) transition-colors cursor-pointer"
-                  aria-label="Close modal"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="relative aspect-16/10 w-full bg-black/50">
-                <Image
-                  src={project.image}
-                  alt={project.imageAlt || `${project.title} preview`}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Lightbox Modal when Zoomed rendered directly into document.body to avoid containing-block overflow */}
+      {mounted && typeof document !== "undefined" && createPortal(modalContent, document.body)}
     </div>
   );
 }

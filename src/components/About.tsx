@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "motion/react";
 import { CheckCircle2, Cpu, Layers, Zap } from "lucide-react";
 import { PERSONAL_INFO } from "../data/portfolioData";
 
@@ -5,13 +8,13 @@ export function About() {
   return (
     <section
       id="about"
-      className="py-24 border-b border-(--border-subtle) bg-(--bg-surface)"
+      className="py-18 sm:py-24 border-b border-(--border-subtle) bg-(--bg-surface)"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-semibold text-vermilion">
+            <span className="font-mono text-xs font-semibold text-vermilion shrink-0 whitespace-nowrap">
               02 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
@@ -19,7 +22,7 @@ export function About() {
             </h2>
           </div>
           <span className="font-mono text-xs text-(--text-muted) tracking-wider">
-            BACKGROUND & APPROACH
+            BACKGROUND &amp; APPROACH
           </span>
         </div>
 
@@ -27,10 +30,57 @@ export function About() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-12 items-start">
           {/* Main Narrative (7 cols) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="space-y-4 text-base sm:text-lg text-(--text-secondary) leading-relaxed">
+            <div className="space-y-4 text-base sm:text-md text-(--text-secondary) leading-relaxed">
               <p className="text-xl sm:text-2xl font-display font-medium text-(--text-primary) leading-snug">
-                &ldquo;I like working where product decisions, interfaces, and
-                engineering meet.&rdquo;
+                <motion.span
+                  className="inline-block text-vermilion font-display text-2xl sm:text-3xl select-none mr-1 cursor-default"
+                  initial={{ opacity: 0, scale: 0.4, rotate: -25, y: -4 }}
+                  whileInView={{
+                    opacity: 1,
+                    scale: [0.4, 1.35, 0.9, 1.12, 1],
+                    rotate: [-25, 12, -9, 5, 0],
+                    x: [0, -4, 3, -1, 0],
+                    y: [-4, 2, -1, 0],
+                  }}
+                  viewport={{ once: false, amount: 0.6 }}
+                  transition={{
+                    duration: 0.8,
+                    ease: [0.34, 1.56, 0.64, 1],
+                  }}
+                  whileHover={{
+                    scale: 1.3,
+                    rotate: [-10, 10, -6, 0],
+                    transition: { duration: 0.4 },
+                  }}
+                >
+                  &ldquo;
+                </motion.span>
+                I like working where product decisions, interfaces, and
+                engineering meet.
+                <motion.span
+                  className="inline-block text-vermilion font-display text-2xl sm:text-3xl select-none ml-1 cursor-default"
+                  initial={{ opacity: 0, scale: 0.4, rotate: 25, y: 4 }}
+                  whileInView={{
+                    opacity: 1,
+                    scale: [0.4, 1.35, 0.9, 1.12, 1],
+                    rotate: [25, -12, 9, -5, 0],
+                    x: [0, 4, -3, 1, 0],
+                    y: [4, -2, 1, 0],
+                  }}
+                  viewport={{ once: false, amount: 0.6 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.16,
+                    ease: [0.34, 1.56, 0.64, 1],
+                  }}
+                  whileHover={{
+                    scale: 1.3,
+                    rotate: [10, -10, 6, 0],
+                    transition: { duration: 0.4 },
+                  }}
+                >
+                  &rdquo;
+                </motion.span>
               </p>
 
               <p>
@@ -54,8 +104,9 @@ export function About() {
                   <span>INTERFACES & DETAIL</span>
                 </div>
                 <p className="text-xs text-(--text-secondary) leading-normal">
-                  I care about how software feels to use — clean typography, clear
-                  hierarchy, keyboard shortcuts, and interactions that feel snappy.
+                  I care about how software feels to use — clean typography,
+                  clear hierarchy, keyboard shortcuts, and interactions that
+                  feel snappy.
                 </p>
               </div>
 
@@ -65,8 +116,9 @@ export function About() {
                   <span>PERFORMANCE & SPEED</span>
                 </div>
                 <p className="text-xs text-(--text-secondary) leading-normal">
-                  Slow software is frustrating. I treat latency as a bug, whether
-                  that means virtualizing 100k-row tables or cutting voice delays.
+                  Slow software is frustrating. I treat latency as a bug,
+                  whether that means virtualizing 100k-row tables or cutting
+                  voice delays.
                 </p>
               </div>
             </div>
@@ -140,7 +192,7 @@ export function About() {
                 </div>
               </div>
             </div>
- 
+
             <div className="pt-2 border-t border-(--border-subtle) flex items-center justify-between text-[11px] font-mono text-(--text-muted)">
               <span>TIMEZONE: UTC+3 (EAT)</span>
               <span className="text-vermilion">OPEN FOR HIRE</span>

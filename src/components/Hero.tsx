@@ -36,7 +36,7 @@ export function Hero({ onOpenResume }: HeroProps) {
         aria-hidden="true"
         className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-(--bg-primary) via-(--bg-primary)/70 to-transparent"
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto relative z-10">
         {/* Top Operational Status Strip */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-8 border-b border-(--border-subtle)/80 text-[11px] font-mono tracking-wider text-(--text-secondary)">
           <div className="flex items-center gap-2">

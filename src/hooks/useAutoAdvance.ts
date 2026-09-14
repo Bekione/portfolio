@@ -25,23 +25,43 @@ export function useAutoAdvance<T>({
   const containerRef = useRef<any>(null);
   const cooldownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Viewport visibility via IntersectionObserver: only advance when visible
+  // Viewport visibility via IntersectionObserver and scroll bounds: strictly only advance when visible
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") {
-      setIsInView(true);
+    if (!el) {
+      setIsInView(false);
       return;
     }
 
+    const checkVisibility = () => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const inView = rect.bottom > 80 && rect.top < window.innerHeight - 80;
+      setIsInView(inView);
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting);
+        const inView = entry.isIntersecting;
+        if (!inView) {
+          setIsInView(false);
+        } else {
+          checkVisibility();
+        }
       },
-      { threshold: 0.15 }
+      { threshold: 0 }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", checkVisibility, { passive: true });
+    window.addEventListener("resize", checkVisibility, { passive: true });
+    checkVisibility();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", checkVisibility);
+      window.removeEventListener("resize", checkVisibility);
+    };
   }, []);
 
   // When user manually clicks a tab or pill, pause rotation for a cooldown period

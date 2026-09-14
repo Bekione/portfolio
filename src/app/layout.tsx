@@ -55,6 +55,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://bereketkinfe.pro.et",
+    siteName: "Bereket Kinfe",
     images: [
       {
         url: "/og.png",
@@ -118,7 +119,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${instrumentSans.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
+      className={`dark ${instrumentSans.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -14,12 +14,13 @@ import {
   AlertCircle,
   RefreshCw,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { ContactFormData } from "../types";
 import { useTheme } from "../hooks/useTheme";
 import { Noise } from "./Noise";
+import { ScrollFade } from "./ScrollFade";
 import { contactSchema } from "@/lib/contactValidation";
 
 type FormErrors = Partial<Record<keyof ContactFormData | "token", string>>;
@@ -144,7 +145,9 @@ export function ContactSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to transmit message. Please try again.");
+        throw new Error(
+          data.error || "Failed to transmit message. Please try again.",
+        );
       }
 
       setStatus("success");
@@ -175,13 +178,13 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
+      className="py-18 sm:py-24 border-b border-(--border-subtle) bg-(--bg-primary)"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-12 border-b border-(--border-subtle)">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-semibold text-vermilion">
+            <span className="font-mono text-xs font-semibold text-vermilion shrink-0 whitespace-nowrap">
               06 //
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-(--text-primary)">
@@ -260,7 +263,7 @@ export function ContactSection() {
               </div>
 
               {/* Social Channels */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+              <div className="grid grid-cols-3 gap-2 text-xs font-mono">
                 <a
                   href={PERSONAL_INFO.github}
                   target="_blank"
@@ -308,13 +311,13 @@ export function ContactSection() {
 
           {/* Real Functional Form (7 cols) */}
           <div className="lg:col-span-7">
-            <div className="p-8 border border-(--border-strong) bg-(--bg-surface) rounded-xs shadow-xs">
+            <div className="p-4 sm:p-6 md:p-8 border border-(--border-strong) bg-(--bg-surface) rounded-xs shadow-xs overflow-hidden">
               <div className="flex items-center justify-between pb-6 border-b border-(--border-subtle) mb-6">
                 <span className="font-mono text-xs font-semibold text-(--text-primary)">
                   DISPATCH INQUIRY
                 </span>
                 <span className="font-mono text-[10px] text-(--text-muted)">
-                  RESEND &amp; CLOUDFLARE ACTIVE
+                  EMAIL SERVICE ACTIVE
                 </span>
               </div>
 
@@ -327,7 +330,9 @@ export function ContactSection() {
                     Message Dispatched Successfully
                   </h4>
                   <p className="text-xs sm:text-sm text-(--text-secondary) max-w-md mx-auto leading-relaxed">
-                    Thank you for reaching out. Your transmission has been queued and an acknowledgment was sent to your email. I typically respond within 24 hours.
+                    Thank you for reaching out. Your transmission has been
+                    queued and an acknowledgment was sent to your email. I
+                    typically respond within 24 hours.
                   </p>
                   <button
                     type="button"
@@ -463,12 +468,22 @@ export function ContactSection() {
                       {/* Animated placeholder overlay */}
                       {!formData.subject && (
                         <div className="absolute inset-0 flex items-center px-3.5 pointer-events-none overflow-hidden">
-                          <span className="text-xs font-mono text-(--text-muted)">e.g.&nbsp;</span>
+                          <span className="text-xs font-mono text-(--text-muted)">
+                            e.g.&nbsp;
+                          </span>
                           <AnimatePresence mode="wait">
                             <motion.span
                               key={subjectPlaceholderIndex}
-                              initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
-                              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                              initial={{
+                                opacity: 0,
+                                y: 6,
+                                filter: "blur(4px)",
+                              }}
+                              animate={{
+                                opacity: 1,
+                                y: 0,
+                                filter: "blur(0px)",
+                              }}
                               exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
                               transition={{ duration: 0.35, ease: "easeInOut" }}
                               className="text-xs font-mono text-(--text-muted) whitespace-nowrap"
@@ -520,7 +535,7 @@ export function ContactSection() {
 
                   {/* Cloudflare Turnstile Security Verification */}
                   <div className="pt-1">
-                    <div className="p-3 border border-(--border-subtle) bg-(--bg-primary) rounded-xs">
+                    <div className="p-3 border border-(--border-subtle) bg-(--bg-primary) rounded-xs overflow-hidden">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-mono text-[10px] text-(--text-muted) uppercase tracking-wider">
                           SECURITY VERIFICATION
@@ -532,22 +547,35 @@ export function ContactSection() {
                         )}
                       </div>
 
-                      <Turnstile
-                        key={turnstileKey}
-                        siteKey={turnstileSiteKey}
-                        onSuccess={(token) => {
-                          setTurnstileToken(token);
-                          if (errors.token) {
-                            setErrors((prev) => ({ ...prev, token: undefined }));
-                          }
-                        }}
-                        onError={() => setTurnstileToken(null)}
-                        onExpire={() => setTurnstileToken(null)}
-                        options={{
-                          theme: theme === "dark" ? "dark" : "light",
-                          size: "flexible",
-                        }}
-                      />
+                      <ScrollFade
+                        fadeSize={24}
+                        direction="horizontal"
+                        fadeMode="scroll"
+                        alwaysShowFade={false}
+                        className="w-full"
+                      >
+                        <div className="w-full overflow-x-auto overflow-y-hidden flex items-center justify-start sm:justify-center py-0.5 scrollbar-none">
+                          <Turnstile
+                            key={`${turnstileKey}-${theme}`}
+                            siteKey={turnstileSiteKey}
+                            onSuccess={(token) => {
+                              setTurnstileToken(token);
+                              if (errors.token) {
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  token: undefined,
+                                }));
+                              }
+                            }}
+                            onError={() => setTurnstileToken(null)}
+                            onExpire={() => setTurnstileToken(null)}
+                            options={{
+                              theme: theme === "dark" ? "dark" : "light",
+                              size: "flexible",
+                            }}
+                          />
+                        </div>
+                      </ScrollFade>
                     </div>
                     {errors.token && (
                       <p className="text-[10px] font-mono text-red-500 pt-1.5">
