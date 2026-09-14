@@ -205,7 +205,7 @@ export function ExperienceTimeline() {
             </div>
 
             {/* Step Pills & Role Counter */}
-            <div className="py-2.5 sm:py-4 border-t border-(--border-subtle)/60 flex items-center justify-between shrink-0">
+            <div className="pb-2.5 pt-4 sm:py-4 border-t border-(--border-subtle)/60 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-1.5">
                 {WORK_EXPERIENCE.map((_, i) => (
                   <span
