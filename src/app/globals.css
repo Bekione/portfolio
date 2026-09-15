@@ -5,9 +5,9 @@
   --font-body: var(--font-plus-jakarta), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-vermilion: #C94B32;
-  --color-vermilion-hover: #b33f27;
-  --color-vermilion-light: #fbeee9;
+  --color-vermilion: var(--accent);
+  --color-vermilion-hover: var(--accent-hover);
+  --color-vermilion-light: var(--accent-dim);
 }
 
 /* Animated live film grain / shaking noise jitter */
@@ -32,13 +32,14 @@
     --bg-surface-alt: #EBE7DD;
     --text-primary: #151515;
     --text-secondary: #58554F;
-    --text-muted: #848077;
+    --text-muted: #5F5C55;
     --border-subtle: #DDD8CD;
     --border-strong: #BCB6A8;
     --grid-line: rgba(21, 21, 21, 0.05);
     --card-surface: #FAF8F4;
-    --accent: #C94B32;
-    --accent-dim: rgba(201, 75, 50, 0.12);
+    --accent: #B8381F;
+    --accent-hover: #9E2D17;
+    --accent-dim: rgba(184, 56, 31, 0.12);
   }
 
   .dark {
@@ -48,13 +49,14 @@
     --bg-surface-alt: #20201D;
     --text-primary: #ECE8E0;
     --text-secondary: #A6A299;
-    --text-muted: #6E6B63;
+    --text-muted: #A09C93;
     --border-subtle: #292825;
     --border-strong: #3F3E3A;
     --grid-line: rgba(236, 232, 224, 0.04);
     --card-surface: #171715;
-    --accent: #E0583F;
-    --accent-dim: rgba(224, 88, 63, 0.16);
+    --accent: #E55E45;
+    --accent-hover: #F07159;
+    --accent-dim: rgba(229, 94, 69, 0.16);
   }
 
   html,

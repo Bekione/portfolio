@@ -268,7 +268,8 @@ export function ContactSection() {
                   href={PERSONAL_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  aria-label="GitHub profile (Bekione)"
+                  className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
                   <Noise />
                   <Github className="w-3.5 h-3.5 text-vermilion relative z-10" />
@@ -279,7 +280,8 @@ export function ContactSection() {
                   href={PERSONAL_INFO.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  aria-label="LinkedIn profile (Bereket Kinfe)"
+                  className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
                   <Noise />
                   <Linkedin className="w-3.5 h-3.5 text-vermilion relative z-10" />
@@ -291,7 +293,8 @@ export function ContactSection() {
                     href={PERSONAL_INFO.upwork}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="relative overflow-hidden p-2.5 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
+                    aria-label="Upwork profile (Bereket Kinfe)"
+                    className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
                   >
                     <Noise />
                     <Briefcase className="w-3.5 h-3.5 text-[#14a800] relative z-10" />
@@ -393,11 +396,17 @@ export function ContactSection() {
                   {/* Name and Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono text-(--text-secondary)">
+                      <label
+                        htmlFor="contact-name"
+                        className="block text-xs font-mono text-(--text-secondary)"
+                      >
                         NAME <span className="text-vermilion">*</span>
                       </label>
                       <input
+                        id="contact-name"
                         type="text"
+                        name="name"
+                        autoComplete="name"
                         value={formData.name}
                         onChange={(e) => {
                           setFormData({ ...formData, name: e.target.value });
@@ -419,11 +428,17 @@ export function ContactSection() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono text-(--text-secondary)">
+                      <label
+                        htmlFor="contact-email"
+                        className="block text-xs font-mono text-(--text-secondary)"
+                      >
                         EMAIL <span className="text-vermilion">*</span>
                       </label>
                       <input
+                        id="contact-email"
                         type="email"
+                        name="email"
+                        autoComplete="email"
                         value={formData.email}
                         onChange={(e) => {
                           setFormData({ ...formData, email: e.target.value });
@@ -447,11 +462,16 @@ export function ContactSection() {
 
                   {/* Subject */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-mono text-(--text-secondary)">
+                    <label
+                      htmlFor="contact-subject"
+                      className="block text-xs font-mono text-(--text-secondary)"
+                    >
                       SUBJECT <span className="text-vermilion">*</span>
                     </label>
                     <div className="relative">
                       <input
+                        id="contact-subject"
+                        name="subject"
                         type="text"
                         value={formData.subject}
                         onChange={(e) => {
@@ -504,7 +524,10 @@ export function ContactSection() {
                   {/* Message */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="block text-xs font-mono text-(--text-secondary)">
+                      <label
+                        htmlFor="contact-message"
+                        className="block text-xs font-mono text-(--text-secondary)"
+                      >
                         MESSAGE <span className="text-vermilion">*</span>
                       </label>
                       <span className="text-[10px] font-mono text-(--text-muted)">
@@ -512,6 +535,8 @@ export function ContactSection() {
                       </span>
                     </div>
                     <textarea
+                      id="contact-message"
+                      name="message"
                       rows={5}
                       value={formData.message}
                       onChange={(e) => {

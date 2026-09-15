@@ -119,7 +119,7 @@ export function Navigation({
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`group relative text-xs font-mono tracking-wider transition-colors py-1 flex items-center gap-1 ${
+                className={`group relative text-xs font-mono tracking-wider transition-colors py-2 px-1 min-h-[32px] flex items-center gap-1 ${
                   isActive
                     ? "text-vermilion font-medium"
                     : "text-(--text-secondary) hover:text-(--text-primary)"
@@ -146,13 +146,13 @@ export function Navigation({
           {/* Resume Trigger */}
           <button
             onClick={onOpenResume}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
             title="View & Download Resume"
           >
             <Noise />
             <FileText className="w-3.5 h-3.5 relative z-10" />
             <span className="relative z-10">RESUME</span>
-            <ArrowUpRight className="w-3 h-3 opacity-60 relative z-10" />
+            <ArrowUpRight className="w-3 h-3 text-(--text-muted) relative z-10" />
           </button>
 
           {/* Theme Toggle Button */}
@@ -160,7 +160,7 @@ export function Navigation({
             onClick={onToggleTheme}
             aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
             suppressHydrationWarning
-            className="p-2 border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden"
           >
             <Noise />
             {theme === "light" ? (
@@ -173,7 +173,7 @@ export function Navigation({
           {/* Mobile Hamburger Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 border border-(--border-subtle) rounded-xs text-(--text-primary) hover:border-vermilion transition-colors"
+            className="md:hidden p-2 min-w-[40px] min-h-[40px] flex items-center justify-center border border-(--border-subtle) rounded-xs text-(--text-primary) hover:border-vermilion transition-colors"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >

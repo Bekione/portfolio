@@ -75,14 +75,14 @@ export function SelectedWork() {
                   pauseOnManualInteraction(12000);
                   setActiveProjectTab(project.id);
                 }}
-                className={`px-4 py-2.5 text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative overflow-hidden ${
+                className={`px-4 py-2.5 min-h-[36px] text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative overflow-hidden ${
                   isSelected
                     ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
                 <Noise />
-                <span className="opacity-70 relative z-10">
+                <span className="text-(--text-muted) relative z-10">
                   {project.number}.
                 </span>
                 <span className="relative z-10">
@@ -340,6 +340,7 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
             alt={project.imageAlt || `${project.title} preview`}
             width={1280}
             height={800}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 560px"
             className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             priority={project.number === "01"}
           />
@@ -384,7 +385,8 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-[#151515] dark:bg-[#ece8e0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white transition-colors font-medium cursor-pointer"
+            aria-label={`Visit live platform for ${project.title}`}
+            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[36px] rounded-xs bg-[#151515] dark:bg-[#ece8e0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white transition-colors font-medium cursor-pointer"
           >
             <Noise />
             <span>VISIT LIVE PLATFORM</span>

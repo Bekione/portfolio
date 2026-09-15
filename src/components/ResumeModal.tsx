@@ -70,8 +70,8 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   const handleDownloadPDF = () => {
     const link = document.createElement("a");
-    link.href = "/Bereket.Kinfe.Shiferaw-Resume.pdf";
-    link.download = "Bereket.Kinfe.Shiferaw-Resume.pdf";
+    link.href = "/resume.pdf";
+    link.download = "Bereket-Kinfe-Resume.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

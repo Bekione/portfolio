@@ -161,7 +161,8 @@ export function GitHubSection() {
               href={PERSONAL_INFO.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion transition-colors rounded-xs self-start sm:self-auto cursor-pointer"
+              aria-label="GitHub profile (Bekione)"
+              className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[36px] border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion transition-colors rounded-xs self-start sm:self-auto cursor-pointer"
             >
               <Noise />
               <span className="relative z-10">GITHUB PROFILE</span>

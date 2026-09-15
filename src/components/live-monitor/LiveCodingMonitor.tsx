@@ -213,7 +213,7 @@ export function LiveCodingMonitor() {
                   pauseOnManualInteraction(12000);
                   setSettings((s) => ({ ...s, activeProject: proj.id }));
                 }}
-                className={`px-2 py-0.5 rounded-xs transition-colors cursor-pointer text-[9.5px] whitespace-nowrap border relative overflow-hidden ${
+                className={`px-2.5 py-1 min-h-[28px] flex items-center rounded-xs transition-colors cursor-pointer text-[10px] whitespace-nowrap border relative overflow-hidden ${
                   isSelected
                     ? "border-vermilion bg-vermilion/10 text-vermilion font-semibold"
                     : "border-(--border-subtle) hover:text-(--text-primary) hover:border-(--border-strong)"
@@ -230,7 +230,7 @@ export function LiveCodingMonitor() {
           })}
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {/* ViewMode toggle */}
           <button
             onClick={() =>
@@ -244,16 +244,17 @@ export function LiveCodingMonitor() {
                       : "split",
               }))
             }
-            className="p-1 rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer relative overflow-hidden"
+            aria-label={`Switch monitor view mode, current: ${settings.viewMode}`}
+            className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer relative overflow-hidden"
             title={`View: ${settings.viewMode.toUpperCase()}`}
           >
             <Noise />
             {settings.viewMode === "split" ? (
-              <Layers className="w-3 h-3" />
+              <Layers className="w-3.5 h-3.5" />
             ) : settings.viewMode === "code" ? (
-              <Code2 className="w-3 h-3" />
+              <Code2 className="w-3.5 h-3.5" />
             ) : (
-              <Laptop className="w-3 h-3" />
+              <Laptop className="w-3.5 h-3.5" />
             )}
           </button>
 
@@ -262,7 +263,12 @@ export function LiveCodingMonitor() {
             onClick={() =>
               setSettings((s) => ({ ...s, soundEnabled: !s.soundEnabled }))
             }
-            className={`p-1 rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
+            aria-label={
+              settings.soundEnabled
+                ? "Mute typing sounds"
+                : "Enable mechanical keyboard sounds"
+            }
+            className={`p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               settings.soundEnabled
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"
@@ -275,16 +281,17 @@ export function LiveCodingMonitor() {
           >
             <Noise />
             {settings.soundEnabled ? (
-              <Volume2 className="w-3 h-3" />
+              <Volume2 className="w-3.5 h-3.5" />
             ) : (
-              <VolumeX className="w-3 h-3 opacity-60" />
+              <VolumeX className="w-3.5 h-3.5 text-(--text-muted)" />
             )}
           </button>
 
           {/* Zoom toggle */}
           <button
             onClick={() => setIsZoomed(!isZoomed)}
-            className={`p-1 rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
+            aria-label={isZoomed ? "Reset zoom" : "Zoom into live monitor screen"}
+            className={`p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               isZoomed
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"
@@ -293,9 +300,9 @@ export function LiveCodingMonitor() {
           >
             <Noise />
             {isZoomed ? (
-              <Minimize2 className="w-3 h-3" />
+              <Minimize2 className="w-3.5 h-3.5" />
             ) : (
-              <Maximize2 className="w-3 h-3" />
+              <Maximize2 className="w-3.5 h-3.5" />
             )}
           </button>
         </div>

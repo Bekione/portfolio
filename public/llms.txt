@@ -1,0 +1,36 @@
+# Bereket Kinfe — Software Engineer
+
+> Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.
+
+## About
+
+I'm a software engineer who likes working across the whole product — from interfaces and frontend architecture to APIs, data, and the messy problems underneath them. Over the last ~4 years I've worked on everything from multi-tenant marketplaces and large ERP systems to AI-powered voice applications and mobile products.
+
+## Primary Stack
+
+- TypeScript, React, Next.js, Node.js
+- React Native (Mobile)
+- Tailwind CSS, Framer Motion
+- PostgreSQL, MySQL, Prisma, Redis
+- WebSockets, REST APIs, GraphQL
+- AWS, Vercel, Docker
+
+## Featured Projects
+
+- [Afrilearn Platform](https://afrilearn.net): Rebuilt frontend for the AI-powered education platform. Achieved 100/100 Google Lighthouse across all categories. Reduced LCP from 3.8s to 0.7s. Built with Next.js, React, TypeScript, Tailwind CSS.
+- [AI Visa Interview Simulator](https://github.com/Bekione): Real-time voice AI mock visa interview simulator with sub-second latency. Full-duplex WebSocket audio streaming with ONNX-powered BERT-based Voice Activity Detection.
+- [ISP Multi-Tenant Marketplace](https://github.com/Bekione): Multi-tenant ISP marketplace with customer, ISP admin, and platform admin tiers. Built with React, React Native, TypeScript, Tailwind CSS, Nest.js, and PostgreSQL.
+- [Spare-Parts Enterprise ERP](https://github.com/Bekione): High-performance inventory management system handling 10M+ records with windowed virtualization and sub-100ms response times. Built with React, Laravel, MySQL, Redis.
+
+## Open Source & Developer Tools
+
+- [Commit-Tastic](https://github.com/Bekione/commit-tastic): VS Code extension for automated, context-aware Git commit messages powered by local LLMs.
+- [ThreadMind](https://github.com/Bekione/threadmind): AI Telegram bot that summarizes unread group chat threads into concise briefing notes.
+- [FreelanceHub](https://github.com/Bekione/FreelanceHub): Open-source freelance client and project management suite with automated Stripe invoicing.
+
+## Links & Profiles
+
+- [GitHub Profile](https://github.com/Bekione): Open source repositories, code samples, and contributions.
+- [LinkedIn Profile](https://www.linkedin.com/in/bereket-k/): Professional career history and recommendations.
+- [Upwork Profile](https://www.upwork.com/freelancers/~012d26bbc748699f75): Top-rated freelance work history and client reviews.
+- [Email Contact](mailto:bereket.kinfe23@gmail.com): Direct email inquiry for engineering and product roles.

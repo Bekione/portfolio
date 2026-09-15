@@ -33,7 +33,7 @@ export const metadata: Metadata = {
           ? `https://${process.env.VERCEL_URL}`
           : "https://bereketkinfe.pro.et"),
   ),
-  title: "Bereket Kinfe — Software Engineer",
+  title: "Bereket Kinfe | Software Engineer",
   description:
     "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
   keywords: [
@@ -123,16 +123,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

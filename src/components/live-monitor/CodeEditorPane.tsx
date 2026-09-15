@@ -88,7 +88,7 @@ export function CodeEditorPane({
   return (
     <div className="flex flex-col h-full bg-[#0d0e15] text-slate-200 font-mono text-[11px] select-none overflow-hidden">
       {/* Tab Bar */}
-      <div className="flex items-center justify-between bg-[#08090e] border-b border-slate-800/80 px-2 h-7 shrink-0 overflow-x-auto scrollbar-none">
+      <div className="flex items-center justify-between bg-[#08090e] border-b border-slate-800/80 px-2 min-h-[34px] shrink-0 overflow-x-auto scrollbar-none">
         <div className="flex items-center space-x-1">
           {project.files.map((file, idx) => {
             const isActive = idx === activeFileIndex;
@@ -96,7 +96,8 @@ export function CodeEditorPane({
               <button
                 key={file.name}
                 onClick={() => setActiveFileIndex(idx)}
-                className={`flex items-center space-x-1.5 px-2.5 py-1 text-[10px] rounded-t transition-colors cursor-pointer ${
+                aria-label={`Open file ${file.name}`}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 min-h-[32px] text-[10px] rounded-t transition-colors cursor-pointer ${
                   isActive
                     ? 'bg-[#0d0e15] text-sky-300 font-semibold border-t border-sky-400'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'

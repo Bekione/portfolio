@@ -89,7 +89,8 @@ export function Footer() {
               </span>
               <button
                 onClick={scrollToTop}
-                className="relative overflow-hidden inline-flex items-center gap-2 px-3.5 py-1.5 border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion rounded-xs transition-colors cursor-pointer group"
+                aria-label="Return to top of page"
+                className="relative overflow-hidden inline-flex items-center gap-2 px-3.5 py-2 min-h-[36px] border border-(--border-strong) hover:border-vermilion text-xs font-mono text-(--text-primary) hover:text-vermilion rounded-xs transition-colors cursor-pointer group"
               >
                 <Noise />
                 <span>BACK TO TOP</span>
@@ -107,7 +108,8 @@ export function Footer() {
                   href={PERSONAL_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
+                  aria-label="GitHub profile (Bekione)"
+                  className="p-2.5 min-h-[44px] border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-2">
                     <Github className="w-3.5 h-3.5 text-vermilion" />
@@ -120,7 +122,8 @@ export function Footer() {
                   href={PERSONAL_INFO.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
+                  aria-label="LinkedIn profile (Bereket Kinfe)"
+                  className="p-2.5 min-h-[44px] border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-2">
                     <Linkedin className="w-3.5 h-3.5 text-vermilion" />
@@ -134,7 +137,8 @@ export function Footer() {
                     href={PERSONAL_INFO.upwork}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 border border-(--border-subtle) hover:border-[#14a800]/50 bg-(--bg-primary) rounded-xs hover:text-[#14a800] transition-colors flex items-center justify-between group"
+                    aria-label="Upwork profile (Bereket Kinfe)"
+                    className="p-2.5 min-h-[44px] border border-(--border-subtle) hover:border-[#14a800]/50 bg-(--bg-primary) rounded-xs hover:text-[#14a800] transition-colors flex items-center justify-between group"
                   >
                     <div className="flex items-center gap-2">
                       <Briefcase className="w-3.5 h-3.5 text-[#14a800]" />
@@ -146,7 +150,8 @@ export function Footer() {
 
                 <a
                   href={`mailto:${PERSONAL_INFO.email}`}
-                  className="p-2.5 border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
+                  aria-label={`Send email to ${PERSONAL_INFO.email}`}
+                  className="p-2.5 min-h-[44px] border border-(--border-subtle) hover:border-(--border-strong) bg-(--bg-primary) rounded-xs hover:text-vermilion transition-colors flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-2">
                     <Mail className="w-3.5 h-3.5 text-vermilion" />

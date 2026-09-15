@@ -74,7 +74,7 @@ export function LabExperiments() {
                 pauseOnManualInteraction(10000);
                 setSelectedFilter(cat);
               }}
-              className={`px-3.5 py-1.5 text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
+              className={`px-3.5 py-1.5 min-h-[32px] flex items-center text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
                 selectedFilter === cat
                   ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                   : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
@@ -123,9 +123,9 @@ export function LabExperiments() {
                   {/* Aligned Note Section */}
                   {exp.notes && (
                     <div className="mt-auto pt-3">
-                      <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-muted) min-h-[50px] flex items-center">
+                      <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-secondary) min-h-[50px] flex items-center">
                         <div>
-                          <span className="text-vermilion/80 italic font-semibold">Note:</span>{" "}
+                          <span className="text-vermilion font-semibold">Note:</span>{" "}
                           <span>{exp.notes}</span>
                         </div>
                       </div>
@@ -150,7 +150,8 @@ export function LabExperiments() {
                     href={exp.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-mono text-vermilion hover:underline font-medium"
+                    aria-label={`View ${exp.title} repository on GitHub`}
+                    className="inline-flex items-center gap-1.5 py-1 min-h-[28px] text-xs font-mono text-vermilion hover:underline font-medium"
                   >
                     <span>VIEW REPOSITORY</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />

@@ -63,16 +63,16 @@ export function TechStack() {
                   pauseOnManualInteraction(10000);
                   setActiveCategory(cat.number);
                 }}
-                className={`px-4 py-2 text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
+                className={`px-4 py-2 min-h-[36px] text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden flex items-center gap-1.5 ${
                   isSelected
                     ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
                 <Noise />
-                <span className="opacity-60 relative z-10">
+                <span className="text-(--text-muted) relative z-10">
                   {cat.number}.
-                </span>{" "}
+                </span>
                 <span className="relative z-10">{cat.title}</span>
               </button>
             );

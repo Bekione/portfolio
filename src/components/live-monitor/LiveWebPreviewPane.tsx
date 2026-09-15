@@ -84,7 +84,7 @@ export function LiveWebPreviewPane({
                     <Mic className="w-4 h-4 animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-white">Consular Mock Interview</h3>
+                    <span className="text-xs font-bold text-white block">Consular Mock Interview</span>
                     <p className="text-[9px] text-slate-400">Low-Latency Duplex Audio Stream</p>
                   </div>
                 </div>
@@ -128,7 +128,7 @@ export function LiveWebPreviewPane({
             <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="text-xs font-bold text-white">Enterprise Parts Inventory</h3>
+                  <span className="text-xs font-bold text-white block">Enterprise Parts Inventory</span>
                   <p className="text-[9px] text-slate-400">10,000,000+ SKU Windowed Virtualization</p>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[8.5px] font-mono">
@@ -158,7 +158,7 @@ export function LiveWebPreviewPane({
           <div className="space-y-2.5">
             <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-bold text-white">Afrilearn Flagship Web</h3>
+                <span className="text-xs font-bold text-white block">Afrilearn Flagship Web</span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[8.5px] font-mono">
                   LIGHTHOUSE 100/100
                 </span>
