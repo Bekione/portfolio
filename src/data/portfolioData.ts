@@ -51,7 +51,11 @@ export const FEATURED_PROJECTS: Project[] = [
       'Integrated Nest.js REST APIs and PostgreSQL with robust error boundaries and optimistic state updates',
       'Built a clean, accessible design system with Tailwind CSS for rapid feature delivery'
     ],
-    image: '/assets/projects/isp-marketplace.jpg',
+    image: '/assets/projects/isp-marketplace.png',
+    images: [
+      '/assets/projects/isp-marketplace.png',
+      '/assets/projects/isp-marketplace-dark.png'
+    ],
     imageAlt: 'ISP Marketplace Network Performance Dashboard',
     featuredAspect: 'architecture',
     isPrivate: true
@@ -79,7 +83,11 @@ export const FEATURED_PROJECTS: Project[] = [
       { label: 'Catalog Records', value: '10M+', change: 'indexed and searchable' },
       { label: 'DOM Memory', value: '-78%', change: 'client memory footprint reduction' }
     ],
-    image: '/assets/projects/spare-parts-erp.jpg',
+    image: '/assets/projects/spare-parts-erp.png',
+    images: [
+      '/assets/projects/spare-parts-erp.png',
+      '/assets/projects/spare-parts-erp-dark.png'
+    ],
     imageAlt: 'Spare-Parts Enterprise ERP High-Density Inventory Table',
     featuredAspect: 'performance',
     isPrivate: true
@@ -102,7 +110,11 @@ export const FEATURED_PROJECTS: Project[] = [
       'Streamed chunked TTS audio playback to minimize time-to-first-sound',
       'Resilient connection handling and network jitter mitigation for mobile users'
     ],
-    image: '/assets/projects/ai-visa-interview.jpg',
+    image: '/assets/projects/ai-visa-interview.png',
+    images: [
+      '/assets/projects/ai-visa-interview.png',
+      '/assets/projects/ai-visa-interview-dark.png'
+    ],
     imageAlt: 'AI Visa Interview Platform Real-Time Audio Streaming Interface',
     featuredAspect: 'ai-voice',
     isPrivate: true
@@ -130,9 +142,13 @@ export const FEATURED_PROJECTS: Project[] = [
       { label: 'Monthly Growth', value: '+600', change: 'new students in 30 days' },
       { label: 'LCP Metric', value: '0.7s', change: 'from 3.8s initial load' }
     ],
-    image: '/assets/projects/afrilearn-platform.jpg',
+    image: '/assets/projects/afrilearn-platform.png',
+    images: [
+      '/assets/projects/afrilearn-platform.png',
+      '/assets/projects/afrilearn-platform-dark.jpg'
+    ],
     imageAlt: 'Afrilearn EdTech Platform Course Dashboard',
-    liveUrl: 'https://afrilearn.com',
+    isPrivate: true,
     featuredAspect: 'optimization'
   }
 ];

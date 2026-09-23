@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
+import useEmblaCarousel from "embla-carousel-react";
 import {
   Check,
   ExternalLink,
@@ -11,13 +12,18 @@ import {
   ArrowUpRight,
   Maximize2,
   X,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { FEATURED_PROJECTS } from "../data/portfolioData";
 import { Project } from "../types";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
+import { useTheme, Theme } from "../hooks/useTheme";
 import { Noise } from "./Noise";
 
-export function SelectedWork() {
+export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
   const [activeProjectTab, setActiveProjectTab] = useState<string>(
     FEATURED_PROJECTS[0].id,
   );
@@ -108,7 +114,7 @@ export function SelectedWork() {
                 exit={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
               >
-                <ProjectCaseStudy project={activeProject} />
+                <ProjectCaseStudy project={activeProject} theme={propTheme} />
               </motion.div>
             );
           })()}
@@ -118,7 +124,13 @@ export function SelectedWork() {
   );
 }
 
-function ProjectCaseStudy({ project }: { project: Project }) {
+function ProjectCaseStudy({
+  project,
+  theme,
+}: {
+  project: Project;
+  theme?: Theme;
+}) {
   return (
     <div className="pt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
       {/* Left Column: Narrative, Problem, Solution, Highlights (7 cols) */}
@@ -224,19 +236,51 @@ function ProjectCaseStudy({ project }: { project: Project }) {
 
       {/* Right Column: High-Fidelity Project Screenshot & Quick Metrics (5 cols) */}
       <div className="lg:col-span-5 lg:sticky lg:top-24 self-start">
-        <ProjectScreenshotCard project={project} />
+        <ProjectScreenshotCard project={project} theme={theme} />
       </div>
     </div>
   );
 }
 
-function ProjectScreenshotCard({ project }: { project: Project }) {
+function ProjectScreenshotCard({
+  project,
+  theme: propTheme,
+}: {
+  project: Project;
+  theme?: Theme;
+}) {
+  const { theme: hookTheme } = useTheme();
+  const theme = propTheme || hookTheme;
+  const images =
+    project.images && project.images.length > 0
+      ? project.images
+      : [project.image];
+
+  // Default to dark screenshot (index 1) if website theme is dark, otherwise light (index 0)
+  const defaultIndex = theme === "dark" && images.length > 1 ? 1 : 0;
+  const [activeImageIndex, setActiveImageIndex] = useState(defaultIndex);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isButtonsHovered, setIsButtonsHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Sync screenshot with website theme or when project changes in real time
+  useEffect(() => {
+    setActiveImageIndex(theme === "dark" && images.length > 1 ? 1 : 0);
+  }, [project.id, theme, images.length]);
+
+  // Auto-switch between screenshots every 4.5s (pauses while hovering buttons or card or during zoom)
+  useEffect(() => {
+    if (images.length <= 1 || isHovered || isButtonsHovered || isZoomed) return;
+    const interval = setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % images.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [images.length, isHovered, isButtonsHovered, isZoomed]);
 
   useEffect(() => {
     if (isZoomed) {
@@ -249,57 +293,14 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
     };
   }, [isZoomed]);
 
-  const modalContent = (
-    <AnimatePresence>
-      {isZoomed && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setIsZoomed(false)}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs p-4 sm:p-8 flex items-center justify-center cursor-zoom-out w-screen h-[100dvh]"
-        >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="relative max-w-5xl w-full bg-(--bg-surface) border border-(--border-strong) rounded-xs overflow-hidden shadow-2xl my-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-4 py-3 bg-(--bg-primary) border-b border-(--border-subtle)">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-vermilion" />
-                <span className="font-mono text-xs text-(--text-primary) font-semibold">
-                  {project.title} — Interface Screenshot
-                </span>
-              </div>
-              <button
-                onClick={() => setIsZoomed(false)}
-                className="p-1 hover:text-vermilion text-(--text-muted) transition-colors cursor-pointer"
-                aria-label="Close modal"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="relative aspect-16/10 w-full max-h-[75vh] bg-black/50">
-              <Image
-                src={project.image}
-                alt={project.imageAlt || `${project.title} preview`}
-                fill
-                className="object-contain"
-              />
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-
   return (
     <div className="space-y-4">
       {/* Browser Window Frame */}
-      <div className="border border-(--border-strong) bg-(--bg-surface) rounded-xs shadow-md overflow-hidden relative group">
+      <div
+        className="border border-(--border-strong) bg-(--bg-surface) rounded-xs shadow-md overflow-hidden relative group"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <Noise />
 
         {/* Window Chrome Bar */}
@@ -310,45 +311,114 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
             <span className="w-2.5 h-2.5 rounded-full bg-(--border-strong)" />
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-[210px] sm:max-w-xs truncate">
-            {project.liveUrl ? (
-              <span className="text-(--text-secondary) truncate">
-                {project.liveUrl.replace(/^https?:\/\//, "")}
-              </span>
-            ) : (
-              <span className="truncate">{project.id}.preview // internal</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-[140px] sm:max-w-[200px] truncate">
+              {project.liveUrl ? (
+                <span className="text-(--text-secondary) truncate">
+                  {project.liveUrl.replace(/^https?:\/\//, "")}
+                </span>
+              ) : (
+                <span className="truncate">{project.id}.preview // internal</span>
+              )}
+            </div>
+
+            {/* Light / Dark Mode Toggle Buttons (Icon only, click & hover with paused auto-switch) */}
+            {images.length > 1 && (
+              <div
+                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle)"
+                onClick={(e) => e.stopPropagation()}
+                onMouseEnter={() => setIsButtonsHovered(true)}
+                onMouseLeave={() => setIsButtonsHovered(false)}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveImageIndex(0);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    setIsButtonsHovered(true);
+                    setActiveImageIndex(0);
+                  }}
+                  className={`p-1 rounded-2xs cursor-pointer transition-all ${
+                    activeImageIndex === 0
+                      ? "bg-vermilion text-white shadow-2xs"
+                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                  }`}
+                  title="Light Mode Screenshot"
+                  aria-label="Light Mode Screenshot"
+                >
+                  <Sun className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveImageIndex(1);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    setIsButtonsHovered(true);
+                    setActiveImageIndex(1);
+                  }}
+                  className={`p-1 rounded-2xs cursor-pointer transition-all ${
+                    activeImageIndex === 1
+                      ? "bg-vermilion text-white shadow-2xs"
+                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                  }`}
+                  title="Dark Mode Screenshot"
+                  aria-label="Dark Mode Screenshot"
+                >
+                  <Moon className="w-3 h-3" />
+                </button>
+              </div>
             )}
           </div>
 
           <button
             onClick={() => setIsZoomed(true)}
             className="p-1 hover:text-vermilion text-(--text-muted) transition-colors cursor-pointer"
-            title="Expand screenshot"
+            title="Expand screenshot modal"
           >
             <Maximize2 className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Screenshot Viewport */}
+        {/* Screenshot Viewport - Fixed aspect-[1695/928] + object-contain prevents left/right cropping */}
         <div
-          className="relative aspect-16/10 bg-(--bg-primary) overflow-hidden cursor-pointer"
+          className="relative aspect-[1695/928] bg-[#0c0c0c] overflow-hidden cursor-pointer w-full group select-none"
           onClick={() => setIsZoomed(true)}
-          title="Click to expand preview"
+          title="Click to expand high-resolution preview"
         >
-          <Image
-            src={project.image}
-            alt={project.imageAlt || `${project.title} preview`}
-            width={1280}
-            height={800}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 560px"
-            className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-            priority={project.number === "01"}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-end justify-between p-3 text-white text-xs font-mono">
-            <span className="font-semibold">{project.title}</span>
-            <span className="text-[11px] opacity-80 flex items-center gap-1">
-              <Maximize2 className="w-3 h-3" />
-              Expand
+          {images.map((img, idx) => (
+            <div
+              key={img}
+              className={`absolute inset-0 transition-opacity duration-600 ease-in-out ${
+                idx === activeImageIndex
+                  ? "opacity-100 z-10"
+                  : "opacity-0 pointer-events-none z-0"
+              }`}
+            >
+              <Image
+                src={img}
+                alt={
+                  project.imageAlt ||
+                  `${project.title} screenshot ${idx === 0 ? "light" : "dark"} mode`
+                }
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 650px"
+                className="object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.01]"
+                priority={project.number === "01" && idx === 0}
+              />
+            </div>
+          ))}
+
+          {/* Screenshot Overlay: Click to expand hint on hover */}
+          <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none z-20 flex items-center justify-end font-mono text-xs">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-white/90 flex items-center gap-1.5 px-2 py-1 rounded-xs bg-black/70 backdrop-blur-xs border border-white/15">
+              <Maximize2 className="w-3 h-3 text-vermilion" />
+              <span>Expand Preview</span>
             </span>
           </div>
         </div>
@@ -399,8 +469,354 @@ function ProjectScreenshotCard({ project }: { project: Project }) {
         )}
       </div>
 
-      {/* Lightbox Modal when Zoomed rendered directly into document.body to avoid containing-block overflow */}
-      {mounted && typeof document !== "undefined" && createPortal(modalContent, document.body)}
+      {/* Lightbox Modal with Embla Carousel rendered directly into document.body */}
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {isZoomed && (
+              <ProjectCarouselModal
+                project={project}
+                images={images}
+                initialIndex={activeImageIndex}
+                theme={theme}
+                onClose={() => setIsZoomed(false)}
+              />
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </div>
+  );
+}
+
+function ProjectCarouselModal({
+  project,
+  images,
+  initialIndex,
+  theme,
+  onClose,
+}: {
+  project: Project;
+  images: string[];
+  initialIndex: number;
+  theme?: Theme;
+  onClose: () => void;
+}) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    startIndex: initialIndex,
+    duration: 25,
+  });
+
+  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+  const [themeMode, setThemeMode] = useState(initialIndex);
+  const [isSliding, setIsSliding] = useState(false);
+
+  // Sync themeMode with initialIndex when modal opens
+  useEffect(() => {
+    setThemeMode(initialIndex);
+    setSelectedIndex(initialIndex);
+  }, [initialIndex]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    const snap = emblaApi.selectedScrollSnap();
+    setSelectedIndex(snap);
+    setThemeMode(snap);
+  }, [emblaApi]);
+
+  const onSettle = useCallback(() => {
+    if (!emblaApi) return;
+    const snap = emblaApi.selectedScrollSnap();
+    setSelectedIndex(snap);
+    setThemeMode(snap);
+    setIsSliding(false);
+  }, [emblaApi]);
+
+  const onPointerDown = useCallback(() => {
+    setIsSliding(true);
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    emblaApi.on("settle", onSettle);
+    emblaApi.on("pointerDown", onPointerDown);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("settle", onSettle);
+      emblaApi.off("pointerDown", onPointerDown);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect, onSettle, onPointerDown]);
+
+  const scrollPrev = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      setIsSliding(true);
+      if (emblaApi) emblaApi.scrollPrev();
+    },
+    [emblaApi],
+  );
+
+  const scrollNext = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      setIsSliding(true);
+      if (emblaApi) emblaApi.scrollNext();
+    },
+    [emblaApi],
+  );
+
+  const scrollTo = useCallback(
+    (index: number, e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      setIsSliding(true);
+      if (emblaApi) emblaApi.scrollTo(index);
+    },
+    [emblaApi],
+  );
+
+  // Smooth in-place theme switch: uses pure hardware-accelerated CSS opacity crossfade just like the card
+  const handleThemeSwitch = useCallback(
+    (targetIndex: number) => {
+      if (targetIndex === themeMode) return;
+
+      // Update active state immediately
+      setThemeMode(targetIndex);
+      setSelectedIndex(targetIndex);
+      setIsSliding(false);
+
+      // Silently align Embla to the new slide without horizontal sliding
+      if (emblaApi) {
+        emblaApi.scrollTo(targetIndex, true);
+      }
+    },
+    [emblaApi, themeMode],
+  );
+
+  // Real-time sync with website theme while modal is open
+  useEffect(() => {
+    if (theme && images.length > 1) {
+      const targetIndex = theme === "dark" ? 1 : 0;
+      handleThemeSwitch(targetIndex);
+    }
+  }, [theme, images.length, handleThemeSwitch]);
+
+  // Keyboard navigation: Left/Right arrows to flip slides, Escape to close
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        scrollPrev();
+      } else if (e.key === "ArrowRight") {
+        scrollNext();
+      } else if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [scrollPrev, scrollNext, onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-3 sm:p-6 md:p-8 flex items-center justify-center cursor-zoom-out w-screen h-[100dvh]"
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="relative max-w-6xl w-full bg-(--bg-surface) border border-(--border-strong) rounded-xs overflow-hidden shadow-2xl my-auto cursor-default flex flex-col max-h-[94vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-4 py-3 bg-(--bg-primary) border-b border-(--border-subtle) shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-vermilion" />
+            <span className="font-mono text-xs sm:text-sm text-(--text-primary) font-semibold truncate">
+              {project.title} — High-Res Preview
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Quick mode switch buttons in header (Icon-only, hover and click for smooth in-place toggle) */}
+            {images.length > 1 && (
+              <div
+                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle)"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleThemeSwitch(0);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    handleThemeSwitch(0);
+                  }}
+                  className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
+                    selectedIndex === 0
+                      ? "bg-vermilion text-white shadow-2xs"
+                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                  }`}
+                  title="Light Mode Screenshot"
+                  aria-label="Light Mode Screenshot"
+                >
+                  <Sun className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleThemeSwitch(1);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    handleThemeSwitch(1);
+                  }}
+                  className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
+                    selectedIndex === 1
+                      ? "bg-vermilion text-white shadow-2xs"
+                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                  }`}
+                  title="Dark Mode Screenshot"
+                  aria-label="Dark Mode Screenshot"
+                >
+                  <Moon className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-xs border border-(--border-subtle) hover:border-vermilion bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion transition-all cursor-pointer relative overflow-hidden flex items-center justify-center group"
+              aria-label="Close modal"
+              title="Close modal (Esc)"
+            >
+              <Noise />
+              <X className="w-3.5 h-3.5 relative z-10 transition-transform group-hover:scale-110" />
+            </button>
+          </div>
+        </div>
+
+        {/* Carousel Viewport Area */}
+        <div className="relative w-full bg-black/75 flex-1 flex items-center justify-center overflow-hidden min-h-[320px]">
+          {/* Embla Viewport for Swiping and Next/Prev sliding */}
+          <div
+            className="overflow-hidden w-full h-full select-none"
+            ref={emblaRef}
+          >
+            <div className="flex h-full">
+              {images.map((img, idx) => (
+                <div
+                  key={img}
+                  className="flex-[0_0_100%] min-w-0 relative h-full w-full flex items-center justify-center p-2 sm:p-4"
+                >
+                  <div className="relative aspect-[1695/928] max-h-[76vh] w-full h-full">
+                    <Image
+                      src={img}
+                      alt={`${project.title} preview slide ${idx + 1}`}
+                      fill
+                      sizes="(max-width: 1400px) 100vw, 1400px"
+                      className="object-contain object-center"
+                      priority
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Smooth In-Place Crossfade Layer: Identical CSS opacity transition to card view */}
+          {images.length > 1 && (
+            <div
+              className={`absolute inset-0 z-10 flex items-center justify-center p-2 sm:p-4 pointer-events-none transition-opacity duration-200 ${
+                isSliding ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              <div className="relative aspect-[1695/928] max-h-[76vh] w-full h-full">
+                {images.map((img, idx) => (
+                  <div
+                    key={img}
+                    className={`absolute inset-0 transition-opacity duration-600 ease-in-out ${
+                      idx === themeMode
+                        ? "opacity-100 z-10"
+                        : "opacity-0 pointer-events-none z-0"
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${project.title} preview ${idx === 0 ? "light" : "dark"} mode`}
+                      fill
+                      sizes="(max-width: 1400px) 100vw, 1400px"
+                      className="object-contain object-center"
+                      priority
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Bidirectional Navigation Arrows for sliding*/}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={scrollPrev}
+                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                aria-label="Previous image"
+                title="Previous image (←)"
+              >
+                <Noise />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-transform group-hover:-translate-x-0.5" />
+              </button>
+              <button
+                onClick={scrollNext}
+                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                aria-label="Next image"
+                title="Next image (→)"
+              >
+                <Noise />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Modal Footer Controls */}
+        <div className="flex items-center justify-between px-4 py-2.5 bg-(--bg-primary) border-t border-(--border-subtle) font-mono text-[11px] shrink-0">
+          {/* Slide Indicator Bars - matched with rounded-xs */}
+          <div className="flex items-center gap-1.5">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => scrollTo(idx, e)}
+                className={`h-1.5 transition-all rounded-xs cursor-pointer ${
+                  idx === selectedIndex
+                    ? "w-6 bg-vermilion shadow-2xs"
+                    : "w-2.5 bg-(--border-strong) hover:bg-(--text-muted)"
+                }`}
+                aria-label={`Jump to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 text-(--text-muted)">
+            <span className="px-1.5 py-0.5 border border-(--border-subtle) rounded-2xs bg-(--bg-surface) text-[10px]">
+              ← / →
+            </span>
+            <span>keys or swipe</span>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

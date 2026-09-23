@@ -44,7 +44,7 @@ export default function HomePage() {
         <Hero theme={theme} onOpenResume={() => setIsResumeOpen(true)} />
 
         {/* 01: Curated Case Studies (Selected Work) */}
-        <SelectedWork />
+        <SelectedWork theme={theme} />
 
         {/* 02: About / Personal Introduction */}
         <About />

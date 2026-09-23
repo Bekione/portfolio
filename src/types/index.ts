@@ -20,6 +20,7 @@ export interface Project {
   liveUrl?: string;
   isPrivate?: boolean;
   image: string;
+  images?: string[];
   imageAlt?: string;
   featuredAspect: 'architecture' | 'performance' | 'ai-voice' | 'design-system' | 'optimization';
 }

@@ -145,7 +145,7 @@ export function ExperienceTimeline() {
                         <div className="lg:col-span-4 space-y-1 sm:space-y-2">
                           <div className="flex flex-wrap items-center justify-between lg:justify-start gap-2">
                             <div className="inline-flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-vermilion font-semibold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-vermilion" />
+                              <span className="w-1.5 h-1.5 rounded-2xs bg-vermilion shrink-0" />
                               <span>{exp.period}</span>
                             </div>
                             <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-mono text-(--text-muted) lg:hidden">
@@ -209,10 +209,10 @@ export function ExperienceTimeline() {
                 {WORK_EXPERIENCE.map((_, i) => (
                   <span
                     key={i}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 rounded-xs transition-all duration-300 ${
                       discreteStep === i
-                        ? "w-6 bg-vermilion"
-                        : "w-1.5 bg-(--border-strong)"
+                        ? "w-6 bg-vermilion shadow-2xs"
+                        : "w-2 bg-(--border-strong)"
                     }`}
                     aria-hidden="true"
                   />
