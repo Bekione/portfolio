@@ -196,3 +196,47 @@
     margin: 12mm 15mm;
   }
 }
+
+/* Disable element background transitions during View Transition to prevent color flicker */
+[data-theme-transition] body,
+[data-theme-transition] body * {
+  transition: none !important;
+}
+
+/* Rectangular View Transition for Theme Toggle — sharp brutalist expansion from click origin */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+[data-theme-transition="to-dark"]::view-transition-new(root),
+[data-theme-transition="to-light"]::view-transition-new(root) {
+  animation: theme-reveal var(--transition-speed, 0.5s) cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: polygon(
+      var(--x, 50%) var(--y, 50%),
+      var(--x, 50%) var(--y, 50%),
+      var(--x, 50%) var(--y, 50%),
+      var(--x, 50%) var(--y, 50%)
+    );
+  }
+  to {
+    clip-path: polygon(
+      calc(var(--x, 50%) - 150vmax) calc(var(--y, 50%) - 150vmax),
+      calc(var(--x, 50%) + 150vmax) calc(var(--y, 50%) - 150vmax),
+      calc(var(--x, 50%) + 150vmax) calc(var(--y, 50%) + 150vmax),
+      calc(var(--x, 50%) - 150vmax) calc(var(--y, 50%) + 150vmax)
+    );
+  }
+}

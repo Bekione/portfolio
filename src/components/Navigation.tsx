@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Sun, Moon, Menu, X, FileText, ArrowUpRight } from "lucide-react";
 import { Theme } from "../hooks/useTheme";
 import { Noise } from "./Noise";
+import { ThemeToggleCircular } from "./ThemeToggleCircular";
 
 interface NavigationProps {
   theme: Theme;
@@ -155,20 +156,22 @@ export function Navigation({
             <ArrowUpRight className="w-3 h-3 text-(--text-muted) relative z-10" />
           </button>
 
-          {/* Theme Toggle Button */}
-          <button
-            onClick={onToggleTheme}
-            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-            suppressHydrationWarning
-            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden"
-          >
-            <Noise />
-            {theme === "light" ? (
-              <Moon className="w-4 h-4 text-(--text-primary) relative z-10" />
-            ) : (
-              <Sun className="w-4 h-4 text-[#E0583F] relative z-10" />
-            )}
-          </button>
+          {/* Theme Toggle Button with Circular View Transition */}
+          <ThemeToggleCircular onToggle={onToggleTheme} className="inline-flex">
+            <button
+              type="button"
+              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+              suppressHydrationWarning
+              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden cursor-pointer"
+            >
+              <Noise />
+              {theme === "light" ? (
+                <Moon className="w-4 h-4 text-(--text-primary) relative z-10" />
+              ) : (
+                <Sun className="w-4 h-4 text-[#E0583F] relative z-10" />
+              )}
+            </button>
+          </ThemeToggleCircular>
 
           {/* Mobile Hamburger Menu Toggle */}
           <button

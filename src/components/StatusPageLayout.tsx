@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../hooks/useTheme";
 import { PERSONAL_INFO } from "../data/portfolioData";
+import { ThemeToggleCircular } from "./ThemeToggleCircular";
 
 export interface StatusAction {
   label: string;
@@ -106,18 +107,20 @@ export function StatusPageLayout({
                 {time} Addis Ababa
               </span>
             )}
-            <button
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-              suppressHydrationWarning
-              className="p-1.5 border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface)"
-            >
-              {theme === "light" ? (
-                <Moon className="w-3.5 h-3.5 text-(--text-primary)" />
-              ) : (
-                <Sun className="w-3.5 h-3.5 text-[#E0583F]" />
-              )}
-            </button>
+            <ThemeToggleCircular onToggle={toggleTheme} className="inline-flex">
+              <button
+                type="button"
+                aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+                suppressHydrationWarning
+                className="p-1.5 border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) cursor-pointer"
+              >
+                {theme === "light" ? (
+                  <Moon className="w-3.5 h-3.5 text-(--text-primary)" />
+                ) : (
+                  <Sun className="w-3.5 h-3.5 text-[#E0583F]" />
+                )}
+              </button>
+            </ThemeToggleCircular>
           </div>
         </div>
       </header>

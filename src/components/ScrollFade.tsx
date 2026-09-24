@@ -38,6 +38,12 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
   const isHorizontal = direction === "horizontal";
 
   const updateScrollState = useCallback(() => {
+    if (alwaysShowFade) {
+      setStartFade(fadeStart ? fadeSize : 0);
+      setEndFade(fadeEnd ? fadeSize : 0);
+      return;
+    }
+
     const el = scrollElRef.current;
     if (!el) return;
 
@@ -59,14 +65,20 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
       const canStart = scrollPos > 0;
       const canEnd = scrollPos < maxScroll - 1;
 
-      const start = fadeStart ? (alwaysShowFade ? fadeSize : canStart ? fadeSize : 0) : 0;
-      const end = fadeEnd ? (alwaysShowFade ? fadeSize : canEnd ? fadeSize : 0) : 0;
+      const start = fadeStart ? (canStart ? fadeSize : 0) : 0;
+      const end = fadeEnd ? (canEnd ? fadeSize : 0) : 0;
       setStartFade((prev) => (prev === start ? prev : start));
       setEndFade((prev) => (prev === end ? prev : end));
     }
   }, [isHorizontal, fadeMode, fadeSize, alwaysShowFade, fadeStart, fadeEnd]);
 
   useEffect(() => {
+    if (alwaysShowFade) {
+      setStartFade(fadeStart ? fadeSize : 0);
+      setEndFade(fadeEnd ? fadeSize : 0);
+      return;
+    }
+
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
@@ -87,17 +99,17 @@ const ScrollFade: React.FC<ScrollFadeProps> = ({
       scrollChild.removeEventListener("scroll", updateScrollState);
       resizeObserver.disconnect();
     };
-  }, [updateScrollState]);
+  }, [updateScrollState, alwaysShowFade, fadeStart, fadeEnd, fadeSize]);
 
   const mask = (() => {
     if (startFade === 0 && endFade === 0) return undefined;
     const startStop =
       startFade > 0
-        ? "transparent 0px, black var(--start-fade)"
+        ? `transparent 0px, black ${startFade}px`
         : "black 0px";
     const endStop =
       endFade > 0
-        ? "black calc(100% - var(--end-fade)), transparent 100%"
+        ? `black calc(100% - ${endFade}px), transparent 100%`
         : "black 100%";
 
     return isHorizontal

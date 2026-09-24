@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
@@ -22,6 +22,7 @@ import { Project } from "../types";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
 import { useTheme, Theme } from "../hooks/useTheme";
 import { Noise } from "./Noise";
+import { ScrollFade } from "./ScrollFade";
 
 export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
   const [activeProjectTab, setActiveProjectTab] = useState<string>(
@@ -44,6 +45,28 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
     },
     interval: 8000,
   });
+
+  // Pause tabs auto-advance when user interacts with theme toggle in navbar
+  useEffect(() => {
+    const handleNavHover = (e: Event) => {
+      const customEvent = e as CustomEvent<boolean>;
+      if (customEvent.detail) {
+        pauseOnManualInteraction(15000);
+      }
+    };
+    const handleNavTransition = (e: Event) => {
+      const customEvent = e as CustomEvent<boolean>;
+      if (customEvent.detail) {
+        pauseOnManualInteraction(15000);
+      }
+    };
+    window.addEventListener("bk_nav_theme_hover", handleNavHover);
+    window.addEventListener("bk_nav_theme_transition", handleNavTransition);
+    return () => {
+      window.removeEventListener("bk_nav_theme_hover", handleNavHover);
+      window.removeEventListener("bk_nav_theme_transition", handleNavTransition);
+    };
+  }, [pauseOnManualInteraction]);
 
   return (
     <section
@@ -480,7 +503,12 @@ function ProjectScreenshotCard({
                 images={images}
                 initialIndex={activeImageIndex}
                 theme={theme}
-                onClose={() => setIsZoomed(false)}
+                onClose={(finalIndex) => {
+                  if (typeof finalIndex === "number") {
+                    setActiveImageIndex(finalIndex);
+                  }
+                  setIsZoomed(false);
+                }}
               />
             )}
           </AnimatePresence>,
@@ -501,8 +529,11 @@ function ProjectCarouselModal({
   images: string[];
   initialIndex: number;
   theme?: Theme;
-  onClose: () => void;
+  onClose: (finalIndex?: number) => void;
 }) {
+  // If there are 2 images, duplicate to 4 slides so Embla's loop engine can seamlessly loop bidirectionally without disabling loop
+  const slides = images.length === 2 ? [...images, ...images] : images;
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     startIndex: initialIndex,
@@ -511,52 +542,58 @@ function ProjectCarouselModal({
 
   const [selectedIndex, setSelectedIndex] = useState(initialIndex);
   const [themeMode, setThemeMode] = useState(initialIndex);
-  const [isSliding, setIsSliding] = useState(false);
+  const [themeFade, setThemeFade] = useState<{
+    fromImg: string;
+    isExiting: boolean;
+  } | null>(null);
+  const themeFadeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync themeMode with initialIndex when modal opens
-  useEffect(() => {
-    setThemeMode(initialIndex);
-    setSelectedIndex(initialIndex);
-  }, [initialIndex]);
+  // Active normalized image index (0 for Light mode, 1 for Dark mode)
+  const activeMode = selectedIndex % images.length;
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     const snap = emblaApi.selectedScrollSnap();
-    setSelectedIndex(snap);
-    setThemeMode(snap);
-  }, [emblaApi]);
-
-  const onSettle = useCallback(() => {
-    if (!emblaApi) return;
-    const snap = emblaApi.selectedScrollSnap();
-    setSelectedIndex(snap);
-    setThemeMode(snap);
-    setIsSliding(false);
-  }, [emblaApi]);
+    const normalized = snap % images.length;
+    setSelectedIndex(normalized);
+    setThemeMode(normalized);
+  }, [emblaApi, images.length]);
 
   const onPointerDown = useCallback(() => {
-    setIsSliding(true);
+    // If a theme crossfade is in progress when the user grabs the slide, instantly clear it
+    if (themeFadeTimerRef.current) {
+      clearTimeout(themeFadeTimerRef.current);
+    }
+    setThemeFade(null);
   }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
     emblaApi.on("select", onSelect);
-    emblaApi.on("settle", onSettle);
     emblaApi.on("pointerDown", onPointerDown);
     emblaApi.on("reInit", onSelect);
     return () => {
       emblaApi.off("select", onSelect);
-      emblaApi.off("settle", onSettle);
       emblaApi.off("pointerDown", onPointerDown);
       emblaApi.off("reInit", onSelect);
     };
-  }, [emblaApi, onSelect, onSettle, onPointerDown]);
+  }, [emblaApi, onSelect, onPointerDown]);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (themeFadeTimerRef.current) {
+        clearTimeout(themeFadeTimerRef.current);
+      }
+    };
+  }, []);
 
   const scrollPrev = useCallback(
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
-      setIsSliding(true);
-      if (emblaApi) emblaApi.scrollPrev();
+      if (!emblaApi) return;
+      setThemeFade(null);
+      emblaApi.scrollPrev();
     },
     [emblaApi],
   );
@@ -564,44 +601,93 @@ function ProjectCarouselModal({
   const scrollNext = useCallback(
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
-      setIsSliding(true);
-      if (emblaApi) emblaApi.scrollNext();
+      if (!emblaApi) return;
+      setThemeFade(null);
+      emblaApi.scrollNext();
     },
     [emblaApi],
   );
 
-  const scrollTo = useCallback(
-    (index: number, e?: React.MouseEvent) => {
+  const handleDotClick = useCallback(
+    (targetIndex: number, e?: React.MouseEvent) => {
       e?.stopPropagation();
-      setIsSliding(true);
-      if (emblaApi) emblaApi.scrollTo(index);
+      if (!emblaApi) return;
+      setThemeFade(null);
+      const currentSnap = emblaApi.selectedScrollSnap();
+      const totalSlides = slides.length;
+      let bestSnap = targetIndex;
+      let minDiff = Infinity;
+      for (let s = 0; s < totalSlides; s++) {
+        if (s % images.length === targetIndex) {
+          const diff = Math.abs(s - currentSnap);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestSnap = s;
+          }
+        }
+      }
+      emblaApi.scrollTo(bestSnap);
     },
-    [emblaApi],
+    [emblaApi, slides.length, images.length],
   );
 
-  // Smooth in-place theme switch: uses pure hardware-accelerated CSS opacity crossfade just like the card
+  // Smooth in-place theme switch: used by Sun/Moon header buttons and website theme sync
   const handleThemeSwitch = useCallback(
     (targetIndex: number) => {
-      if (targetIndex === themeMode) return;
+      if (!emblaApi) return;
+      const currentSnap = emblaApi.selectedScrollSnap();
+      const currentNormalized = currentSnap % images.length;
+      if (targetIndex === currentNormalized) return;
 
-      // Update active state immediately
-      setThemeMode(targetIndex);
-      setSelectedIndex(targetIndex);
-      setIsSliding(false);
+      const fromImg = images[currentNormalized];
 
-      // Silently align Embla to the new slide without horizontal sliding
-      if (emblaApi) {
-        emblaApi.scrollTo(targetIndex, true);
+      // Find closest snap for silent align without horizontal sliding
+      const totalSlides = slides.length;
+      let bestSnap = targetIndex;
+      let minDiff = Infinity;
+      for (let s = 0; s < totalSlides; s++) {
+        if (s % images.length === targetIndex) {
+          const diff = Math.abs(s - currentSnap);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestSnap = s;
+          }
+        }
       }
+
+      // Jump Embla silently to the target slide underneath
+      emblaApi.scrollTo(bestSnap, true);
+      setSelectedIndex(targetIndex);
+      setThemeMode(targetIndex);
+
+      if (themeFadeTimerRef.current) {
+        clearTimeout(themeFadeTimerRef.current);
+      }
+
+      // Animate outgoing image fading out to smoothly reveal the new slide underneath
+      setThemeFade({ fromImg, isExiting: false });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setThemeFade({ fromImg, isExiting: true });
+        });
+      });
+
+      themeFadeTimerRef.current = setTimeout(() => {
+        setThemeFade(null);
+      }, 400);
     },
-    [emblaApi, themeMode],
+    [emblaApi, slides.length, images],
   );
 
-  // Real-time sync with website theme while modal is open
+  // Sync with website theme ONLY if the website theme actually changes while modal is open
+  const prevThemeRef = useRef(theme);
   useEffect(() => {
-    if (theme && images.length > 1) {
-      const targetIndex = theme === "dark" ? 1 : 0;
-      handleThemeSwitch(targetIndex);
+    if (prevThemeRef.current !== theme) {
+      prevThemeRef.current = theme;
+      if (theme && images.length > 1) {
+        const targetIndex = theme === "dark" ? 1 : 0;
+        handleThemeSwitch(targetIndex);
+      }
     }
   }, [theme, images.length, handleThemeSwitch]);
 
@@ -613,20 +699,20 @@ function ProjectCarouselModal({
       } else if (e.key === "ArrowRight") {
         scrollNext();
       } else if (e.key === "Escape") {
-        onClose();
+        onClose(themeMode);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [scrollPrev, scrollNext, onClose]);
+  }, [scrollPrev, scrollNext, onClose, themeMode]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-3 sm:p-6 md:p-8 flex items-center justify-center cursor-zoom-out w-screen h-[100dvh]"
+      onClick={() => onClose(themeMode)}
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-2 sm:p-4 md:p-8 flex items-center justify-center cursor-zoom-out w-full h-[100dvh]"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -637,15 +723,15 @@ function ProjectCarouselModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-(--bg-primary) border-b border-(--border-subtle) shrink-0">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-vermilion" />
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-(--bg-primary) border-b border-(--border-subtle) shrink-0 gap-2">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-vermilion shrink-0" />
             <span className="font-mono text-xs sm:text-sm text-(--text-primary) font-semibold truncate">
-              {project.title} — High-Res Preview
+              {project.title}
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Quick mode switch buttons in header (Icon-only, hover and click for smooth in-place toggle) */}
             {images.length > 1 && (
               <div
@@ -663,7 +749,7 @@ function ProjectCarouselModal({
                     handleThemeSwitch(0);
                   }}
                   className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
-                    selectedIndex === 0
+                    activeMode === 0
                       ? "bg-vermilion text-white shadow-2xs"
                       : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
                   }`}
@@ -683,7 +769,7 @@ function ProjectCarouselModal({
                     handleThemeSwitch(1);
                   }}
                   className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
-                    selectedIndex === 1
+                    activeMode === 1
                       ? "bg-vermilion text-white shadow-2xs"
                       : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
                   }`}
@@ -696,7 +782,8 @@ function ProjectCarouselModal({
             )}
 
             <button
-              onClick={onClose}
+              type="button"
+              onClick={() => onClose(themeMode)}
               className="p-1.5 rounded-xs border border-(--border-subtle) hover:border-vermilion bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion transition-all cursor-pointer relative overflow-hidden flex items-center justify-center group"
               aria-label="Close modal"
               title="Close modal (Esc)"
@@ -707,71 +794,68 @@ function ProjectCarouselModal({
           </div>
         </div>
 
-        {/* Carousel Viewport Area */}
-        <div className="relative w-full bg-black/75 flex-1 flex items-center justify-center overflow-hidden min-h-[320px]">
-          {/* Embla Viewport for Swiping and Next/Prev sliding */}
-          <div
-            className="overflow-hidden w-full h-full select-none"
-            ref={emblaRef}
+        {/* Carousel Viewport Area with nav button gutters */}
+        <div className="relative w-full bg-(--bg-primary) overflow-hidden select-none">
+          {/* ScrollFade container: smooths left and right edges when images are swiped or slided */}
+          <ScrollFade
+            direction="horizontal"
+            fadeSize={40}
+            alwaysShowFade={images.length > 1}
+            className="w-full aspect-[1695/928] max-h-[calc(94vh-90px)] mx-auto"
           >
-            <div className="flex h-full">
-              {images.map((img, idx) => (
-                <div
-                  key={img}
-                  className="flex-[0_0_100%] min-w-0 relative h-full w-full flex items-center justify-center p-2 sm:p-4"
-                >
-                  <div className="relative aspect-[1695/928] max-h-[76vh] w-full h-full">
-                    <Image
-                      src={img}
-                      alt={`${project.title} preview slide ${idx + 1}`}
-                      fill
-                      sizes="(max-width: 1400px) 100vw, 1400px"
-                      className="object-contain object-center"
-                      priority
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Smooth In-Place Crossfade Layer: Identical CSS opacity transition to card view */}
-          {images.length > 1 && (
+            {/* Embla Viewport for Swiping and Next/Prev sliding */}
             <div
-              className={`absolute inset-0 z-10 flex items-center justify-center p-2 sm:p-4 pointer-events-none transition-opacity duration-200 ${
-                isSliding ? "opacity-0" : "opacity-100"
-              }`}
+              className="absolute inset-0 overflow-hidden w-full h-full select-none"
+              ref={emblaRef}
+              onDragStart={(e) => e.preventDefault()}
             >
-              <div className="relative aspect-[1695/928] max-h-[76vh] w-full h-full">
-                {images.map((img, idx) => (
+              <div className="flex h-full select-none">
+                {slides.map((img, idx) => (
                   <div
-                    key={img}
-                    className={`absolute inset-0 transition-opacity duration-600 ease-in-out ${
-                      idx === themeMode
-                        ? "opacity-100 z-10"
-                        : "opacity-0 pointer-events-none z-0"
-                    }`}
+                    key={`${img}-${idx}`}
+                    className="flex-[0_0_100%] min-w-0 relative h-full w-full select-none"
                   >
                     <Image
                       src={img}
-                      alt={`${project.title} preview ${idx === 0 ? "light" : "dark"} mode`}
+                      alt={`${project.title} preview slide ${(idx % images.length) + 1}`}
                       fill
                       sizes="(max-width: 1400px) 100vw, 1400px"
-                      className="object-contain object-center"
-                      priority
+                      className="object-contain object-center select-none pointer-events-none"
+                      priority={idx === 0}
+                      draggable={false}
                     />
                   </div>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Bidirectional Navigation Arrows for sliding*/}
+            {/* In-Place Theme Crossfade Overlay: Only active during header Sun/Moon button toggles */}
+            {themeFade && (
+              <div
+                className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-350 ease-in-out ${
+                  themeFade.isExiting ? "opacity-0" : "opacity-100"
+                }`}
+              >
+                <Image
+                  src={themeFade.fromImg}
+                  alt={`${project.title} preview transition`}
+                  fill
+                  sizes="(max-width: 1400px) 100vw, 1400px"
+                  className="object-contain object-center select-none pointer-events-none"
+                  priority
+                  draggable={false}
+                />
+              </div>
+            )}
+          </ScrollFade>
+
+          {/* Bidirectional Navigation Arrows — positioned relative to the outer container so they sit at the edges, outside the image */}
           {images.length > 1 && (
             <>
               <button
+                type="button"
                 onClick={scrollPrev}
-                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                className="absolute left-1.5 sm:left-2.5 top-1/2 -translate-y-1/2 z-30 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
                 aria-label="Previous image"
                 title="Previous image (←)"
               >
@@ -779,8 +863,9 @@ function ProjectCarouselModal({
                 <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-transform group-hover:-translate-x-0.5" />
               </button>
               <button
+                type="button"
                 onClick={scrollNext}
-                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                className="absolute right-1.5 sm:right-2.5 top-1/2 -translate-y-1/2 z-30 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
                 aria-label="Next image"
                 title="Next image (→)"
               >
@@ -792,28 +877,33 @@ function ProjectCarouselModal({
         </div>
 
         {/* Modal Footer Controls */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-(--bg-primary) border-t border-(--border-subtle) font-mono text-[11px] shrink-0">
-          {/* Slide Indicator Bars - matched with rounded-xs */}
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 bg-(--bg-primary) border-t border-(--border-subtle) font-mono text-[11px] shrink-0">
+          {/* Slide Indicator Bars with accessible touch targets */}
+          <div className="flex items-center gap-1">
             {images.map((_, idx) => (
               <button
                 key={idx}
-                onClick={(e) => scrollTo(idx, e)}
-                className={`h-1.5 transition-all rounded-xs cursor-pointer ${
-                  idx === selectedIndex
-                    ? "w-6 bg-vermilion shadow-2xs"
-                    : "w-2.5 bg-(--border-strong) hover:bg-(--text-muted)"
-                }`}
+                type="button"
+                onClick={(e) => handleDotClick(idx, e)}
+                className="p-1 sm:p-1.5 flex items-center justify-center cursor-pointer group"
                 aria-label={`Jump to slide ${idx + 1}`}
-              />
+              >
+                <span
+                  className={`h-1.5 transition-all rounded-xs block ${
+                    idx === activeMode
+                      ? "w-6 bg-vermilion shadow-2xs"
+                      : "w-2.5 bg-(--border-strong) group-hover:bg-(--text-muted)"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 text-(--text-muted)">
-            <span className="px-1.5 py-0.5 border border-(--border-subtle) rounded-2xs bg-(--bg-surface) text-[10px]">
+          <div className="flex items-center gap-2 text-(--text-muted) text-[10px] sm:text-[11px]">
+            <span className="px-1.5 py-0.5 border border-(--border-subtle) rounded-2xs bg-(--bg-surface)">
               ← / →
             </span>
-            <span>keys or swipe</span>
+            <span className="hidden xs:inline">keys or swipe</span>
           </div>
         </div>
       </motion.div>
