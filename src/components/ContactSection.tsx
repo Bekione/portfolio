@@ -269,7 +269,7 @@ export function ContactSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub profile (Bekione)"
-                  className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  className="relative overflow-hidden p-2.5 min-h-10 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
                   <Noise />
                   <Github className="w-3.5 h-3.5 text-vermilion relative z-10" />
@@ -281,7 +281,7 @@ export function ContactSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn profile (Bereket Kinfe)"
-                  className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
+                  className="relative overflow-hidden p-2.5 min-h-10 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-vermilion text-(--text-primary) hover:text-vermilion transition-colors"
                 >
                   <Noise />
                   <Linkedin className="w-3.5 h-3.5 text-vermilion relative z-10" />
@@ -294,7 +294,7 @@ export function ContactSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Upwork profile (Bereket Kinfe)"
-                    className="relative overflow-hidden p-2.5 min-h-[40px] border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
+                    className="relative overflow-hidden p-2.5 min-h-10 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex items-center justify-center gap-2 hover:border-[#14a800] text-(--text-primary) hover:text-[#14a800] transition-colors"
                   >
                     <Noise />
                     <Briefcase className="w-3.5 h-3.5 text-[#14a800] relative z-10" />
@@ -353,7 +353,7 @@ export function ContactSection() {
                   {/* Honeypot Spam Trap & Hidden Bot Protection */}
                   <div
                     aria-hidden="true"
-                    className="opacity-0 absolute -left-[9999px] top-0 pointer-events-none select-none -z-50 h-0 w-0 overflow-hidden"
+                    className="opacity-0 absolute left-[-9999px] top-0 pointer-events-none select-none -z-50 h-0 w-0 overflow-hidden"
                   >
                     <label htmlFor="company_url_check">
                       Leave this field empty to confirm you are human
@@ -545,7 +545,7 @@ export function ContactSection() {
                           setErrors({ ...errors, message: undefined });
                       }}
                       placeholder="Describe the system, timeline, specifications, or engineering challenge..."
-                      className={`w-full min-h-[120px] max-h-[260px] px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y transition-colors ${
+                      className={`w-full min-h-30 max-h-65 px-3.5 py-2.5 text-xs font-mono bg-(--bg-primary) border rounded-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-1 focus:ring-vermilion resize-y transition-colors ${
                         errors.message
                           ? "border-red-500 focus:ring-red-500"
                           : "border-(--border-subtle)"

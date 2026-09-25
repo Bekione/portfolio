@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ArrowUpRight, Github, GitCommit, Calendar, Flame } from "lucide-react";
-import { motion, useMotionValue, useTransform, animate, useInView } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  useInView,
+} from "motion/react";
 import { PERSONAL_INFO } from "../data/portfolioData";
 import { Noise } from "./Noise";
 import { ScrollFade } from "./ScrollFade";
@@ -67,7 +73,9 @@ export function GitHubSection() {
         if (isMounted && data.contributions && data.contributions.length > 0) {
           // The API returns entries descending (newest to oldest).
           // Sort chronologically (oldest -> newest) so the trailing slice captures the current period.
-          const sorted = [...data.contributions].sort((a, b) => a.date.localeCompare(b.date));
+          const sorted = [...data.contributions].sort((a, b) =>
+            a.date.localeCompare(b.date),
+          );
           const daysToShow = 44 * 7;
           const recentDays = sorted.slice(-daysToShow);
           setContributions(recentDays);
@@ -224,12 +232,15 @@ export function GitHubSection() {
 
           {/* Live Heatmap Grid */}
           <div className="space-y-2 pt-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] font-mono text-(--text-muted) min-h-[28px]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] font-mono text-(--text-muted) min-h-7">
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                <span className="shrink-0">ACTIVITY CADENCE // GITHUB DATA</span>
+                <span className="shrink-0">
+                  ACTIVITY CADENCE // GITHUB DATA
+                </span>
                 {activeCell && (
                   <span className="text-(--text-primary) font-semibold bg-(--bg-surface) px-2 py-0.5 border border-(--border-subtle) rounded-xs text-[10px]">
-                    {activeCell.date}: {activeCell.count} contribution{activeCell.count === 1 ? "" : "s"}
+                    {activeCell.date}: {activeCell.count} contribution
+                    {activeCell.count === 1 ? "" : "s"}
                   </span>
                 )}
               </div>

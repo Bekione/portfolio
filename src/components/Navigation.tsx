@@ -76,8 +76,7 @@ export function Navigation({
       } else {
         const navOffset = 70;
         const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition =
-          elementPosition + window.pageYOffset - navOffset;
+        const offsetPosition = elementPosition + window.pageYOffset - navOffset;
         window.scrollTo({
           top: offsetPosition,
           behavior: "smooth",
@@ -100,7 +99,13 @@ export function Navigation({
           onClick={() => scrollToSection("hero")}
           className="group text-left flex items-center gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-vermilion"
         >
-          <Image src="/android-chrome-512x512.png" alt="Logo" width={24} height={24} className="" />
+          <Image
+            src="/android-chrome-512x512.png"
+            alt="Logo"
+            width={24}
+            height={24}
+            className=""
+          />
           <span className="font-display font-bold tracking-tight text-base sm:text-lg text-(--text-primary) group-hover:text-vermilion transition-colors">
             BEREKET KINFE
           </span>
@@ -120,7 +125,7 @@ export function Navigation({
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`group relative text-xs font-mono tracking-wider transition-colors py-2 px-1 min-h-[32px] flex items-center gap-1 ${
+                className={`group relative text-xs font-mono tracking-wider transition-colors py-2 px-1 min-h-8 flex items-center gap-1 ${
                   isActive
                     ? "text-vermilion font-medium"
                     : "text-(--text-secondary) hover:text-(--text-primary)"
@@ -133,7 +138,7 @@ export function Navigation({
                 {isActive && (
                   <motion.span
                     layoutId="activeNavIndicator"
-                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-vermilion"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-vermilion"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -147,7 +152,7 @@ export function Navigation({
           {/* Resume Trigger */}
           <button
             onClick={onOpenResume}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 min-h-9 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
             title="View & Download Resume"
           >
             <Noise />
@@ -162,7 +167,7 @@ export function Navigation({
               type="button"
               aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
               suppressHydrationWarning
-              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden cursor-pointer"
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center border border-(--border-subtle) hover:border-(--border-strong) rounded-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors bg-(--bg-surface) relative overflow-hidden cursor-pointer"
             >
               <Noise />
               {theme === "light" ? (
@@ -176,7 +181,7 @@ export function Navigation({
           {/* Mobile Hamburger Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 min-w-[40px] min-h-[40px] flex items-center justify-center border border-(--border-subtle) rounded-xs text-(--text-primary) hover:border-vermilion transition-colors"
+            className="md:hidden p-2 min-w-10 min-h-10 flex items-center justify-center border border-(--border-subtle) rounded-xs text-(--text-primary) hover:border-vermilion transition-colors"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -207,7 +212,9 @@ export function Navigation({
                   className="flex items-center justify-between py-2 border-b border-(--border-subtle)/50 text-left text-(--text-primary) hover:text-vermilion transition-colors"
                 >
                   <span>{item.label}</span>
-                  <span className="text-xs text-(--text-muted)">{item.num}</span>
+                  <span className="text-xs text-(--text-muted)">
+                    {item.num}
+                  </span>
                 </button>
               ))}
 

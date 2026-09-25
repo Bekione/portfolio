@@ -34,7 +34,7 @@ export function Hero({ onOpenResume }: HeroProps) {
       {/* Soft gradient wash at bottom edge to smoothly fade out the grid into the next section */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-(--bg-primary) via-(--bg-primary)/70 to-transparent"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-(--bg-primary) via-(--bg-primary)/70 to-transparent"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto relative z-10">
         {/* Top Operational Status Strip */}
@@ -118,7 +118,7 @@ export function Hero({ onOpenResume }: HeroProps) {
 
           {/* Interactive Live Coding Workstation (5 cols) */}
           <div className="lg:col-span-5 relative flex items-center justify-center">
-            <div className="w-full max-w-[480px]">
+            <div className="w-full max-w-120">
               <LiveCodingMonitor />
             </div>
           </div>

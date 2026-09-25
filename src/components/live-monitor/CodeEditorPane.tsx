@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { FileCode, Play, CheckCircle2, GitBranch } from 'lucide-react';
-import { ProjectConfig } from './types';
+import React, { useState, useEffect, useRef } from "react";
+import { FileCode, Play, CheckCircle2, GitBranch } from "lucide-react";
+import { ProjectConfig } from "./types";
 
 interface CodeEditorPaneProps {
   project: ProjectConfig;
   isAutoTyping: boolean;
   typingSpeed: number;
   onCodeChange?: () => void;
-  onPlaySound?: (type?: 'key' | 'space' | 'enter') => void;
+  onPlaySound?: (type?: "key" | "space" | "enter") => void;
   onComplete?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function CodeEditorPane({
   onComplete,
 }: CodeEditorPaneProps) {
   const [activeFileIndex, setActiveFileIndex] = useState(0);
-  const [displayedCode, setDisplayedCode] = useState('');
+  const [displayedCode, setDisplayedCode] = useState("");
   const [charIndex, setCharIndex] = useState(0);
   const [isSaved, setIsSaved] = useState(true);
   const codeContainerRef = useRef<HTMLDivElement>(null);
@@ -33,7 +33,7 @@ export function CodeEditorPane({
 
   // Reset typewriter when project or active file changes
   useEffect(() => {
-    setDisplayedCode('');
+    setDisplayedCode("");
     setCharIndex(0);
     setIsSaved(true);
     hasCalledCompleteRef.current = false;
@@ -58,37 +58,46 @@ export function CodeEditorPane({
 
     const nextChar = fullCode[charIndex];
     let delay = Math.max(12, 38 / typingSpeed);
-    if (nextChar === '\n') delay = Math.max(40, 140 / typingSpeed);
-    if (nextChar === '{' || nextChar === '}') delay = Math.max(30, 90 / typingSpeed);
+    if (nextChar === "\n") delay = Math.max(40, 140 / typingSpeed);
+    if (nextChar === "{" || nextChar === "}")
+      delay = Math.max(30, 90 / typingSpeed);
 
     const timer = setTimeout(() => {
       setDisplayedCode(fullCode.slice(0, charIndex + 1));
-      setCharIndex(prev => prev + 1);
+      setCharIndex((prev) => prev + 1);
       setIsSaved(false);
 
       // Natural keyboard sound trigger with authentic switch profiling
-      const isEnter = nextChar === '\n';
-      const isSpace = nextChar === ' ' || nextChar === '\t';
+      const isEnter = nextChar === "\n";
+      const isSpace = nextChar === " " || nextChar === "\t";
       const soundChance = isEnter ? 0.95 : isSpace ? 0.65 : 0.78;
       if (Math.random() < soundChance) {
-        onPlaySound?.(isEnter ? 'enter' : isSpace ? 'space' : 'key');
+        onPlaySound?.(isEnter ? "enter" : isSpace ? "space" : "key");
       }
 
       // Auto-scroll to bottom of editor
       if (codeContainerRef.current) {
-        codeContainerRef.current.scrollTop = codeContainerRef.current.scrollHeight;
+        codeContainerRef.current.scrollTop =
+          codeContainerRef.current.scrollHeight;
       }
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [charIndex, fullCode, isAutoTyping, typingSpeed, onCodeChange, onPlaySound]);
+  }, [
+    charIndex,
+    fullCode,
+    isAutoTyping,
+    typingSpeed,
+    onCodeChange,
+    onPlaySound,
+  ]);
 
-  const lines = displayedCode.split('\n');
+  const lines = displayedCode.split("\n");
 
   return (
     <div className="flex flex-col h-full bg-[#0d0e15] text-slate-200 font-mono text-[11px] select-none overflow-hidden">
       {/* Tab Bar */}
-      <div className="flex items-center justify-between bg-[#08090e] border-b border-slate-800/80 px-2 min-h-[34px] shrink-0 overflow-x-auto scrollbar-none">
+      <div className="flex items-center justify-between bg-[#08090e] border-b border-slate-800/80 px-2 min-h-8.5 shrink-0 overflow-x-auto scrollbar-none">
         <div className="flex items-center space-x-1">
           {project.files.map((file, idx) => {
             const isActive = idx === activeFileIndex;
@@ -97,13 +106,15 @@ export function CodeEditorPane({
                 key={file.name}
                 onClick={() => setActiveFileIndex(idx)}
                 aria-label={`Open file ${file.name}`}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 min-h-[32px] text-[10px] rounded-t transition-colors cursor-pointer ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 min-h-8 text-[10px] rounded-t transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-[#0d0e15] text-sky-300 font-semibold border-t border-sky-400'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+                    ? "bg-[#0d0e15] text-sky-300 font-semibold border-t border-sky-400"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
                 }`}
               >
-                <FileCode className={`w-3 h-3 ${isActive ? 'text-sky-400' : 'text-slate-500'}`} />
+                <FileCode
+                  className={`w-3 h-3 ${isActive ? "text-sky-400" : "text-slate-500"}`}
+                />
                 <span>{file.name}</span>
                 {!isSaved && isActive && (
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 ml-1 animate-pulse" />
@@ -159,7 +170,9 @@ export function CodeEditorPane({
           <span>TypeScript JSX</span>
         </div>
         <div>
-          <span>Ln {lines.length}, Col {lines[lines.length - 1]?.length || 1}</span>
+          <span>
+            Ln {lines.length}, Col {lines[lines.length - 1]?.length || 1}
+          </span>
         </div>
       </div>
     </div>
@@ -170,7 +183,7 @@ export function CodeEditorPane({
  * Lightweight syntax colorizer for keywords, strings, types, and tags
  */
 function colorizeCode(line: string): React.ReactNode {
-  if (line.trim().startsWith('//') || line.trim().startsWith('--')) {
+  if (line.trim().startsWith("//") || line.trim().startsWith("--")) {
     return <span className="text-slate-500 italic">{line}</span>;
   }
 
@@ -178,27 +191,112 @@ function colorizeCode(line: string): React.ReactNode {
 
   return tokens.map((token, i) => {
     if (
-      ['import', 'export', 'from', 'default', 'function', 'class', 'async', 'await', 'return', 'const', 'let', 'var', 'new', 'if', 'else', 'private', 'for', 'switch', 'case', 'CREATE', 'INDEX', 'SELECT', 'WHERE', 'ORDER', 'BY', 'LIMIT', 'EXPLAIN', 'ANALYZE'].includes(token)
+      [
+        "import",
+        "export",
+        "from",
+        "default",
+        "function",
+        "class",
+        "async",
+        "await",
+        "return",
+        "const",
+        "let",
+        "var",
+        "new",
+        "if",
+        "else",
+        "private",
+        "for",
+        "switch",
+        "case",
+        "CREATE",
+        "INDEX",
+        "SELECT",
+        "WHERE",
+        "ORDER",
+        "BY",
+        "LIMIT",
+        "EXPLAIN",
+        "ANALYZE",
+      ].includes(token)
     ) {
-      return <span key={i} className="text-purple-400 font-semibold">{token}</span>;
+      return (
+        <span key={i} className="text-purple-400 font-semibold">
+          {token}
+        </span>
+      );
     }
-    if (['useState', 'useEffect', 'useMemo', 'useRef', 'useVirtualizer', 'init', 'handleAudioFrame', 'isEndOfThought'].includes(token)) {
-      return <span key={i} className="text-blue-400">{token}</span>;
+    if (
+      [
+        "useState",
+        "useEffect",
+        "useMemo",
+        "useRef",
+        "useVirtualizer",
+        "init",
+        "handleAudioFrame",
+        "isEndOfThought",
+      ].includes(token)
+    ) {
+      return (
+        <span key={i} className="text-blue-400">
+          {token}
+        </span>
+      );
     }
-    if (['string', 'number', 'boolean', 'void', 'Promise', 'WebSocket', 'Buffer', 'Float32Array', 'PartRecord', 'ProjectConfig'].includes(token)) {
-      return <span key={i} className="text-emerald-400">{token}</span>;
+    if (
+      [
+        "string",
+        "number",
+        "boolean",
+        "void",
+        "Promise",
+        "WebSocket",
+        "Buffer",
+        "Float32Array",
+        "PartRecord",
+        "ProjectConfig",
+      ].includes(token)
+    ) {
+      return (
+        <span key={i} className="text-emerald-400">
+          {token}
+        </span>
+      );
     }
-    if (token.startsWith('"') || token.startsWith("'") || token.startsWith('`')) {
-      return <span key={i} className="text-amber-300">{token}</span>;
+    if (
+      token.startsWith('"') ||
+      token.startsWith("'") ||
+      token.startsWith("`")
+    ) {
+      return (
+        <span key={i} className="text-amber-300">
+          {token}
+        </span>
+      );
     }
-    if (['true', 'false', 'null', 'undefined'].includes(token)) {
-      return <span key={i} className="text-amber-400 font-bold">{token}</span>;
+    if (["true", "false", "null", "undefined"].includes(token)) {
+      return (
+        <span key={i} className="text-amber-400 font-bold">
+          {token}
+        </span>
+      );
     }
     if (/^\d+$/.test(token)) {
-      return <span key={i} className="text-amber-400">{token}</span>;
+      return (
+        <span key={i} className="text-amber-400">
+          {token}
+        </span>
+      );
     }
-    if (token.startsWith('<') && token.endsWith('>')) {
-      return <span key={i} className="text-pink-400">{token}</span>;
+    if (token.startsWith("<") && token.endsWith(">")) {
+      return (
+        <span key={i} className="text-pink-400">
+          {token}
+        </span>
+      );
     }
     return <span key={i}>{token}</span>;
   });

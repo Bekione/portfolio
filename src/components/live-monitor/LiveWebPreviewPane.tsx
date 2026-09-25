@@ -53,7 +53,7 @@ export function LiveWebPreviewPane({
         </div>
 
         {/* URL Bar */}
-        <div className="flex-1 max-w-[280px] mx-2 h-5 bg-[#06070b] border border-slate-800 rounded px-2 flex items-center justify-between text-[9px] text-slate-400 font-mono">
+        <div className="flex-1 max-w-70 mx-2 h-5 bg-[#06070b] border border-slate-800 rounded px-2 flex items-center justify-between text-[9px] text-slate-400 font-mono">
           <span className="truncate">{project.previewUrl}</span>
           <RotateCw className="w-2.5 h-2.5 hover:text-white cursor-pointer" />
         </div>
@@ -98,7 +98,7 @@ export function LiveWebPreviewPane({
                 {[40, 70, 30, 85, 95, 60, 45, 80, 100, 75, 50, 65, 85, 40, 90, 60].map((h, i) => (
                   <span
                     key={i}
-                    className="w-1 bg-gradient-to-t from-sky-500 to-indigo-400 rounded-full animate-pulse"
+                    className="w-1 bg-linear-to-t from-sky-500 to-indigo-400 rounded-full animate-pulse"
                     style={{
                       height: `${h}%`,
                       animationDelay: `${i * 0.08}s`,

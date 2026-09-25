@@ -76,7 +76,7 @@ export function LabExperiments() {
                   pauseOnManualInteraction(10000);
                   setSelectedFilter(cat);
                 }}
-                className={`px-3.5 py-1.5 min-h-[32px] flex items-center text-xs font-mono rounded-xs transition-colors border cursor-pointer relative ${
+                className={`px-3.5 py-1.5 min-h-8 items-center text-xs font-mono rounded-xs transition-colors border cursor-pointer relative ${
                   isSelected
                     ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
@@ -109,7 +109,7 @@ export function LabExperiments() {
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 0.95, filter: "blur(6px)" }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between hover:border-(--border-strong) transition-colors group h-full min-h-[370px]"
+                className="p-6 border border-(--border-subtle) bg-(--bg-surface) rounded-xs flex flex-col justify-between hover:border-(--border-strong) transition-colors group h-full min-h-92.5"
               >
                 {/* Upper Content Area */}
                 <div className="flex-1 flex flex-col justify-between space-y-4">
@@ -135,9 +135,11 @@ export function LabExperiments() {
                   {/* Aligned Note Section */}
                   {exp.notes && (
                     <div className="mt-auto pt-3">
-                      <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-secondary) min-h-[50px] flex items-center">
+                      <div className="p-2.5 bg-(--bg-primary) border border-(--border-subtle)/70 rounded-xs text-[11px] font-mono text-(--text-secondary) min-h-12.5 flex items-center">
                         <div>
-                          <span className="text-vermilion font-semibold">Note:</span>{" "}
+                          <span className="text-vermilion font-semibold">
+                            Note:
+                          </span>{" "}
                           <span>{exp.notes}</span>
                         </div>
                       </div>
@@ -163,7 +165,7 @@ export function LabExperiments() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`View ${exp.title} repository on GitHub`}
-                    className="inline-flex items-center gap-1.5 py-1 min-h-[28px] text-xs font-mono text-vermilion hover:underline font-medium"
+                    className="inline-flex items-center gap-1.5 py-1 min-h-7 text-xs font-mono text-vermilion hover:underline font-medium"
                   >
                     <span>VIEW REPOSITORY</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />

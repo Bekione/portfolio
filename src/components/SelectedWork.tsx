@@ -64,7 +64,10 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
     window.addEventListener("bk_nav_theme_transition", handleNavTransition);
     return () => {
       window.removeEventListener("bk_nav_theme_hover", handleNavHover);
-      window.removeEventListener("bk_nav_theme_transition", handleNavTransition);
+      window.removeEventListener(
+        "bk_nav_theme_transition",
+        handleNavTransition,
+      );
     };
   }, [pauseOnManualInteraction]);
 
@@ -104,7 +107,7 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
                   pauseOnManualInteraction(12000);
                   setActiveProjectTab(project.id);
                 }}
-                className={`px-4 py-2.5 min-h-[36px] text-xs font-mono rounded-xs transition-colors flex items-center gap-2 border cursor-pointer relative ${
+                className={`px-4 py-2.5 min-h-9 text-xs font-mono rounded-xs transition-colors flex items-center gap-2 border cursor-pointer relative ${
                   isSelected
                     ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
@@ -344,13 +347,15 @@ function ProjectScreenshotCard({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-[140px] sm:max-w-[200px] truncate">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-35 sm:max-w-50 truncate">
               {project.liveUrl ? (
                 <span className="text-(--text-secondary) truncate">
                   {project.liveUrl.replace(/^https?:\/\//, "")}
                 </span>
               ) : (
-                <span className="truncate">{project.id}.preview // internal</span>
+                <span className="truncate">
+                  {project.id}.preview // internal
+                </span>
               )}
             </div>
 
@@ -385,7 +390,11 @@ function ProjectScreenshotCard({
                     <motion.span
                       layoutId={`activeCardTheme-${project.id}`}
                       className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <Sun className="w-3 h-3 relative z-10" />
@@ -413,7 +422,11 @@ function ProjectScreenshotCard({
                     <motion.span
                       layoutId={`activeCardTheme-${project.id}`}
                       className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <Moon className="w-3 h-3 relative z-10" />
@@ -431,9 +444,9 @@ function ProjectScreenshotCard({
           </button>
         </div>
 
-        {/* Screenshot Viewport - Fixed aspect-[1695/928] + object-contain prevents left/right cropping */}
+        {/* Screenshot Viewport - Fixed aspect-1695/928 + object-contain prevents left/right cropping */}
         <div
-          className="relative aspect-[1695/928] bg-[#0c0c0c] overflow-hidden cursor-pointer w-full group select-none"
+          className="relative aspect-1695/928 bg-[#0c0c0c] overflow-hidden cursor-pointer w-full group select-none"
           onClick={() => setIsZoomed(true)}
           title="Click to expand high-resolution preview"
         >
@@ -461,7 +474,7 @@ function ProjectScreenshotCard({
           ))}
 
           {/* Screenshot Overlay: Click to expand hint on hover */}
-          <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none z-20 flex items-center justify-end font-mono text-xs">
+          <div className="absolute inset-x-0 bottom-0 p-3 bg-linear-to-t from-black/60 via-transparent to-transparent pointer-events-none z-20 flex items-center justify-end font-mono text-xs">
             <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[11px] text-white/90 flex items-center gap-1.5 px-2 py-1 rounded-xs bg-black/70 backdrop-blur-xs border border-white/15">
               <Maximize2 className="w-3 h-3 text-vermilion" />
               <span>Expand Preview</span>
@@ -502,7 +515,7 @@ function ProjectScreenshotCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Visit live platform for ${project.title}`}
-            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[36px] rounded-xs bg-[#151515] dark:bg-[#ece8e0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white transition-colors font-medium cursor-pointer"
+            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-2 min-h-9 rounded-xs bg-[#151515] dark:bg-[#ece8e0] text-[#F3F0E8] dark:text-[#121211] hover:bg-vermilion dark:hover:bg-vermilion dark:hover:text-white transition-colors font-medium cursor-pointer"
           >
             <Noise />
             <span>VISIT LIVE PLATFORM</span>
@@ -735,7 +748,7 @@ function ProjectCarouselModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={() => onClose(themeMode)}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-2 sm:p-4 md:p-8 flex items-center justify-center cursor-zoom-out w-full h-[100dvh]"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-2 sm:p-4 md:p-8 flex items-center justify-center cursor-zoom-out w-full h-dvh"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -783,7 +796,11 @@ function ProjectCarouselModal({
                     <motion.span
                       layoutId={`activeModalTheme-${project.id}`}
                       className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <Sun className="w-3.5 h-3.5 relative z-10" />
@@ -810,7 +827,11 @@ function ProjectCarouselModal({
                     <motion.span
                       layoutId={`activeModalTheme-${project.id}`}
                       className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <Moon className="w-3.5 h-3.5 relative z-10" />
@@ -838,7 +859,7 @@ function ProjectCarouselModal({
             direction="horizontal"
             fadeSize={40}
             alwaysShowFade={images.length > 1}
-            className="w-full aspect-[1695/928] max-h-[calc(94vh-90px)] mx-auto"
+            className="w-full aspect-1695/928 max-h-[calc(94vh-90px)] mx-auto"
           >
             {/* Embla Viewport for Swiping and Next/Prev sliding */}
             <div
@@ -892,7 +913,7 @@ function ProjectCarouselModal({
               <button
                 type="button"
                 onClick={scrollPrev}
-                className="absolute left-1.5 sm:left-2.5 top-1/2 -translate-y-1/2 z-30 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                className="absolute left-1.5 sm:left-2.5 top-1/2 -translate-y-1/2 z-30 min-w-8 min-h-8 sm:min-w-9 sm:min-h-9 p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
                 aria-label="Previous image"
                 title="Previous image (←)"
               >
@@ -902,7 +923,7 @@ function ProjectCarouselModal({
               <button
                 type="button"
                 onClick={scrollNext}
-                className="absolute right-1.5 sm:right-2.5 top-1/2 -translate-y-1/2 z-30 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
+                className="absolute right-1.5 sm:right-2.5 top-1/2 -translate-y-1/2 z-30 min-w-8 min-h-8 sm:min-w-9 sm:min-h-9 p-1.5 sm:p-2 flex items-center justify-center rounded-xs bg-(--bg-surface)/95 hover:bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion border border-(--border-strong) hover:border-vermilion transition-all cursor-pointer backdrop-blur-xs shadow-md overflow-hidden group"
                 aria-label="Next image"
                 title="Next image (→)"
               >

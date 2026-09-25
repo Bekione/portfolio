@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import Image from "next/image";
 import {
   calculateHomographyMatrix3D,
@@ -169,7 +175,10 @@ export function LiveCodingMonitor() {
 
   const advanceToNextProject = useCallback(() => {
     const nextIndex = (currentProjIndex + 1) % MONITOR_PROJECTS.length;
-    setSettings((s) => ({ ...s, activeProject: MONITOR_PROJECTS[nextIndex].id }));
+    setSettings((s) => ({
+      ...s,
+      activeProject: MONITOR_PROJECTS[nextIndex].id,
+    }));
   }, [currentProjIndex]);
 
   // Triggered when code completes typing (+1.8s hold time)
@@ -214,7 +223,7 @@ export function LiveCodingMonitor() {
                   pauseOnManualInteraction(12000);
                   setSettings((s) => ({ ...s, activeProject: proj.id }));
                 }}
-                className={`px-2.5 py-1 min-h-[28px] flex items-center rounded-xs transition-colors cursor-pointer text-[10px] whitespace-nowrap border relative ${
+                className={`px-2.5 py-1 min-h-7 flex items-center rounded-xs transition-colors cursor-pointer text-[10px] whitespace-nowrap border relative ${
                   isSelected
                     ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) hover:text-(--text-primary) hover:border-(--border-strong)"
@@ -257,7 +266,7 @@ export function LiveCodingMonitor() {
               }))
             }
             aria-label={`Switch monitor view mode, current: ${settings.viewMode}`}
-            className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer relative overflow-hidden"
+            className="p-1.5 min-w-7 min-h-7 flex items-center justify-center rounded-xs border border-(--border-subtle) hover:border-(--border-strong) hover:text-vermilion transition-colors cursor-pointer relative overflow-hidden"
             title={`View: ${settings.viewMode.toUpperCase()}`}
           >
             <Noise />
@@ -280,7 +289,7 @@ export function LiveCodingMonitor() {
                 ? "Mute typing sounds"
                 : "Enable mechanical keyboard sounds"
             }
-            className={`p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
+            className={`p-1.5 min-w-7 min-h-7 flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               settings.soundEnabled
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"
@@ -302,8 +311,10 @@ export function LiveCodingMonitor() {
           {/* Zoom toggle */}
           <button
             onClick={() => setIsZoomed(!isZoomed)}
-            aria-label={isZoomed ? "Reset zoom" : "Zoom into live monitor screen"}
-            className={`p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
+            aria-label={
+              isZoomed ? "Reset zoom" : "Zoom into live monitor screen"
+            }
+            className={`p-1.5 min-w-7 min-h-7 flex items-center justify-center rounded-xs border transition-colors cursor-pointer relative overflow-hidden ${
               isZoomed
                 ? "border-vermilion text-vermilion bg-vermilion/10"
                 : "border-(--border-subtle) hover:border-(--border-strong)"

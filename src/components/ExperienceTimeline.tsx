@@ -124,7 +124,7 @@ export function ExperienceTimeline() {
 
             {/* Experience Stage */}
             <div className="flex-1 flex flex-col justify-center py-2 sm:py-4 min-h-0">
-              <div className="relative w-full h-[390px] sm:h-[400px] md:h-[360px] lg:h-[340px] overflow-hidden">
+              <div className="relative w-full h-97.5 sm:h-100 md:h-90 lg:h-85 overflow-hidden">
                 <div className="relative w-full h-full overflow-hidden">
                   {WORK_EXPERIENCE.map((exp, idx) => (
                     <div
@@ -197,7 +197,7 @@ export function ExperienceTimeline() {
                   {/* Bottom fade for elegant visual transition */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-gradient-to-t from-(--bg-surface) to-transparent z-20"
+                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-linear-to-t from-(--bg-surface) to-transparent z-20"
                   />
                 </div>
               </div>

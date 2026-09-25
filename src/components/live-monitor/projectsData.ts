@@ -95,7 +95,7 @@ export function VirtualizedInventory({ skus }: { skus: PartRecord[] }) {
   });
 
   return (
-    <div ref={parentRef} className="h-[600px] overflow-auto border border-border">
+    <div ref={parentRef} className="h-150 overflow-auto border border-border">
       <div style={{ height: \`\${rowVirtualizer.getTotalSize()}px\`, position: 'relative' }}>
         {rowVirtualizer.getVirtualItems().map(virtualRow => (
           <div
