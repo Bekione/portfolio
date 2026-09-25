@@ -758,7 +758,7 @@ function ProjectCarouselModal({
             {/* Quick mode switch buttons in header (Icon-only, hover and click for smooth in-place toggle) */}
             {images.length > 1 && (
               <div
-                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) relative"
+                className="flex items-center p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button

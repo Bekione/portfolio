@@ -71,8 +71,8 @@ export function Footer() {
                 BEREKET KINFE
               </span>
               <p className="text-xs sm:text-sm text-(--text-secondary) font-sans leading-relaxed">
-                Software Engineer working across frontend architecture,
-                real-time voice streaming, and enterprise data systems.
+                Software Engineer focused on thoughtful interfaces, sub-second real-time systems, 
+                and high-volume data architecture.
               </p>
               <div className="text-[11px] font-mono text-(--text-muted) pt-1">
                 Addis Ababa, Ethiopia (UTC+3) • Open to Remote Worldwide
