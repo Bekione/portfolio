@@ -63,13 +63,22 @@ export function TechStack() {
                   pauseOnManualInteraction(10000);
                   setActiveCategory(cat.number);
                 }}
-                className={`px-4 py-2 min-h-[36px] text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden flex items-center gap-1.5 ${
+                className={`px-4 py-2 min-h-[36px] text-xs font-mono rounded-xs transition-colors border cursor-pointer relative flex items-center gap-1.5 ${
                   isSelected
-                    ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
+                    ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
-                <Noise />
+                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                  <Noise />
+                </div>
+                {isSelected && (
+                  <motion.span
+                    layoutId="activeTechStackCategory"
+                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
                 <span className="text-(--text-muted) relative z-10">
                   {cat.number}.
                 </span>

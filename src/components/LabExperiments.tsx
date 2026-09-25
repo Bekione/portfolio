@@ -67,23 +67,35 @@ export function LabExperiments() {
 
         {/* Filter Pills */}
         <div className="pt-8 pb-10 flex flex-wrap gap-2 border-b border-(--border-subtle)">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                pauseOnManualInteraction(10000);
-                setSelectedFilter(cat);
-              }}
-              className={`px-3.5 py-1.5 min-h-[32px] flex items-center text-xs font-mono rounded-xs transition-all border cursor-pointer relative overflow-hidden ${
-                selectedFilter === cat
-                  ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
-                  : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
-              }`}
-            >
-              <Noise />
-              <span className="relative z-10">{cat}</span>
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isSelected = selectedFilter === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  pauseOnManualInteraction(10000);
+                  setSelectedFilter(cat);
+                }}
+                className={`px-3.5 py-1.5 min-h-[32px] flex items-center text-xs font-mono rounded-xs transition-colors border cursor-pointer relative ${
+                  isSelected
+                    ? "border-transparent text-vermilion font-semibold"
+                    : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
+                }`}
+              >
+                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                  <Noise />
+                </div>
+                {isSelected && (
+                  <motion.span
+                    layoutId="activeLabFilter"
+                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Experiments Grid */}

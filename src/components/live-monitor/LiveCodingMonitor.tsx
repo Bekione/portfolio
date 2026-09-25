@@ -21,6 +21,7 @@ import {
   Laptop,
 } from "lucide-react";
 import { Noise } from "../Noise";
+import { motion } from "motion/react";
 
 export function LiveCodingMonitor() {
   // Active settings
@@ -213,18 +214,29 @@ export function LiveCodingMonitor() {
                   pauseOnManualInteraction(12000);
                   setSettings((s) => ({ ...s, activeProject: proj.id }));
                 }}
-                className={`px-2.5 py-1 min-h-[28px] flex items-center rounded-xs transition-colors cursor-pointer text-[10px] whitespace-nowrap border relative overflow-hidden ${
+                className={`px-2.5 py-1 min-h-[28px] flex items-center rounded-xs transition-colors cursor-pointer text-[10px] whitespace-nowrap border relative ${
                   isSelected
-                    ? "border-vermilion bg-vermilion/10 text-vermilion font-semibold"
+                    ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
-                <Noise />
-                {proj.id === "ai-visa-interview"
-                  ? "VOICE AI"
-                  : proj.id === "spare-parts-erp"
-                    ? "10M ERP"
-                    : "NEXT.JS"}
+                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                  <Noise />
+                </div>
+                {isSelected && (
+                  <motion.span
+                    layoutId="activeMonitorProject"
+                    className="absolute -inset-px rounded-xs border border-vermilion bg-vermilion/10 pointer-events-none"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">
+                  {proj.id === "ai-visa-interview"
+                    ? "VOICE AI"
+                    : proj.id === "spare-parts-erp"
+                      ? "10M ERP"
+                      : "NEXT.JS"}
+                </span>
               </button>
             );
           })}

@@ -104,13 +104,22 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
                   pauseOnManualInteraction(12000);
                   setActiveProjectTab(project.id);
                 }}
-                className={`px-4 py-2.5 min-h-[36px] text-xs font-mono rounded-xs transition-all flex items-center gap-2 border cursor-pointer relative overflow-hidden ${
+                className={`px-4 py-2.5 min-h-[36px] text-xs font-mono rounded-xs transition-colors flex items-center gap-2 border cursor-pointer relative ${
                   isSelected
-                    ? "border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs text-vermilion font-semibold shadow-xs"
+                    ? "border-transparent text-vermilion font-semibold"
                     : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
                 }`}
               >
-                <Noise />
+                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                  <Noise />
+                </div>
+                {isSelected && (
+                  <motion.span
+                    layoutId="activeProjectTabOutline"
+                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
                 <span className="text-(--text-muted) relative z-10">
                   {project.number}.
                 </span>
@@ -348,7 +357,7 @@ function ProjectScreenshotCard({
             {/* Light / Dark Mode Toggle Buttons (Icon only, click & hover with paused auto-switch) */}
             {images.length > 1 && (
               <div
-                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle)"
+                className="flex items-center p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) relative"
                 onClick={(e) => e.stopPropagation()}
                 onMouseEnter={() => setIsButtonsHovered(true)}
                 onMouseLeave={() => setIsButtonsHovered(false)}
@@ -364,15 +373,22 @@ function ProjectScreenshotCard({
                     setIsButtonsHovered(true);
                     setActiveImageIndex(0);
                   }}
-                  className={`p-1 rounded-2xs cursor-pointer transition-all ${
+                  className={`p-1 rounded-2xs cursor-pointer transition-colors relative flex items-center justify-center ${
                     activeImageIndex === 0
-                      ? "bg-vermilion text-white shadow-2xs"
-                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                      ? "text-white"
+                      : "text-(--text-muted) hover:text-(--text-primary)"
                   }`}
                   title="Light Mode Screenshot"
                   aria-label="Light Mode Screenshot"
                 >
-                  <Sun className="w-3 h-3" />
+                  {activeImageIndex === 0 && (
+                    <motion.span
+                      layoutId={`activeCardTheme-${project.id}`}
+                      className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <Sun className="w-3 h-3 relative z-10" />
                 </button>
                 <button
                   type="button"
@@ -385,15 +401,22 @@ function ProjectScreenshotCard({
                     setIsButtonsHovered(true);
                     setActiveImageIndex(1);
                   }}
-                  className={`p-1 rounded-2xs cursor-pointer transition-all ${
+                  className={`p-1 rounded-2xs cursor-pointer transition-colors relative flex items-center justify-center ${
                     activeImageIndex === 1
-                      ? "bg-vermilion text-white shadow-2xs"
-                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                      ? "text-white"
+                      : "text-(--text-muted) hover:text-(--text-primary)"
                   }`}
                   title="Dark Mode Screenshot"
                   aria-label="Dark Mode Screenshot"
                 >
-                  <Moon className="w-3 h-3" />
+                  {activeImageIndex === 1 && (
+                    <motion.span
+                      layoutId={`activeCardTheme-${project.id}`}
+                      className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <Moon className="w-3 h-3 relative z-10" />
                 </button>
               </div>
             )}
@@ -735,7 +758,7 @@ function ProjectCarouselModal({
             {/* Quick mode switch buttons in header (Icon-only, hover and click for smooth in-place toggle) */}
             {images.length > 1 && (
               <div
-                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle)"
+                className="flex items-center gap-0.5 p-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
@@ -748,15 +771,22 @@ function ProjectCarouselModal({
                     e.stopPropagation();
                     handleThemeSwitch(0);
                   }}
-                  className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
+                  className={`p-1.5 rounded-2xs cursor-pointer transition-colors relative flex items-center justify-center ${
                     activeMode === 0
-                      ? "bg-vermilion text-white shadow-2xs"
-                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                      ? "text-white"
+                      : "text-(--text-muted) hover:text-(--text-primary)"
                   }`}
                   title="Light Mode Screenshot"
                   aria-label="Light Mode Screenshot"
                 >
-                  <Sun className="w-3.5 h-3.5" />
+                  {activeMode === 0 && (
+                    <motion.span
+                      layoutId={`activeModalTheme-${project.id}`}
+                      className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <Sun className="w-3.5 h-3.5 relative z-10" />
                 </button>
                 <button
                   type="button"
@@ -768,15 +798,22 @@ function ProjectCarouselModal({
                     e.stopPropagation();
                     handleThemeSwitch(1);
                   }}
-                  className={`p-1.5 rounded-2xs cursor-pointer transition-all ${
+                  className={`p-1.5 rounded-2xs cursor-pointer transition-colors relative flex items-center justify-center ${
                     activeMode === 1
-                      ? "bg-vermilion text-white shadow-2xs"
-                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-(--bg-primary)"
+                      ? "text-white"
+                      : "text-(--text-muted) hover:text-(--text-primary)"
                   }`}
                   title="Dark Mode Screenshot"
                   aria-label="Dark Mode Screenshot"
                 >
-                  <Moon className="w-3.5 h-3.5" />
+                  {activeMode === 1 && (
+                    <motion.span
+                      layoutId={`activeModalTheme-${project.id}`}
+                      className="absolute inset-0 bg-vermilion rounded-2xs shadow-2xs"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <Moon className="w-3.5 h-3.5 relative z-10" />
                 </button>
               </div>
             )}
