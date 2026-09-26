@@ -1,4 +1,4 @@
-import { Project, Experience, TechStackCategory, LabExperiment, EngineeringPrinciple } from '../types';
+import { Project, Experience, Education, Leadership, TechStackCategory, LabExperiment, EngineeringPrinciple } from '../types';
 
 export const PERSONAL_INFO = {
   name: 'Bereket Kinfe',
@@ -229,89 +229,96 @@ export const LAB_EXPERIMENTS: LabExperiment[] = [
 export const WORK_EXPERIENCE: Experience[] = [
   {
     company: 'Fanaye Technologies',
-    role: 'Frontend Engineer & Product Lead',
+    role: 'Full-Stack Engineer | QA & Project Coordination',
     period: 'Sept 2025 – Jan 2026',
-    location: 'Addis Ababa, Ethiopia',
-    description: 'I led frontend development across web and mobile for a multi-tenant ISP platform and worked closely with the backend team to ship on schedule.',
+    location: 'Fulltime',
+    description: 'Led test case design, regression testing, API validation, and production bug analysis across web and mobile releases, improving release stability and reducing post-deployment issues.',
     keyResponsibilities: [
-      'Built web and mobile interfaces for an ISP marketplace serving customers, providers, and platform admins',
-      'Broke down technical requirements, coordinated sprint deliverables, and ran QA testing cycles',
-      'Implemented core Nest.js REST endpoints and worked on PostgreSQL schema design and queries',
-      'Triaged production issues, wrote automated tests, and verified release stability'
+      'Led test case design, regression testing, API validation, and production bug analysis across web and mobile releases, improving release stability and reducing post-deployment issues.',
+      'ISP Marketplace (India): Built web & mobile apps (React, React Native, Tailwind) with User/Admin tiers and NestJS backend APIs',
+      'Spare-Parts ERP (China, 10M+ records): Took ownership of React + Laravel ERP, optimizing 10M+ records via SQL tuning & virtualization, cutting 10s+ timeouts to ms'
     ],
-    technologies: ['React', 'React Native', 'Tailwind CSS', 'Nest.js', 'PostgreSQL', 'TypeScript']
+    subProjects: [
+      {
+        title: 'ISP Marketplace (India)',
+        highlights: [
+          'Built the web and mobile applications using React, React Native, and Tailwind for a multi-tenant ISP marketplace with User, ISP Admin, and Super Admin dashboards, while also contributing to the NestJS backend and API implementation.',
+          'Collaborated across frontend and backend to integrate REST APIs with NestJS and PostgreSQL, implementing and debugging data flows across user and administrative workflows.'
+        ]
+      },
+      {
+        title: 'Spare-Parts ERP (China, 10M+ records)',
+        highlights: [
+          'Took ownership of a large-scale React + Laravel ERP, stabilizing existing foundations and completing core business workflows.',
+          'Optimized workflows operating over 10M+ records through SQL tuning, efficient data loading, frontend virtualization, and caching, reducing 10+ second timeouts to millisecond-level responses while preserving the user experience.'
+        ]
+      }
+    ],
+    technologies: ['React', 'React Native', 'Tailwind CSS', 'NestJS', 'PostgreSQL', 'Laravel', 'SQL Tuning', 'TypeScript']
   },
   {
-    company: 'Afrilearn International',
+    company: 'AfriLearn International',
     role: 'Software Engineer',
     period: 'July 2025 – Sept 2025',
-    location: 'Remote',
-    description: 'At Afrilearn, I worked on the public web platform and built a real-time conversational voice AI interview system.',
+    location: 'Fulltime',
+    description: 'Built an AI-powered conversational voice interview platform and deployed production web & AI streaming infrastructure on AWS EC2.',
     keyResponsibilities: [
-      'Rebuilt the public web architecture on Next.js, raising Lighthouse performance scores from ~60 to 100',
-      'Built a low-latency audio pipeline (STT → LLM → TTS) streaming over WebSockets on AWS EC2',
-      'Integrated local ONNX runtime with BERT-based voice activity detection for natural conversational turn-taking',
-      'Implemented semantic SEO schemas that helped onboard +600 new active students in the first month'
+      'Built an AI-powered visa interview platform with real-time voice conversation using low-latency STT → LLM → TTS streaming, WebSockets, audio buffering, and custom BERT-based Voice Activity Detection with ONNX.',
+      'Deployed and maintained production web and AI infrastructure on AWS EC2, implementing reliable streaming workflows and reducing reliance on third-party hosting services.',
+      'Rebuilt the public website end-to-end, improving Lighthouse performance from ~60 to 100 across SEO, UX, and performance, contributing to 600+ new users in one month.'
     ],
-    technologies: ['Next.js', 'WebSockets', 'ONNX', 'BERT VAD', 'AWS EC2', 'Tailwind CSS', 'Core Web Vitals']
+    technologies: ['Next.js', 'WebSockets', 'ONNX', 'BERT VAD', 'AWS (EC2)', 'STT/TTS', 'Tailwind CSS', 'Core Web Vitals']
   },
   {
-    company: 'Self-Employed',
+    company: 'Self Employed',
     role: 'Fullstack Developer (Freelance)',
     period: 'Apr 2025 – June 2025',
-    location: 'Addis Ababa, Ethiopia',
-    description: 'I worked with clients to design, build, and deploy custom web applications, admin portals, and internal tools.',
+    location: 'Remote',
+    description: 'Built and shipped production Next.js and TypeScript applications with authentication, role-based admin dashboards, and client-specific workflows.',
     keyResponsibilities: [
-      'Built production web applications with Next.js, TypeScript, and clean role-based permissions',
-      'Developed custom admin dashboards, transactional notifications, and client portals',
-      'Managed cloud deployments, custom domain routing, SSL certificates, and CI/CD pipelines'
+      'Built and shipped production Next.js and TypeScript applications with authentication, role-based admin dashboards, and client-specific workflows.'
     ],
-    technologies: ['Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'REST APIs']
+    technologies: ['Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Authentication', 'Tailwind CSS']
   },
   {
     company: 'Adot Technologies',
-    role: 'Co-Founder & Frontend Developer',
+    role: 'Co-Founder / Frontend Developer',
     period: 'Aug 2024 – Mar 2025',
-    location: 'Addis Ababa, Ethiopia',
-    description: 'Co-founded a software initiative where we built an internal ERP system and modern tooling for local businesses.',
+    location: 'Remote',
+    description: 'Designed and built Adot ERP and company website using Next.js, TypeScript, and Shadcn/UI with a reusable component-driven UI system.',
     keyResponsibilities: [
-      'Designed and built the Adot ERP interface and company web presence',
-      'Created a reusable UI component library using Next.js, TypeScript, and Tailwind CSS',
-      'Speeded up feature delivery by standardizing data table, modal, and form patterns'
+      'Designed and built Adot ERP and company website using Next.js, TypeScript, Shadcn/UI.',
+      'Built a reusable, component-driven UI system to accelerate development across multiple dashboards.'
     ],
-    technologies: ['Next.js', 'TypeScript', 'shadcn/ui', 'Tailwind CSS', 'Design Systems']
+    technologies: ['Next.js', 'TypeScript', 'Shadcn/UI', 'Tailwind CSS', 'Component Architecture']
   },
   {
     company: 'WTB Import and IT Solution',
     role: 'Frontend Developer',
     period: 'Dec 2023 – July 2024',
-    location: 'Addis Ababa, Ethiopia',
-    description: 'Built inventory tracking tools and management dashboards for retail and warehouse operations.',
+    location: 'Remote',
+    description: 'Built React and Redux dashboards integrated with REST and GraphQL APIs, focusing on performance, reliable data flows, and responsive user interfaces.',
     keyResponsibilities: [
-      'Developed data-heavy frontend screens using React and Redux connected to REST and GraphQL APIs',
-      'Improved UI responsiveness and cut initial bundle sizes through route and component lazy loading',
-      'Collaborated with backend engineers to define clean API schemas and error handling contracts'
+      'Built React and Redux dashboards integrated with REST and GraphQL APIs, focusing on performance, reliable data flows, and responsive user interfaces.'
     ],
-    technologies: ['React', 'Redux', 'GraphQL', 'REST APIs', 'JavaScript', 'CSS3']
+    technologies: ['React', 'Redux', 'GraphQL', 'REST APIs', 'Performance Optimization']
   },
   {
     company: 'Faith Import & Trade',
     role: 'Fullstack Developer',
     period: 'Aug 2023 – Nov 2023',
-    location: 'Addis Ababa, Ethiopia',
-    description: 'Built an internal task management tool and mobile-friendly inventory tracker for field staff.',
+    location: 'Contract / Hybrid',
+    description: 'Delivered a Next.js + PostgreSQL internal task management system with secure authentication and PWA capabilities.',
     keyResponsibilities: [
-      'Created an internal task management app with Next.js and PostgreSQL',
-      'Added offline caching support (PWA) so field staff could log inventory without reliable internet',
-      'Implemented role-based permissions to protect sensitive commercial and stock data'
+      'Delivered a Next.js + PostgreSQL internal task management system with secure authentication and PWA capabilities.'
     ],
-    technologies: ['Next.js', 'PostgreSQL', 'PWA', 'TypeScript', 'Authentication']
+    technologies: ['Next.js', 'PostgreSQL', 'PWA', 'Authentication', 'TypeScript']
   },
   {
-    company: 'Techtonic Tribe',
+    company: 'TechTonic Tribe',
     role: 'Education Lead (Volunteer)',
-    period: '2023 – 2024',
-    location: 'Addis Ababa, Ethiopia',
+    period: 'Dec 2023 – July 2024',
+    location: 'Volunteer',
     description: 'Taught modern web development and mentored aspiring developers in our local tech community.',
     keyResponsibilities: [
       'Created a practical curriculum covering modern JavaScript, React state patterns, and Git workflows',
@@ -322,70 +329,96 @@ export const WORK_EXPERIENCE: Experience[] = [
   }
 ];
 
+export const EDUCATION: Education[] = [
+  {
+    institution: 'Debre Berhan University',
+    degree: 'BSc in Software Engineering.',
+    location: 'Debre Berhan, Ethiopia',
+    year: '2024'
+  },
+  {
+    institution: 'FreeCodeCamp',
+    degree: 'Responsive Web Design Certification',
+    year: '2024'
+  }
+];
+
+export const LEADERSHIP: Leadership[] = [
+  {
+    organization: 'TechTonic Tribe',
+    role: 'Education Lead',
+    period: 'Dec 2023 – July 2024',
+    type: 'Volunteer',
+    description: 'Led technical education initiatives, mentoring aspiring engineers in modern web development and software fundamentals.'
+  }
+];
+
 export const TECH_STACK: TechStackCategory[] = [
   {
     number: '01',
-    title: 'FRONTEND',
-    subtitle: 'Interfaces, component systems & client apps',
+    title: 'FRONTEND & MOBILE',
+    subtitle: 'Interfaces, component systems & cross-platform apps',
     skills: [
       { name: 'React', level: 'primary', context: 'Hooks, state management, component architecture' },
       { name: 'Next.js', level: 'primary', context: 'App Router, SSR, SSG, server actions' },
+      { name: 'React Native', level: 'primary', context: 'Cross-platform mobile apps for iOS and Android' },
       { name: 'TypeScript', level: 'primary', context: 'Strict typing, domain models, interface contracts' },
-      { name: 'JavaScript (ESNext)', level: 'primary', context: 'Async patterns, DOM APIs, modern runtime features' },
+      { name: 'JavaScript', level: 'primary', context: 'Async patterns, DOM APIs, modern runtime features' },
       { name: 'Tailwind CSS', level: 'primary', context: 'Design tokens, responsive layouts, utility craft' },
-      { name: 'React Native', level: 'proficient', context: 'Cross-platform mobile apps for iOS and Android' },
-      { name: 'Responsive Design', level: 'primary', context: 'Mobile-first, fluid layout systems' },
-      { name: 'Accessibility (a11y)', level: 'primary', context: 'Keyboard navigation, semantic HTML, ARIA' },
-      { name: 'Component Systems', level: 'primary', context: 'Composition, reusability, token consistency' }
+      { name: 'Redux', level: 'proficient', context: 'Predictable state containers for complex dashboards' },
+      { name: 'Zustand', level: 'primary', context: 'Ergonomic, lightweight client state management' },
+      { name: 'Component Architecture', level: 'primary', context: 'Composition, reusability, token consistency' },
+      { name: 'Performance Optimization', level: 'primary', context: 'Bundle splitting, virtualization, render auditing' }
     ]
   },
   {
     number: '02',
-    title: 'STATE & DATA',
-    subtitle: 'Data flow, synchronization & network contracts',
+    title: 'BACKEND & APIS',
+    subtitle: 'Services, data modeling, real-time protocols & auth',
     skills: [
-      { name: 'Zustand', level: 'primary', context: 'Simple, ergonomic global state management' },
-      { name: 'TanStack Query', level: 'primary', context: 'Server state, caching, optimistic mutations' },
-      { name: 'WebSockets', level: 'primary', context: 'Real-time duplex events and audio streaming' },
+      { name: 'Node.js', level: 'primary', context: 'Event loop, streaming I/O, server services' },
+      { name: 'NestJS', level: 'primary', context: 'Modular architecture, dependency injection, guards' },
+      { name: 'Django', level: 'proficient', context: 'Python backend services, ORM, REST framework' },
+      { name: 'PostgreSQL', level: 'primary', context: 'Relational modeling, indexing, query tuning' },
+      { name: 'MongoDB', level: 'proficient', context: 'Document modeling, aggregation pipelines' },
       { name: 'REST APIs', level: 'primary', context: 'Resource-oriented API design and integration' },
       { name: 'GraphQL', level: 'proficient', context: 'Declarative querying and type generation' },
-      { name: 'Redux Toolkit', level: 'proficient', context: 'Predictable state containers for legacy systems' }
+      { name: 'WebSockets', level: 'primary', context: 'Real-time duplex events and audio streaming' },
+      { name: 'Data Modeling', level: 'primary', context: 'Schema design, entity relationships, query access patterns' },
+      { name: 'Authentication', level: 'primary', context: 'JWT, session management, RBAC, OAuth' }
     ]
   },
   {
     number: '03',
-    title: 'BACKEND',
-    subtitle: 'Application servers, APIs & databases',
+    title: 'CLOUD & DEVOPS',
+    subtitle: 'Deployment compute, containerization & workflows',
     skills: [
-      { name: 'Node.js', level: 'primary', context: 'Event loop, streaming I/O, server services' },
-      { name: 'Nest.js', level: 'primary', context: 'Modular architecture, dependency injection, guards' },
-      { name: 'Express', level: 'primary', context: 'Lightweight REST APIs and middleware' },
-      { name: 'Laravel', level: 'proficient', context: 'Backend services, ORM, and SQL optimization' },
-      { name: 'PostgreSQL', level: 'primary', context: 'Relational modeling, indexing, query tuning' },
-      { name: 'Redis', level: 'proficient', context: 'Caching, latency reduction, session stores' }
+      { name: 'AWS (EC2)', level: 'primary', context: 'Compute instance configuration, audio pipeline servers' },
+      { name: 'Docker', level: 'proficient', context: 'Containerization, reproducible local environments' },
+      { name: 'CI/CD', level: 'proficient', context: 'Automated test suites, build checks, deployment' },
+      { name: 'Git', level: 'primary', context: 'Branch workflows, pull requests, automated actions' }
     ]
   },
   {
     number: '04',
-    title: 'INFRASTRUCTURE & TOOLS',
-    subtitle: 'Deployment, containers & everyday workflow',
+    title: 'TESTING & QA',
+    subtitle: 'Quality assurance, regression testing & debugging',
     skills: [
-      { name: 'AWS EC2', level: 'primary', context: 'Hosting compute instances, audio pipeline services' },
-      { name: 'Docker', level: 'proficient', context: 'Containerization, reproducible local environments' },
-      { name: 'Git & GitHub', level: 'primary', context: 'Branch workflows, pull requests, automated actions' },
-      { name: 'CI/CD Pipelines', level: 'proficient', context: 'Automated testing, build checks, deployment' }
+      { name: 'Jest', level: 'primary', context: 'Unit testing, component test suites, test runners' },
+      { name: 'Regression Testing', level: 'primary', context: 'End-to-end stability checks, release safety gates' },
+      { name: 'API Testing', level: 'primary', context: 'Payload validation, contract assertions, mock servers' },
+      { name: 'Production Debugging', level: 'primary', context: 'Log analysis, error tracing, runtime bug isolation' }
     ]
   },
   {
     number: '05',
-    title: "THINGS I'M EXPLORING",
-    subtitle: 'Voice systems, local ML inference & developer tooling',
+    title: 'OTHERS & AI PIPELINES',
+    subtitle: 'Voice systems, local ML inference & streaming',
     skills: [
-      { name: 'Streaming Voice AI', level: 'primary', context: 'Low-latency STT, LLM, and TTS pipelines' },
+      { name: 'STT / TTS Streaming', level: 'primary', context: 'Low-latency speech-to-text and text-to-speech loops' },
       { name: 'ONNX Runtime', level: 'proficient', context: 'Local ML model inference in Node and browser' },
       { name: 'Voice Activity Detection', level: 'proficient', context: 'BERT-based VAD for natural conversational pacing' },
-      { name: 'LLM Integration', level: 'primary', context: 'Structured tool calling, retrieval, agent flows' },
-      { name: 'Developer Tooling', level: 'primary', context: 'VS Code extensions, CLI utilities, workflow automation' }
+      { name: 'Audio Buffering', level: 'primary', context: 'WebSocket chunking, jitter mitigation, audio queues' }
     ]
   }
 ];

@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Download, FileText, Printer, X, Mail, MapPin } from "lucide-react";
+import { Download, FileText, Printer, X, Mail, MapPin, GraduationCap } from "lucide-react";
 import ScrollFade from "./ScrollFade";
 import {
   PERSONAL_INFO,
   WORK_EXPERIENCE,
   TECH_STACK,
   FEATURED_PROJECTS,
+  EDUCATION,
 } from "../data/portfolioData";
 
 interface ResumeModalProps {
@@ -272,6 +273,30 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <p className="text-(--text-secondary) text-[11px] leading-relaxed">
                       {group.skills.map((s) => s.name).join(" • ")}
                     </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Education */}
+            <div className="space-y-3 resume-item">
+              <h2 className="font-mono text-xs font-bold text-(--text-primary) uppercase tracking-wider border-b border-(--border-subtle) pb-1">
+                Education
+              </h2>
+
+              <div className="space-y-3 text-xs">
+                {EDUCATION.map((edu, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <GraduationCap className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-sm text-(--text-primary)">
+                        {edu.degree}
+                      </span>
+                      <span className="block text-(--text-secondary)">
+                        {edu.institution}
+                        {edu.location && ` — ${edu.location}`} | {edu.year}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -25,6 +25,11 @@ export interface Project {
   featuredAspect: 'architecture' | 'performance' | 'ai-voice' | 'design-system' | 'optimization';
 }
 
+export interface ExperienceSubProject {
+  title: string;
+  highlights: string[];
+}
+
 export interface Experience {
   company: string;
   role: string;
@@ -33,7 +38,23 @@ export interface Experience {
   description: string;
   keyResponsibilities: string[];
   technologies: string[];
+  subProjects?: ExperienceSubProject[];
   isCurrent?: boolean;
+}
+
+export interface Education {
+  institution: string;
+  degree: string;
+  location?: string;
+  year: string;
+}
+
+export interface Leadership {
+  organization: string;
+  role: string;
+  period: string;
+  type: string;
+  description?: string;
 }
 
 export interface TechStackCategory {
