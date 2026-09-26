@@ -25,17 +25,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : "https://bereketkinfe.pro.et"),
-  ),
+  metadataBase: new URL("https://bereketkinfe.pro.et"),
   title: "Bereket Kinfe | Software Engineer",
   description:
     "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
+  alternates: {
+    canonical: "https://bereketkinfe.pro.et",
+  },
   keywords: [
     "Bereket Kinfe",
     "Software Engineer",
@@ -46,7 +42,7 @@ export const metadata: Metadata = {
     "TypeScript",
     "Addis Ababa",
   ],
-  authors: [{ name: "Bereket Kinfe" }],
+  authors: [{ name: "Bereket Kinfe", url: "https://bereketkinfe.pro.et" }],
   creator: "Bereket Kinfe",
   openGraph: {
     title: "Bereket Kinfe — Software Engineer",
@@ -72,17 +68,18 @@ export const metadata: Metadata = {
       "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
     images: ["/og.png"],
   },
-  icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
   manifest: "/site.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -92,27 +89,73 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Bereket Kinfe",
-    jobTitle: "Software Engineer",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Addis Ababa",
-      addressCountry: "Ethiopia",
-    },
-    url: "https://github.com/Bekione",
-    sameAs: [
-      "https://github.com/Bekione",
-      "https://www.linkedin.com/in/bereket-k/",
-    ],
-    knowsAbout: [
-      "Frontend Engineering",
-      "Full-Stack Development",
-      "TypeScript",
-      "React",
-      "Next.js",
-      "System Architecture",
-      "Performance Optimization",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://bereketkinfe.pro.et/#website",
+        url: "https://bereketkinfe.pro.et/",
+        name: "Bereket Kinfe",
+        alternateName: [
+          "Bereket Kinfe | Software Engineer",
+          "Bekione",
+        ],
+        inLanguage: "en-US",
+        publisher: {
+          "@id": "https://bereketkinfe.pro.et/#person",
+        },
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://bereketkinfe.pro.et/#profile",
+        url: "https://bereketkinfe.pro.et/",
+        name: "Bereket Kinfe | Software Engineer",
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          "@id": "https://bereketkinfe.pro.et/#avatar",
+          url: "https://bereketkinfe.pro.et/assets/avatar.png",
+          caption: "Bereket Kinfe",
+        },
+        mainEntity: {
+          "@id": "https://bereketkinfe.pro.et/#person",
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": "https://bereketkinfe.pro.et/#person",
+        name: "Bereket Kinfe",
+        alternateName: "Bekione",
+        jobTitle: "Software Engineer",
+        description:
+          "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
+        url: "https://bereketkinfe.pro.et/",
+        image: "https://bereketkinfe.pro.et/assets/avatar.png",
+        email: "mailto:bereket.kinfe23@gmail.com",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Addis Ababa",
+          addressCountry: "ET",
+        },
+        alumniOf: {
+          "@type": "CollegeOrUniversity",
+          name: "Debre Berhan University",
+        },
+        sameAs: [
+          "https://github.com/Bekione",
+          "https://www.linkedin.com/in/bereket-k/",
+          "https://www.upwork.com/freelancers/~012d26bbc748699f75",
+        ],
+        knowsAbout: [
+          "Software Engineering",
+          "Frontend Engineering",
+          "Full-Stack Development",
+          "TypeScript",
+          "React",
+          "Next.js",
+          "Node.js",
+          "System Architecture",
+          "Performance Optimization",
+        ],
+      },
     ],
   };
 
