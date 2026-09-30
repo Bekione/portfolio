@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowUpRight,
@@ -10,6 +10,7 @@ import {
 import { LAB_EXPERIMENTS } from "../data/portfolioData";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
 import { Noise } from "./Noise";
+import { ScrollFade } from "./ScrollFade";
 
 export function LabExperiments() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
@@ -36,6 +37,24 @@ export function LabExperiments() {
     },
     interval: 6500,
   });
+
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const activeBtn = buttonRefs.current[selectedFilter];
+    const container = tabListRef.current;
+    if (activeBtn && container) {
+      const targetScroll =
+        activeBtn.offsetLeft -
+        container.clientWidth / 2 +
+        activeBtn.offsetWidth / 2;
+      container.scrollTo({
+        left: targetScroll,
+        behavior: "smooth",
+      });
+    }
+  }, [selectedFilter]);
 
   const filteredExperiments =
     selectedFilter === "All"
@@ -66,36 +85,46 @@ export function LabExperiments() {
         </div>
 
         {/* Filter Pills */}
-        <div className="pt-8 pb-10 flex flex-wrap gap-2 border-b border-(--border-subtle)">
-          {categories.map((cat) => {
-            const isSelected = selectedFilter === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => {
-                  pauseOnManualInteraction(10000);
-                  setSelectedFilter(cat);
-                }}
-                className={`px-3.5 py-1.5 min-h-8 items-center text-xs font-mono rounded-xs transition-colors border cursor-pointer relative ${
-                  isSelected
-                    ? "border-transparent text-vermilion font-semibold"
-                    : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
-                }`}
-              >
-                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
-                  <Noise />
-                </div>
-                {isSelected && (
-                  <motion.span
-                    layoutId="activeLabFilter"
-                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{cat}</span>
-              </button>
-            );
-          })}
+        <div className="pt-6 pb-8 border-b border-(--border-subtle)">
+          <ScrollFade direction="horizontal" fadeSize={36} className="w-full p-1 -m-1">
+            <div
+              ref={tabListRef}
+              className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2"
+            >
+              {categories.map((cat) => {
+                const isSelected = selectedFilter === cat;
+                return (
+                  <button
+                    key={cat}
+                    ref={(el) => {
+                      buttonRefs.current[cat] = el;
+                    }}
+                    onClick={() => {
+                      pauseOnManualInteraction(10000);
+                      setSelectedFilter(cat);
+                    }}
+                    className={`shrink-0 whitespace-nowrap px-3.5 py-1.5 min-h-8 items-center text-xs font-mono rounded-xs transition-colors border cursor-pointer relative ${
+                      isSelected
+                        ? "border-transparent text-vermilion font-semibold"
+                        : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
+                    }`}
+                  >
+                    <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                      <Noise />
+                    </div>
+                    {isSelected && (
+                      <motion.span
+                        layoutId="activeLabFilter"
+                        className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      />
+                    )}
+                    <span className="relative z-10">{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollFade>
         </div>
 
         {/* Experiments Grid */}

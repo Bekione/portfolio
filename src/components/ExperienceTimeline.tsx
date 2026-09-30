@@ -6,7 +6,6 @@ import { WORK_EXPERIENCE } from "../data/portfolioData";
 
 const CARD_COUNT = WORK_EXPERIENCE.length;
 const TRANSITIONS = CARD_COUNT - 1;
-const END_BUFFER = 80;
 
 export function ExperienceTimeline() {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -34,7 +33,7 @@ export function ExperienceTimeline() {
   }, []);
 
   const scrollPerStep = isMobile ? 260 : 340;
-  const totalScroll = TRANSITIONS * scrollPerStep + END_BUFFER;
+  const totalScroll = TRANSITIONS * scrollPerStep;
 
   // Direct DOM transforms for smooth card stacking animation
   const applyCardTransforms = useCallback((currentStep: number) => {
@@ -123,8 +122,8 @@ export function ExperienceTimeline() {
             </div>
 
             {/* Experience Stage */}
-            <div className="flex-1 flex flex-col justify-center py-2 sm:py-4 min-h-0">
-              <div className="relative w-full h-97.5 sm:h-100 md:h-90 lg:h-85 overflow-hidden">
+            <div className="flex-1 flex flex-col justify-center py-1 sm:py-3 min-h-0">
+              <div className="relative w-full h-[470px] sm:h-[490px] md:h-125 lg:h-127.5 max-h-[calc(100svh-10.5rem)] overflow-hidden">
                 <div className="relative w-full h-full overflow-hidden">
                   {WORK_EXPERIENCE.map((exp, idx) => (
                     <div
@@ -141,50 +140,56 @@ export function ExperienceTimeline() {
                         WebkitBackfaceVisibility: "hidden",
                       }}
                     >
-                      <div className="py-3 sm:py-6 grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-6 lg:gap-8 items-start group">
-                        <div className="lg:col-span-4 space-y-1 sm:space-y-2">
+                      <div className="py-3 sm:py-5 md:py-7 grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 lg:gap-10 items-start group">
+                        <div className="lg:col-span-4 space-y-1.5 sm:space-y-3">
                           <div className="flex flex-wrap items-center justify-between lg:justify-start gap-2">
-                            <div className="inline-flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-vermilion font-semibold">
+                            <div className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm text-vermilion font-semibold">
                               <span className="w-1.5 h-1.5 rounded-2xs bg-vermilion shrink-0" />
                               <span>{exp.period}</span>
                             </div>
-                            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-mono text-(--text-muted) lg:hidden">
-                              <MapPin className="w-3 h-3 text-(--text-muted)" />
+                            <div className="flex items-center gap-1 text-[11px] sm:text-xs font-mono text-(--text-muted) lg:hidden">
+                              <MapPin className="w-3.5 h-3.5 text-(--text-muted)" />
                               <span>{exp.location}</span>
                             </div>
                           </div>
-                          <h3 className="font-display text-base sm:text-xl font-bold text-(--text-primary) group-hover:text-vermilion transition-colors">
+                          <h3 className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-(--text-primary) tracking-tight group-hover:text-vermilion transition-colors">
                             {exp.company}
                           </h3>
-                          <div className="text-xs font-mono text-(--text-secondary) font-medium">
+                          <div className="text-xs sm:text-sm font-mono text-(--text-secondary) font-medium">
                             {exp.role}
                           </div>
-                          <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-mono text-(--text-muted) pt-1">
-                            <MapPin className="w-3 h-3 text-(--text-muted)" />
+                          <div className="hidden lg:flex items-center gap-1.5 text-xs font-mono text-(--text-muted) pt-0.5 sm:pt-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-(--text-muted)" />
                             <span>{exp.location}</span>
                           </div>
                         </div>
 
-                        <div className="lg:col-span-8 space-y-2 sm:space-y-4">
-                          <p className="text-xs sm:text-sm text-(--text-secondary) leading-relaxed">
+                        <div className="lg:col-span-8 space-y-2.5 sm:space-y-4 md:space-y-5">
+                          <p className="text-xs sm:text-sm md:text-base text-(--text-secondary) leading-relaxed">
                             {exp.description}
                           </p>
-                          <div className="space-y-1.5 sm:space-y-2">
-                            {exp.keyResponsibilities.map((resp, rIdx) => (
-                              <div
-                                key={rIdx}
-                                className="flex items-start gap-2 text-[11px] sm:text-xs text-(--text-secondary)"
-                              >
-                                <ChevronRight className="w-3.5 h-3.5 text-vermilion shrink-0 mt-0.5" />
-                                <span>{resp}</span>
-                              </div>
-                            ))}
+                          <div className="space-y-1.5 sm:space-y-2.5">
+                            {exp.keyResponsibilities
+                              .filter(
+                                (resp) =>
+                                  resp.trim().toLowerCase() !==
+                                  exp.description.trim().toLowerCase(),
+                              )
+                              .map((resp, rIdx) => (
+                                <div
+                                  key={rIdx}
+                                  className="flex items-start gap-2.5 text-xs sm:text-sm text-(--text-secondary) leading-relaxed"
+                                >
+                                  <ChevronRight className="w-4 h-4 text-vermilion shrink-0 mt-0.5" />
+                                  <span>{resp}</span>
+                                </div>
+                              ))}
                           </div>
-                          <div className="pt-1 sm:pt-2 flex flex-wrap gap-1 sm:gap-1.5">
+                          <div className="pt-1.5 sm:pt-3 flex flex-wrap gap-1.5 sm:gap-2">
                             {exp.technologies.map((tech) => (
                               <span
                                 key={tech}
-                                className="px-1.5 sm:px-2 py-0.5 font-mono text-[9px] sm:text-[10px] border border-(--border-subtle) bg-(--bg-primary) text-(--text-primary) rounded-xs"
+                                className="px-2 sm:px-2.5 py-0.5 sm:py-1 font-mono text-[10px] sm:text-[11px] border border-(--border-subtle) bg-(--bg-primary) text-(--text-primary) rounded-xs shadow-2xs"
                               >
                                 {tech}
                               </span>
@@ -197,7 +202,7 @@ export function ExperienceTimeline() {
                   {/* Bottom fade for elegant visual transition */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-linear-to-t from-(--bg-surface) to-transparent z-20"
+                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-(--bg-surface) to-transparent z-20"
                   />
                 </div>
               </div>

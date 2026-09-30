@@ -212,8 +212,8 @@ export function LiveCodingMonitor() {
       className="flex flex-col w-full"
     >
       {/* Top Floating Mini Controls Bar */}
-      <div className="flex items-center justify-between pb-2 mb-1 px-1 text-[10px] font-mono text-(--text-secondary) border-b border-(--border-subtle)/70">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+      <div className="flex items-center justify-between pb-2 mb-1 px-1 text-[10px] font-mono text-(--text-secondary) border-b border-(--border-subtle)/70 overflow-visible">
+        <div className="flex items-center gap-1.5 overflow-visible p-1 -m-1">
           {MONITOR_PROJECTS.map((proj) => {
             const isSelected = proj.id === settings.activeProject;
             return (

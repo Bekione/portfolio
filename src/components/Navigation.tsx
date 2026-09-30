@@ -93,30 +93,32 @@ export function Navigation({
           : "bg-transparent border-transparent py-5"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4">
         {/* Brand & Technical Identity */}
         <button
           onClick={() => scrollToSection("hero")}
-          className="group text-left flex items-center gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-vermilion"
+          className="group text-left flex items-center gap-2.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-vermilion shrink-0"
         >
           <Image
             src="/android-chrome-512x512.png"
             alt="Logo"
-            width={24}
-            height={24}
-            className=""
+            width={26}
+            height={26}
+            className="rounded-xs shrink-0"
           />
-          <span className="font-display font-bold tracking-tight text-base sm:text-lg text-(--text-primary) group-hover:text-vermilion transition-colors">
-            BEREKET KINFE
-          </span>
-          <span className="hidden sm:inline-block font-mono text-[11px] text-(--text-muted) tracking-wider">
-            / SOFTWARE ENGINEER
-          </span>
+          <div className="flex flex-col justify-center xl:flex-row xl:items-baseline xl:gap-2">
+            <span className="font-display font-bold tracking-tight text-sm sm:text-base xl:text-lg text-(--text-primary) group-hover:text-vermilion transition-colors whitespace-nowrap leading-tight">
+              BEREKET KINFE
+            </span>
+            <span className="font-mono text-[10px] sm:text-[11px] text-(--text-muted) tracking-wider whitespace-nowrap leading-tight">
+              <span className="hidden xl:inline">/ </span>SOFTWARE ENGINEER
+            </span>
+          </div>
         </button>
 
         {/* Desktop Navigation */}
         <nav
-          className="hidden md:flex items-center gap-7"
+          className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-6 shrink-0"
           aria-label="Main Navigation"
         >
           {NAV_ITEMS.map((item) => {
@@ -125,13 +127,13 @@ export function Navigation({
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`group relative text-xs font-mono tracking-wider transition-colors py-2 px-1 min-h-8 flex items-center gap-1 ${
+                className={`group relative text-xs font-mono tracking-wider transition-colors py-1.5 px-1 lg:px-1.5 min-h-8 flex items-center gap-1 whitespace-nowrap ${
                   isActive
                     ? "text-vermilion font-medium"
                     : "text-(--text-secondary) hover:text-(--text-primary)"
                 }`}
               >
-                <span className="text-[10px] text-(--text-muted) group-hover:text-vermilion transition-colors">
+                <span className="hidden lg:inline text-[10px] text-(--text-muted) group-hover:text-vermilion transition-colors">
                   {item.num}.
                 </span>
                 <span>{item.label}</span>
@@ -148,21 +150,21 @@ export function Navigation({
         </nav>
 
         {/* Action Controls: Resume & Theme */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Resume Trigger */}
           <button
             onClick={onOpenResume}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 min-h-9 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 min-h-9 text-xs font-mono font-medium tracking-wide border border-(--border-strong) rounded-xs hover:border-vermilion hover:text-vermilion transition-colors bg-(--bg-surface) text-(--text-primary) relative overflow-hidden shrink-0"
             title="View & Download Resume"
           >
             <Noise />
             <FileText className="w-3.5 h-3.5 relative z-10" />
             <span className="relative z-10">RESUME</span>
-            <ArrowUpRight className="w-3 h-3 text-(--text-muted) relative z-10" />
+            <ArrowUpRight className="hidden lg:inline w-3 h-3 text-(--text-muted) relative z-10" />
           </button>
 
           {/* Theme Toggle Button with Circular View Transition */}
-          <ThemeToggleCircular onToggle={onToggleTheme} className="inline-flex">
+          <ThemeToggleCircular onToggle={onToggleTheme} className="inline-flex shrink-0">
             <button
               type="button"
               aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}

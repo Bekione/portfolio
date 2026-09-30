@@ -234,9 +234,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Fulltime',
     description: 'Led test case design, regression testing, API validation, and production bug analysis across web and mobile releases, improving release stability and reducing post-deployment issues.',
     keyResponsibilities: [
-      'Led test case design, regression testing, API validation, and production bug analysis across web and mobile releases, improving release stability and reducing post-deployment issues.',
-      'ISP Marketplace (India): Built web & mobile apps (React, React Native, Tailwind) with User/Admin tiers and NestJS backend APIs',
-      'Spare-Parts ERP (China, 10M+ records): Took ownership of React + Laravel ERP, optimizing 10M+ records via SQL tuning & virtualization, cutting 10s+ timeouts to ms'
+      'Architected automated test cases and API regression suites across web and mobile clients to safeguard release stability',
+      'ISP Marketplace (India): Built web & mobile apps (React, React Native, Tailwind) with multi-tier user and admin dashboards',
+      'Spare-Parts ERP (China): Optimized 10M+ inventory records via SQL tuning and table virtualization, cutting 10s+ timeouts to ms'
     ],
     subProjects: [
       {
@@ -263,9 +263,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Fulltime',
     description: 'Built an AI-powered conversational voice interview platform and deployed production web & AI streaming infrastructure on AWS EC2.',
     keyResponsibilities: [
-      'Built an AI-powered visa interview platform with real-time voice conversation using low-latency STT → LLM → TTS streaming, WebSockets, audio buffering, and custom BERT-based Voice Activity Detection with ONNX.',
-      'Deployed and maintained production web and AI infrastructure on AWS EC2, implementing reliable streaming workflows and reducing reliance on third-party hosting services.',
-      'Rebuilt the public website end-to-end, improving Lighthouse performance from ~60 to 100 across SEO, UX, and performance, contributing to 600+ new users in one month.'
+      'Built a low-latency voice AI pipeline (STT → LLM → TTS streaming) via WebSockets and BERT Voice Activity Detection',
+      'Deployed and maintained production web and AI infrastructure on AWS EC2 with resilient streaming workflows',
+      'Rebuilt the platform web app end-to-end, lifting Lighthouse scores to 100 across SEO and performance for 600+ users'
     ],
     technologies: ['Next.js', 'WebSockets', 'ONNX', 'BERT VAD', 'AWS (EC2)', 'STT/TTS', 'Tailwind CSS', 'Core Web Vitals']
   },
@@ -276,7 +276,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Remote',
     description: 'Built and shipped production Next.js and TypeScript applications with authentication, role-based admin dashboards, and client-specific workflows.',
     keyResponsibilities: [
-      'Built and shipped production Next.js and TypeScript applications with authentication, role-based admin dashboards, and client-specific workflows.'
+      'Delivered full-stack Next.js and TypeScript web applications for freelance clients from wireframes to deployment',
+      'Configured role-based access control, relational database schemas with PostgreSQL, and custom admin portals',
+      'Integrated payment workflows, automated notification hooks, and accessible responsive component libraries'
     ],
     technologies: ['Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Authentication', 'Tailwind CSS']
   },
@@ -287,8 +289,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Remote',
     description: 'Designed and built Adot ERP and company website using Next.js, TypeScript, and Shadcn/UI with a reusable component-driven UI system.',
     keyResponsibilities: [
-      'Designed and built Adot ERP and company website using Next.js, TypeScript, Shadcn/UI.',
-      'Built a reusable, component-driven UI system to accelerate development across multiple dashboards.'
+      'Architected the frontend codebase for Adot ERP and the marketing website with Next.js and TypeScript',
+      'Built a modular, reusable UI design system with Shadcn/UI and Tailwind CSS for rapid dashboard development',
+      'Streamlined data fetching patterns and state management across financial and inventory operational modules'
     ],
     technologies: ['Next.js', 'TypeScript', 'Shadcn/UI', 'Tailwind CSS', 'Component Architecture']
   },
@@ -299,7 +302,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Remote',
     description: 'Built React and Redux dashboards integrated with REST and GraphQL APIs, focusing on performance, reliable data flows, and responsive user interfaces.',
     keyResponsibilities: [
-      'Built React and Redux dashboards integrated with REST and GraphQL APIs, focusing on performance, reliable data flows, and responsive user interfaces.'
+      'Engineered high-density administrative dashboards with React and Redux Toolkit for real-time inventory tracking',
+      'Integrated multi-endpoint REST and GraphQL APIs with optimistic UI caching and resilient error fallback states',
+      'Optimized component re-renders and virtualized large tabular views to eliminate layout shifts'
     ],
     technologies: ['React', 'Redux', 'GraphQL', 'REST APIs', 'Performance Optimization']
   },
@@ -310,7 +315,9 @@ export const WORK_EXPERIENCE: Experience[] = [
     location: 'Contract / Hybrid',
     description: 'Delivered a Next.js + PostgreSQL internal task management system with secure authentication and PWA capabilities.',
     keyResponsibilities: [
-      'Delivered a Next.js + PostgreSQL internal task management system with secure authentication and PWA capabilities.'
+      'Built a responsive offline-capable Progressive Web App (PWA) with client-side caching for task tracking',
+      'Implemented secure role-based session authentication and data validation with PostgreSQL',
+      'Designed mobile-friendly workflow dashboards for daily inventory logs and status coordination'
     ],
     technologies: ['Next.js', 'PostgreSQL', 'PWA', 'Authentication', 'TypeScript']
   },

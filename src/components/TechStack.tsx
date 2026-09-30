@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { TECH_STACK } from "../data/portfolioData";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
 import { Noise } from "./Noise";
+import { ScrollFade } from "./ScrollFade";
 
 export function TechStack() {
   const [activeCategory, setActiveCategory] = useState<string>("01");
@@ -25,6 +26,24 @@ export function TechStack() {
     },
     interval: 6500,
   });
+
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const activeBtn = buttonRefs.current[activeCategory];
+    const container = tabListRef.current;
+    if (activeBtn && container) {
+      const targetScroll =
+        activeBtn.offsetLeft -
+        container.clientWidth / 2 +
+        activeBtn.offsetWidth / 2;
+      container.scrollTo({
+        left: targetScroll,
+        behavior: "smooth",
+      });
+    }
+  }, [activeCategory]);
 
   const currentCat =
     TECH_STACK.find((cat) => cat.number === activeCategory) || TECH_STACK[0];
@@ -53,39 +72,49 @@ export function TechStack() {
         </div>
 
         {/* Category Navigation Pills */}
-        <div className="pt-8 pb-10 flex flex-wrap gap-2 border-b border-(--border-subtle)">
-          {TECH_STACK.map((cat) => {
-            const isSelected = activeCategory === cat.number;
-            return (
-              <button
-                key={cat.number}
-                onClick={() => {
-                  pauseOnManualInteraction(10000);
-                  setActiveCategory(cat.number);
-                }}
-                className={`px-4 py-2 min-h-9 text-xs font-mono rounded-xs transition-colors border cursor-pointer relative flex items-center gap-1.5 ${
-                  isSelected
-                    ? "border-transparent text-vermilion font-semibold"
-                    : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
-                }`}
-              >
-                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
-                  <Noise />
-                </div>
-                {isSelected && (
-                  <motion.span
-                    layoutId="activeTechStackCategory"
-                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="text-(--text-muted) relative z-10">
-                  {cat.number}.
-                </span>
-                <span className="relative z-10">{cat.title}</span>
-              </button>
-            );
-          })}
+        <div className="pt-6 pb-8 border-b border-(--border-subtle)">
+          <ScrollFade direction="horizontal" fadeSize={36} className="w-full p-1 -m-1">
+            <div
+              ref={tabListRef}
+              className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2"
+            >
+              {TECH_STACK.map((cat) => {
+                const isSelected = activeCategory === cat.number;
+                return (
+                  <button
+                    key={cat.number}
+                    ref={(el) => {
+                      buttonRefs.current[cat.number] = el;
+                    }}
+                    onClick={() => {
+                      pauseOnManualInteraction(10000);
+                      setActiveCategory(cat.number);
+                    }}
+                    className={`shrink-0 whitespace-nowrap px-4 py-2 min-h-9 text-xs font-mono rounded-xs transition-colors border cursor-pointer relative flex items-center gap-1.5 ${
+                      isSelected
+                        ? "border-transparent text-vermilion font-semibold"
+                        : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
+                    }`}
+                  >
+                    <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                      <Noise />
+                    </div>
+                    {isSelected && (
+                      <motion.span
+                        layoutId="activeTechStackCategory"
+                        className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      />
+                    )}
+                    <span className="text-(--text-muted) relative z-10">
+                      {cat.number}.
+                    </span>
+                    <span className="relative z-10">{cat.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollFade>
         </div>
 
         {/* Active Category Breakdown */}

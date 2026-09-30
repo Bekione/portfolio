@@ -71,6 +71,24 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
     };
   }, [pauseOnManualInteraction]);
 
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const activeBtn = buttonRefs.current[activeProjectTab];
+    const container = tabListRef.current;
+    if (activeBtn && container) {
+      const targetScroll =
+        activeBtn.offsetLeft -
+        container.clientWidth / 2 +
+        activeBtn.offsetWidth / 2;
+      container.scrollTo({
+        left: targetScroll,
+        behavior: "smooth",
+      });
+    }
+  }, [activeProjectTab]);
+
   return (
     <section
       id="work"
@@ -97,41 +115,51 @@ export function SelectedWork({ theme: propTheme }: { theme?: Theme }) {
         </div>
 
         {/* Project Selector Tabs */}
-        <div className="pt-8 pb-10 flex flex-wrap gap-2 border-b border-(--border-subtle)">
-          {FEATURED_PROJECTS.map((project) => {
-            const isSelected = activeProjectTab === project.id;
-            return (
-              <button
-                key={project.id}
-                onClick={() => {
-                  pauseOnManualInteraction(12000);
-                  setActiveProjectTab(project.id);
-                }}
-                className={`px-4 py-2.5 min-h-9 text-xs font-mono rounded-xs transition-colors flex items-center gap-2 border cursor-pointer relative ${
-                  isSelected
-                    ? "border-transparent text-vermilion font-semibold"
-                    : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
-                }`}
-              >
-                <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
-                  <Noise />
-                </div>
-                {isSelected && (
-                  <motion.span
-                    layoutId="activeProjectTabOutline"
-                    className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="text-(--text-muted) relative z-10">
-                  {project.number}.
-                </span>
-                <span className="relative z-10">
-                  {project.title.toUpperCase()}
-                </span>
-              </button>
-            );
-          })}
+        <div className="pt-6 pb-8 border-b border-(--border-subtle)">
+          <ScrollFade direction="horizontal" fadeSize={36} className="w-full p-1 -m-1">
+            <div
+              ref={tabListRef}
+              className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2"
+            >
+              {FEATURED_PROJECTS.map((project) => {
+                const isSelected = activeProjectTab === project.id;
+                return (
+                  <button
+                    key={project.id}
+                    ref={(el) => {
+                      buttonRefs.current[project.id] = el;
+                    }}
+                    onClick={() => {
+                      pauseOnManualInteraction(12000);
+                      setActiveProjectTab(project.id);
+                    }}
+                    className={`shrink-0 whitespace-nowrap px-4 py-2.5 min-h-9 text-xs font-mono rounded-xs transition-colors flex items-center gap-2 border cursor-pointer relative ${
+                      isSelected
+                        ? "border-transparent text-vermilion font-semibold"
+                        : "border-(--border-subtle) bg-transparent text-(--text-secondary) hover:text-(--text-primary) hover:border-(--border-strong)"
+                    }`}
+                  >
+                    <div className="absolute inset-0 overflow-hidden rounded-xs pointer-events-none">
+                      <Noise />
+                    </div>
+                    {isSelected && (
+                      <motion.span
+                        layoutId="activeProjectTabOutline"
+                        className="absolute -inset-px rounded-xs border border-vermilion bg-(--bg-surface)/80 backdrop-blur-xs shadow-xs pointer-events-none"
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      />
+                    )}
+                    <span className="text-(--text-muted) relative z-10">
+                      {project.number}.
+                    </span>
+                    <span className="relative z-10">
+                      {project.title.toUpperCase()}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollFade>
         </div>
 
         {/* Active Project Showcase */}
@@ -576,31 +604,50 @@ function ProjectCarouselModal({
     duration: 25,
   });
 
-  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
-  const [themeMode, setThemeMode] = useState(initialIndex);
-  const [themeFade, setThemeFade] = useState<{
-    fromImg: string;
-    isExiting: boolean;
-  } | null>(null);
-  const themeFadeTimerRef = useRef<NodeJS.Timeout | null>(null);
-
   // Active normalized image index (0 for Light mode, 1 for Dark mode)
-  const activeMode = selectedIndex % images.length;
+  const [activeMode, setActiveMode] = useState(initialIndex % images.length);
+  // Whether the smooth in-place crossfade layer is active (true for theme toggles, false during carousel swipe/sliding)
+  const [isCrossfading, setIsCrossfading] = useState(true);
+  // Guards to prevent onSelect from fighting with handleThemeSwitch during crossfade
+  const isThemeSwitchingRef = useRef(false);
+  const themeSwitchTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const getBestSnapForIndex = useCallback(
+    (targetIndex: number) => {
+      if (!emblaApi) return targetIndex;
+      const currentSnap = emblaApi.selectedScrollSnap();
+      const totalSlides = slides.length;
+      let bestSnap = targetIndex;
+      let minDiff = Infinity;
+      for (let s = 0; s < totalSlides; s++) {
+        if (s % images.length === targetIndex) {
+          const diff = Math.abs(s - currentSnap);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestSnap = s;
+          }
+        }
+      }
+      return bestSnap;
+    },
+    [emblaApi, slides.length, images.length],
+  );
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
+    // Skip if a theme switch is in progress — handleThemeSwitch already set the correct activeMode
+    if (isThemeSwitchingRef.current) return;
     const snap = emblaApi.selectedScrollSnap();
     const normalized = snap % images.length;
-    setSelectedIndex(normalized);
-    setThemeMode(normalized);
+    setActiveMode(normalized);
+    // Don't re-enable crossfade here — let normal Embla sliding stay visible
   }, [emblaApi, images.length]);
 
   const onPointerDown = useCallback(() => {
-    // If a theme crossfade is in progress when the user grabs the slide, instantly clear it
-    if (themeFadeTimerRef.current) {
-      clearTimeout(themeFadeTimerRef.current);
-    }
-    setThemeFade(null);
+    // When the user starts dragging the carousel directly, reveal the sliding slides
+    clearTimeout(themeSwitchTimerRef.current);
+    isThemeSwitchingRef.current = false;
+    setIsCrossfading(false);
   }, []);
 
   useEffect(() => {
@@ -615,20 +662,13 @@ function ProjectCarouselModal({
     };
   }, [emblaApi, onSelect, onPointerDown]);
 
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (themeFadeTimerRef.current) {
-        clearTimeout(themeFadeTimerRef.current);
-      }
-    };
-  }, []);
-
   const scrollPrev = useCallback(
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
       if (!emblaApi) return;
-      setThemeFade(null);
+      clearTimeout(themeSwitchTimerRef.current);
+      isThemeSwitchingRef.current = false;
+      setIsCrossfading(false);
       emblaApi.scrollPrev();
     },
     [emblaApi],
@@ -638,81 +678,46 @@ function ProjectCarouselModal({
     (e?: React.MouseEvent) => {
       e?.stopPropagation();
       if (!emblaApi) return;
-      setThemeFade(null);
+      clearTimeout(themeSwitchTimerRef.current);
+      isThemeSwitchingRef.current = false;
+      setIsCrossfading(false);
       emblaApi.scrollNext();
     },
     [emblaApi],
   );
 
+  // Smooth in-place theme switch: used by Sun/Moon header buttons and website theme sync
+  // Matches the exact smooth CSS crossfade from the normal card view with ZERO blinking
+  const handleThemeSwitch = useCallback(
+    (targetIndex: number) => {
+      if (targetIndex === activeMode) return;
+      // Cancel any pending Embla sync from a previous rapid hover
+      clearTimeout(themeSwitchTimerRef.current);
+      isThemeSwitchingRef.current = true;
+      setActiveMode(targetIndex);
+      setIsCrossfading(true);
+
+      // Defer Embla sync until AFTER the CSS crossfade completes (500ms + buffer)
+      // so the instant scrollTo never flashes through the transitioning layer
+      if (emblaApi) {
+        const bestSnap = getBestSnapForIndex(targetIndex);
+        themeSwitchTimerRef.current = setTimeout(() => {
+          emblaApi.scrollTo(bestSnap, true);
+          isThemeSwitchingRef.current = false;
+        }, 550);
+      } else {
+        isThemeSwitchingRef.current = false;
+      }
+    },
+    [activeMode, emblaApi, getBestSnapForIndex],
+  );
+
   const handleDotClick = useCallback(
     (targetIndex: number, e?: React.MouseEvent) => {
       e?.stopPropagation();
-      if (!emblaApi) return;
-      setThemeFade(null);
-      const currentSnap = emblaApi.selectedScrollSnap();
-      const totalSlides = slides.length;
-      let bestSnap = targetIndex;
-      let minDiff = Infinity;
-      for (let s = 0; s < totalSlides; s++) {
-        if (s % images.length === targetIndex) {
-          const diff = Math.abs(s - currentSnap);
-          if (diff < minDiff) {
-            minDiff = diff;
-            bestSnap = s;
-          }
-        }
-      }
-      emblaApi.scrollTo(bestSnap);
+      handleThemeSwitch(targetIndex);
     },
-    [emblaApi, slides.length, images.length],
-  );
-
-  // Smooth in-place theme switch: used by Sun/Moon header buttons and website theme sync
-  const handleThemeSwitch = useCallback(
-    (targetIndex: number) => {
-      if (!emblaApi) return;
-      const currentSnap = emblaApi.selectedScrollSnap();
-      const currentNormalized = currentSnap % images.length;
-      if (targetIndex === currentNormalized) return;
-
-      const fromImg = images[currentNormalized];
-
-      // Find closest snap for silent align without horizontal sliding
-      const totalSlides = slides.length;
-      let bestSnap = targetIndex;
-      let minDiff = Infinity;
-      for (let s = 0; s < totalSlides; s++) {
-        if (s % images.length === targetIndex) {
-          const diff = Math.abs(s - currentSnap);
-          if (diff < minDiff) {
-            minDiff = diff;
-            bestSnap = s;
-          }
-        }
-      }
-
-      // Jump Embla silently to the target slide underneath
-      emblaApi.scrollTo(bestSnap, true);
-      setSelectedIndex(targetIndex);
-      setThemeMode(targetIndex);
-
-      if (themeFadeTimerRef.current) {
-        clearTimeout(themeFadeTimerRef.current);
-      }
-
-      // Animate outgoing image fading out to smoothly reveal the new slide underneath
-      setThemeFade({ fromImg, isExiting: false });
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setThemeFade({ fromImg, isExiting: true });
-        });
-      });
-
-      themeFadeTimerRef.current = setTimeout(() => {
-        setThemeFade(null);
-      }, 400);
-    },
-    [emblaApi, slides.length, images],
+    [handleThemeSwitch],
   );
 
   // Sync with website theme ONLY if the website theme actually changes while modal is open
@@ -735,19 +740,19 @@ function ProjectCarouselModal({
       } else if (e.key === "ArrowRight") {
         scrollNext();
       } else if (e.key === "Escape") {
-        onClose(themeMode);
+        onClose(activeMode);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [scrollPrev, scrollNext, onClose, themeMode]);
+  }, [scrollPrev, scrollNext, onClose, activeMode]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={() => onClose(themeMode)}
+      onClick={() => onClose(activeMode)}
       className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs p-2 sm:p-4 md:p-8 flex items-center justify-center cursor-zoom-out w-full h-dvh"
     >
       <motion.div
@@ -841,7 +846,7 @@ function ProjectCarouselModal({
 
             <button
               type="button"
-              onClick={() => onClose(themeMode)}
+              onClick={() => onClose(activeMode)}
               className="p-1.5 rounded-xs border border-(--border-subtle) hover:border-vermilion bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion transition-all cursor-pointer relative overflow-hidden flex items-center justify-center group"
               aria-label="Close modal"
               title="Close modal (Esc)"
@@ -887,24 +892,33 @@ function ProjectCarouselModal({
               </div>
             </div>
 
-            {/* In-Place Theme Crossfade Overlay: Only active during header Sun/Moon button toggles */}
-            {themeFade && (
-              <div
-                className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-350 ease-in-out ${
-                  themeFade.isExiting ? "opacity-0" : "opacity-100"
-                }`}
-              >
-                <Image
-                  src={themeFade.fromImg}
-                  alt={`${project.title} preview transition`}
-                  fill
-                  sizes="(max-width: 1400px) 100vw, 1400px"
-                  className="object-contain object-center select-none pointer-events-none"
-                  priority
-                  draggable={false}
-                />
-              </div>
-            )}
+            {/* Permanent In-Place Theme Crossfade Layer: Zero-flicker CSS crossfade matching normal view */}
+            <div
+              className={`absolute inset-0 pointer-events-none transition-opacity duration-200 ${
+                isCrossfading ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
+            >
+              {images.map((img, idx) => (
+                <div
+                  key={img}
+                  className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
+                    idx === activeMode
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`${project.title} screenshot ${idx === 0 ? "light" : "dark"} mode`}
+                    fill
+                    sizes="(max-width: 1400px) 100vw, 1400px"
+                    className="object-contain object-center select-none pointer-events-none"
+                    priority
+                    draggable={false}
+                  />
+                </div>
+              ))}
+            </div>
           </ScrollFade>
 
           {/* Bidirectional Navigation Arrows — positioned relative to the outer container so they sit at the edges, outside the image */}

@@ -1,4 +1,4 @@
-import { Point, ScreenCorners } from './types';
+import { Point, ScreenCorners } from "./types";
 
 /**
  * Computes a 4x4 homography transform matrix for CSS `transform: matrix3d(...)`
@@ -11,7 +11,7 @@ export function calculateHomographyMatrix3D(
   p0: { x: number; y: number },
   p1: { x: number; y: number },
   p2: { x: number; y: number },
-  p3: { x: number; y: number }
+  p3: { x: number; y: number },
 ): string {
   const dx1 = p1.x - p2.x;
   const dx2 = p3.x - p2.x;
@@ -52,23 +52,23 @@ export function calculateHomographyMatrix3D(
   const vals = [
     m00.toFixed(8),
     m10.toFixed(8),
-    '0',
+    "0",
     m20.toFixed(8),
     m01.toFixed(8),
     m11.toFixed(8),
-    '0',
+    "0",
     m21.toFixed(8),
-    '0',
-    '0',
-    '1',
-    '0',
+    "0",
+    "0",
+    "1",
+    "0",
     m02.toFixed(4),
     m12.toFixed(4),
-    '0',
+    "0",
     m22.toFixed(4),
   ];
 
-  return `matrix3d(${vals.join(', ')})`;
+  return `matrix3d(${vals.join(", ")})`;
 }
 
 /**
@@ -77,7 +77,7 @@ export function calculateHomographyMatrix3D(
 export function cornersToPixels(
   corners: ScreenCorners,
   containerWidth: number,
-  containerHeight: number
+  containerHeight: number,
 ) {
   return {
     p0: {
