@@ -150,6 +150,52 @@ export const FEATURED_PROJECTS: Project[] = [
     imageAlt: 'Afrilearn EdTech Platform Course Dashboard',
     isPrivate: true,
     featuredAspect: 'optimization'
+  },
+  {
+    id: 'freelancehub',
+    number: '05',
+    title: 'FreelanceHub',
+    year: '2026',
+    type: 'SaaS Platform',
+    role: 'Founder / Full-Stack Engineer',
+    technologies: [
+      'Next.js',
+      'TypeScript',
+      'Prisma',
+      'PostgreSQL',
+      'Better Auth',
+      'Stripe',
+      'React Query',
+      'Tailwind CSS'
+    ],
+    shortDescription:
+      'A full-stack SaaS platform for freelancers to manage clients, projects, time, invoices, payments, and financial performance from a single workspace. I designed and built the product end-to-end, from the application architecture and database layer to the dashboard experience and billing workflows.',
+    problem:
+      'Freelancers often rely on a mix of spreadsheets, invoicing tools, payment platforms, and project trackers to run their business. I wanted to bring those workflows together into one focused system that treats freelancing as a business rather than just a collection of projects.',
+    solution:
+      "I built FreelanceHub as a multi-tenant SaaS application with client and project management, time tracking, invoice generation, revenue analytics, authentication, and subscription billing. The platform includes a dashboard that brings operational and financial data together so freelancers can understand both what they're working on and how their business is performing.",
+    result:
+      'A fully deployed SaaS product with a production web application, authenticated user workflows, persistent data, invoice and payment flows, and a subscription model. The project also gave me the opportunity to work across the full product stack rather than focusing only on the interface.',
+    highlights: [
+      'Designed the application architecture across the Next.js App Router, server-side workflows, database, and client state',
+      'Built client, project, time-tracking, invoicing, and financial-management workflows around a shared data model',
+      'Implemented authentication and protected multi-user application flows with Better Auth',
+      'Integrated Stripe billing and subscription-based Pro features',
+      'Built financial dashboards and analytics to turn project and invoice data into useful business insights',
+      'Designed the product as a real deployable SaaS rather than a frontend-only portfolio prototype'
+    ],
+    image: '/assets/projects/freelance-hub-1-light.png',
+    images: [
+      '/assets/projects/freelance-hub-1-light.png',
+      '/assets/projects/freelance-hub-1.png',
+      '/assets/projects/freelance-hub-2.png',
+      '/assets/projects/freelance-hub-3.png'
+    ],
+    imageAlt: 'FreelanceHub SaaS Platform Financial Analytics and Project Management Dashboard',
+    featuredAspect: 'architecture',
+    liveUrl: 'https://freelancehub-dev.vercel.app/',
+    githubUrl: 'https://github.com/Bekione/FreelanceHub',
+    isPrivate: false
   }
 ];
 
@@ -172,16 +218,6 @@ export const LAB_EXPERIMENTS: LabExperiment[] = [
     technologies: ['TypeScript', 'Node.js', 'Telegram Bot API', 'Gemini API'],
     githubUrl: 'https://github.com/Bekione/threadmind',
     notes: 'Handles asynchronous queue processing and structured prompt chaining.',
-    status: 'Open Source'
-  },
-  {
-    id: 'freelance-hub',
-    title: 'FreelanceHub',
-    category: 'SaaS',
-    description: 'A freelance management app with automated invoice generation, client onboarding portals, contract delivery, and Stripe billing.',
-    technologies: ['Next.js', 'Prisma', 'PostgreSQL', 'Stripe', 'Better Auth', 'React Query'],
-    githubUrl: 'https://github.com/Bekione/FreelanceHub',
-    notes: 'Clean multi-tenant client billing and payment automation.',
     status: 'Open Source'
   },
   {

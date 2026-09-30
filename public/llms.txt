@@ -21,12 +21,12 @@ I'm a software engineer who likes working across the whole product — from inte
 - [AI Visa Interview Simulator](https://github.com/Bekione): Real-time voice AI mock visa interview simulator with sub-second latency. Full-duplex WebSocket audio streaming with ONNX-powered BERT-based Voice Activity Detection.
 - [ISP Multi-Tenant Marketplace](https://github.com/Bekione): Multi-tenant ISP marketplace with customer, ISP admin, and platform admin tiers. Built with React, React Native, TypeScript, Tailwind CSS, Nest.js, and PostgreSQL.
 - [Spare-Parts Enterprise ERP](https://github.com/Bekione): High-performance inventory management system handling 10M+ records with windowed virtualization and sub-100ms response times. Built with React, Laravel, MySQL, Redis.
+- [FreelanceHub](https://freelancehub-dev.vercel.app): Full-stack SaaS platform for freelancers with client and project management, time tracking, invoice generation, revenue analytics, Better Auth, and Stripe billing. Built with Next.js, TypeScript, Prisma, PostgreSQL, React Query, and Tailwind CSS.
 
 ## Open Source & Developer Tools
 
 - [Commit-Tastic](https://github.com/Bekione/commit-tastic): VS Code extension for automated, context-aware Git commit messages powered by local LLMs.
 - [ThreadMind](https://github.com/Bekione/threadmind): AI Telegram bot that summarizes unread group chat threads into concise briefing notes.
-- [FreelanceHub](https://github.com/Bekione/FreelanceHub): Open-source freelance client and project management suite with automated Stripe invoicing.
 
 ## Links & Profiles
 

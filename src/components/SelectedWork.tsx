@@ -375,10 +375,14 @@ function ProjectScreenshotCard({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-35 sm:max-w-50 truncate">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-xs bg-(--bg-surface) border border-(--border-subtle) font-mono text-[11px] text-(--text-muted) max-w-44 sm:max-w-64 truncate">
               {project.liveUrl ? (
                 <span className="text-(--text-secondary) truncate">
-                  {project.liveUrl.replace(/^https?:\/\//, "")}
+                  {project.liveUrl
+                    .replace(/^https?:\/\//, "")
+                    .replace(/\.vercel\.app\/?$/, "")
+                    .replace(/\/$/, "")}{" "}
+                  // production
                 </span>
               ) : (
                 <span className="truncate">
@@ -535,9 +539,9 @@ function ProjectScreenshotCard({
         </div>
       )}
 
-      {/* Live link or NDA note */}
-      <div className="flex items-center justify-between text-xs font-mono pt-1">
-        {project.liveUrl ? (
+      {/* Live link, source code, or NDA note */}
+      <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono pt-1">
+        {project.liveUrl && (
           <a
             href={project.liveUrl}
             target="_blank"
@@ -549,7 +553,21 @@ function ProjectScreenshotCard({
             <span>VISIT LIVE PLATFORM</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
-        ) : (
+        )}
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View GitHub repository for ${project.title}`}
+            className="relative overflow-hidden inline-flex items-center gap-1.5 px-3.5 py-2 min-h-9 rounded-xs border border-(--border-subtle) hover:border-vermilion bg-(--bg-surface) text-(--text-secondary) hover:text-vermilion transition-colors font-medium cursor-pointer"
+          >
+            <Noise />
+            <span>SOURCE CODE</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
+        {!project.liveUrl && !project.githubUrl && (
           <span className="text-(--text-muted) text-[11px] italic">
             Private commercial platform — source code under NDA.
           </span>
@@ -842,6 +860,19 @@ function ProjectCarouselModal({
                   <Moon className="w-3.5 h-3.5 relative z-10" />
                 </button>
               </div>
+            )}
+
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden xs:inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono rounded-xs bg-vermilion text-white hover:bg-vermilion/90 transition-colors"
+                title="Open live site in new tab"
+              >
+                <span>VISIT LIVE</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             )}
 
             <button
