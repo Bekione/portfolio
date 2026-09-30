@@ -68,6 +68,9 @@ export const metadata: Metadata = {
       "Software engineer building thoughtful web, mobile, and AI-powered systems from Addis Ababa, Ethiopia.",
     images: ["/og.png"],
   },
+  other: {
+    thumbnail: "https://bereketkinfe.pro.et/assets/avatar.png",
+  },
   manifest: "/site.webmanifest",
   robots: {
     index: true,

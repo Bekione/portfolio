@@ -62,7 +62,7 @@ export function Hero({ onOpenResume }: HeroProps) {
           <div className="lg:col-span-7 flex flex-col space-y-6">
             <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-(--text-muted) uppercase">
               <Terminal className="w-3.5 h-3.5 text-vermilion" />
-              <span>SOFTWARE ENGINEER</span>
+              <span>BEREKET KINFE // SOFTWARE ENGINEER</span>
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.04] text-(--text-primary) tracking-tight">

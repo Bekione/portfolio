@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import { CheckCircle2, Cpu, Layers, Zap } from "lucide-react";
 import { PERSONAL_INFO } from "../data/portfolioData";
@@ -127,9 +128,25 @@ export function About() {
           {/* Dossier & Verified Metadata (5 cols) */}
           <div className="lg:col-span-5 p-6 border border-(--border-subtle) bg-(--bg-primary) rounded-xs space-y-6">
             <div className="flex items-center justify-between border-b border-(--border-subtle) pb-3">
-              <span className="font-mono text-xs font-semibold text-(--text-primary) tracking-wider">
-                AT A GLANCE
-              </span>
+              <div className="flex items-center gap-3">
+                <div className="relative w-9 h-9 rounded-xs overflow-hidden border border-vermilion/30 shrink-0">
+                  <Image
+                    src="/assets/avatar.png"
+                    alt="Bereket Kinfe"
+                    width={36}
+                    height={36}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <span className="font-mono text-xs font-semibold text-(--text-primary) tracking-wider block">
+                    AT A GLANCE
+                  </span>
+                  <span className="font-mono text-[10px] text-(--text-muted) block">
+                    ENGINEER DOSSIER
+                  </span>
+                </div>
+              </div>
               <span className="font-mono text-[11px] text-vermilion">
                 STATUS: AVAILABLE
               </span>
